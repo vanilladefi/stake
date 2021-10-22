@@ -2,15 +2,71 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-smooth: antialiased;
+  -webkit-font-smoothing: antialiased;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@font-face {
+  font-family: "Moche";
+  src: url("/fonts/Moche-Regular.eot");
+  src: url("/fonts/Moche-Regular.eot?#iefix") format("embedded-opentype"),
+    url("/fonts/Moche-Regular.woff2") format("woff2"),
+    url("/fonts/Moche-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-* {
-  box-sizing: border-box;
+/* @font-face {
+  font-family: "Moche";
+  src: url("/fonts/Moche-Light.eot");
+  src: url("/fonts/Moche-Light.eot?#iefix") format("embedded-opentype"),
+    url("/fonts/Moche-Light.woff2") format("woff2"),
+    url("/fonts/Moche-Light.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+} */
+
+@font-face {
+  font-family: "Moche";
+  src: url("/fonts/Moche-Bold.eot");
+  src: url("/fonts/Moche-Bold.eot?#iefix") format("embedded-opentype"),
+    url("/fonts/Moche-Bold.woff2") format("woff2"),
+    url("/fonts/Moche-Bold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
 }
+
+@font-face {
+  font-family: "PolySans";
+  src: url("/fonts/PolySansTrial-Neutral.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+/* 
+@font-face {
+  font-family: "PolySans";
+  src: url("/fonts/PolySansTrial-NeutralItalic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+} */
+
+@font-face {
+  font-family: "PolySans";
+  src: url("/fonts/PolySansTrial-Median.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* @font-face {
+  font-family: "PolySans";
+  src: url("/fonts/PolySansTrial-MedianItalic.otf") format("opentype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+} */
