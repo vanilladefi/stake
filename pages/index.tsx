@@ -1,9 +1,11 @@
 /** @jsxImportSource theme-ui */
 import type { NextPage } from "next";
 import { SVGProps } from "react";
-import { Container, Heading } from "theme-ui";
+import { Container, Heading, useThemeUI } from "theme-ui";
 
 const Diamond: React.FC<SVGProps<SVGSVGElement>> = (props) => {
+  const { theme } = useThemeUI();
+  console.log(theme);
   return (
     <svg
       width="1em"
@@ -27,7 +29,10 @@ const Diamond: React.FC<SVGProps<SVGSVGElement>> = (props) => {
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="#F0C24C" />
-          <stop offset={1} stopColor="#10070F" />
+          <stop
+            offset={1}
+            stopColor={(theme.colors?.background as string) || "#F0C24C"}
+          />
         </linearGradient>
       </defs>
     </svg>
@@ -52,7 +57,7 @@ const Home: NextPage = () => {
           as="h1"
           sx={{
             margin: "auto",
-            fontSize: 9,
+            fontSize: [6, 7, 8, 9],
             py: 6,
             textAlign: "center",
             maxWidth: "layoutPlus",
