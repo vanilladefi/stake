@@ -5,7 +5,6 @@ import { Container, Heading, useThemeUI } from "theme-ui";
 
 const Diamond: React.FC<SVGProps<SVGSVGElement>> = (props) => {
   const { theme } = useThemeUI();
-  console.log(theme);
   return (
     <svg
       width="1em"
