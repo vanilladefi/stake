@@ -13,11 +13,18 @@ const Diamond: React.FC<SVGProps<SVGSVGElement>> = (props) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
+      style={{ overflow: "visible" }}
     >
+      <path
+        style={{ filter: "blur(30px)" }}
+        d="M.512 254.714l139.27 141.357 139.27-141.357L139.782.73 70.147 127.722.512 254.714z"
+        fill="url(#prefix__paint0_linear_232:18392)"
+      />
       <path
         d="M.512 254.714l139.27 141.357 139.27-141.357L139.782.73 70.147 127.722.512 254.714z"
         fill="url(#prefix__paint0_linear_232:18392)"
       />
+
       <defs>
         <linearGradient
           id="prefix__paint0_linear_232:18392"
