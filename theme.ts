@@ -1,3 +1,4 @@
+import { darken } from "@theme-ui/color";
 import type { Theme } from "theme-ui";
 
 export const theme: Theme = {
@@ -34,6 +35,7 @@ export const theme: Theme = {
     heading: 0.85,
   },
   colors: {
+    black: '#10070F',
     text: '#10070F',
     background: '#F1EBD4',
     primary: '#E5B754',
@@ -48,6 +50,18 @@ export const theme: Theme = {
         secondary: '#30c',
         muted: '#AF9E88',
         extraMuted: '#776464',
+      }
+    }
+  },
+  buttons: {
+    default: {
+      borderRadius: 0
+    },
+    primary: {
+      color: 'black',
+      borderRadius: 0,
+      '&:hover': {
+        background: darken('primary', 0.2)
       }
     }
   },
@@ -76,30 +90,41 @@ export const theme: Theme = {
       lineHeight: 'body',
       fontWeight: 'body',
     },
-    h1: {
-      variant: 'text.heading',
-      fontSize: 5,
+    a: {
+      color: 'text',
+      textDecoration: 'underline',
+      '&:visited': {
+        color: 'text'
+      },
+      '&:hover': {
+        color: 'text',
+        textDecoration: 'none'
+      }
     },
-    h2: {
-      variant: 'text.heading',
-      fontSize: 4,
-    },
-    h3: {
-      variant: 'text.heading',
-      fontSize: 3,
-    },
-    h4: {
-      variant: 'text.heading',
-      fontSize: 2,
-    },
-    h5: {
-      variant: 'text.heading',
-      fontSize: 1,
-    },
-    h6: {
-      variant: 'text.heading',
-      fontSize: 0,
-    },
+    // h1: {
+    //   variant: 'text.heading',
+    //   fontSize: 5,
+    // },
+    // h2: {
+    //   variant: 'text.heading',
+    //   fontSize: 4,
+    // },
+    // h3: {
+    //   variant: 'text.heading',
+    //   fontSize: 3,
+    // },
+    // h4: {
+    //   variant: 'text.heading',
+    //   fontSize: 2,
+    // },
+    // h5: {
+    //   variant: 'text.heading',
+    //   fontSize: 1,
+    // },
+    // h6: {
+    //   variant: 'text.heading',
+    //   fontSize: 0,
+    // },
     pre: {
       fontFamily: 'monospace',
       overflowX: 'auto',

@@ -189,6 +189,7 @@ const MobileNavigation = () => {
           zIndex: 999,
           borderBottom: "1px solid",
           borderColor: "extraMuted",
+          backdropFilter: "blur(8px)",
         }}
       >
         <Container
@@ -205,6 +206,7 @@ const MobileNavigation = () => {
               display: "flex",
               flex: 1,
               flexShrink: 0,
+              mb: 2,
             }}
           >
             <NavLink
