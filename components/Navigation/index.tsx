@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useColorMode, Box, Container, Flex } from "theme-ui";
+import { useState, useEffect } from "react";
+import Box from "../Box";
+import Container from "../Container";
 import {
   ArrowSquareOut,
   DotsThreeVertical,
@@ -9,25 +10,56 @@ import {
 } from "phosphor-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useBreakpointIndex } from "@theme-ui/match-media";
+import { useTheme } from "next-themes";
 
 import NavLink from "../NavLink";
 import Wallet from "../Wallet";
 import Stack from "../Stack";
-import { transparentize } from "@theme-ui/color";
+import Flex from "../Flex";
+
+const ThemeChanger = () => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
+
+  return (
+    <Box
+      onClick={() => {
+        setTheme(theme && theme === "light" ? "dark" : "light");
+      }}
+      css={{
+        display: "flex",
+        marginLeft: "auto",
+        cursor: "pointer",
+        alignItems: "center",
+        justifyContent: "center",
+        mb: "$1",
+        color: "$muted",
+      }}
+    >
+      {theme === "dark" ? (
+        <Sun weight="bold" size="16px" />
+      ) : (
+        <Moon weight="bold" size="16px" />
+      )}
+    </Box>
+  );
+};
 
 const DesktopNavigation = () => {
-  const [colorMode, setColorMode] = useColorMode();
   return (
-    <Flex
+    <Box
       as="nav"
-      sx={{
-        borderBottom: "1px solid",
-        borderBottomColor: "extraMuted",
+      css={{
+        display: "flex",
+        color: "$text",
+        borderBottom: "1px solid $extraMuted",
       }}
     >
       <Container
-        sx={{
+        css={{
           display: "flex",
           alignItems: "center",
         }}
@@ -35,7 +67,7 @@ const DesktopNavigation = () => {
         <Link href="/" passHref>
           <Box
             as="a"
-            sx={{
+            css={{
               display: "flex",
               width: "27px",
               height: "37px",
@@ -53,32 +85,24 @@ const DesktopNavigation = () => {
         </Link>
 
         <Stack
-          direction="row"
-          sx={{
+          css={{
             alignItems: "center",
-            mx: 4,
-            display: "flex",
+            mx: "$5",
             flex: 1,
+            gap: "$8",
             flexShrink: 0,
           }}
         >
-          <NavLink sx={{ py: 4 }} href="/">
+          <NavLink css={{ py: "$8" }} href="/">
             Predict
           </NavLink>
-          <NavLink sx={{ py: 4 }} href="/subscribe">
+          <NavLink css={{ py: "$8" }} href="/subscribe">
             Subscribe
           </NavLink>
-          <NavLink sx={{ py: 4 }} href="/community">
+          <NavLink css={{ py: "$8" }} href="/community">
             Community
           </NavLink>
-          <NavLink
-            sx={{
-              display: ["none", null, "flex"],
-              py: 4,
-              alignItems: "center",
-            }}
-            href="/trade"
-          >
+          <NavLink css={{ py: "$8" }} href="/trade">
             Trade{" "}
             <ArrowSquareOut
               weight="bold"
@@ -86,48 +110,31 @@ const DesktopNavigation = () => {
               size="15px"
             />
           </NavLink>
-          <Box
-            color="muted"
-            onClick={(e) => {
-              setColorMode(colorMode === "light" ? "dark" : "light");
-            }}
-            sx={{
-              display: "flex",
-              marginLeft: "auto",
-              cursor: "pointer",
-              alignItems: "center",
-              justifyContent: "center",
-              mb: 1,
-            }}
-          >
-            {colorMode === "dark" ? (
-              <Sun weight="bold" size="20px" />
-            ) : (
-              <Moon weight="bold" size="20px" />
-            )}
-          </Box>
+          <ThemeChanger />
         </Stack>
-        <Wallet sx={{ marginLeft: "auto" }} />
+        <Wallet css={{ marginLeft: "auto" }} />
       </Container>
-    </Flex>
+    </Box>
   );
 };
 
 const MobileNavigation = () => {
-  const [colorMode, setColorMode] = useColorMode();
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <Flex
+    <Box
       as="nav"
-      sx={{
+      css={{
+        display: "flex",
         position: "relative",
         borderBottom: "1px solid",
-        borderBottomColor: "extraMuted",
-        backgroundColor: "background",
+        borderBottomColor: "$extraMuted",
+        backgroundColor: "$background",
+        color: "$text",
+        zIndex: 9999,
       }}
     >
       <Container
-        sx={{
+        css={{
           display: "flex",
           alignItems: "center",
         }}
@@ -135,7 +142,7 @@ const MobileNavigation = () => {
         <Link href="/" passHref>
           <Box
             as="a"
-            sx={{
+            css={{
               display: "flex",
               width: "22px",
               height: "32px",
@@ -153,72 +160,72 @@ const MobileNavigation = () => {
         </Link>
 
         <Stack
-          direction="row"
-          sx={{
+          css={{
+            flexDirection: "row",
             alignItems: "center",
-            mx: 4,
             display: "flex",
             flex: 1,
             flexShrink: 0,
+            mx: "$5",
           }}
         >
-          <NavLink sx={{ py: 3, fontSize: 0 }} href="/">
+          <NavLink css={{ py: "$4" }} href="/">
             Predict
           </NavLink>
-          <NavLink sx={{ py: 3, fontSize: 0 }} href="/subscribe">
+          <NavLink css={{ py: "$4" }} href="/subscribe">
             Subscribe
           </NavLink>
         </Stack>
         <Box
           color="muted"
-          sx={{ cursor: "pointer", ml: "auto", display: "flex" }}
+          css={{
+            color: "$muted",
+            cursor: "pointer",
+            ml: "auto",
+            display: "flex",
+          }}
           onClick={() => setIsOpen((curr) => !curr)}
         >
           {isOpen ? <X size="30px" /> : <DotsThreeVertical size="30px" />}
         </Box>
       </Container>
       <Box
-        sx={{
+        css={{
           display: isOpen ? "flex" : "none",
           position: "absolute",
           flexDirection: "column",
           top: "calc(100% + 1px)",
           left: 0,
           right: 0,
-          backgroundColor: transparentize("background", 0.4),
           zIndex: 999,
-          borderBottom: "1px solid",
-          borderColor: "extraMuted",
+          backgroundColor: "$backgroundA",
+          borderBottom: "1px solid $extraMuted",
           backdropFilter: "blur(8px)",
         }}
       >
         <Container
-          sx={{
+          css={{
             display: "flex",
             flexDirection: "column",
           }}
         >
           <Stack
-            direction="row"
-            sx={{
+            css={{
+              flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
               display: "flex",
               flex: 1,
               flexShrink: 0,
-              mb: 2,
+              mb: "$2",
             }}
           >
-            <NavLink
-              sx={{ py: 3, fontSize: 0, alignItems: "center" }}
-              href="/community"
-            >
+            <NavLink css={{ py: "$5", alignItems: "center" }} href="/community">
               Community
             </NavLink>
             <NavLink
-              sx={{
-                fontSize: 0,
-                py: 3,
+              css={{
+                py: "$5",
                 alignItems: "center",
               }}
               href="/faq"
@@ -226,9 +233,8 @@ const MobileNavigation = () => {
               Faq
             </NavLink>
             <NavLink
-              sx={{
-                fontSize: 0,
-                py: 3,
+              css={{
+                py: "$5",
                 alignItems: "center",
               }}
               href="/trade"
@@ -240,38 +246,43 @@ const MobileNavigation = () => {
                 size="15px"
               />
             </NavLink>
-            <Box
-              color="muted"
-              onClick={(e) => {
-                setColorMode(colorMode === "light" ? "dark" : "light");
-              }}
-              sx={{
-                display: "flex",
-                marginLeft: "auto",
-                cursor: "pointer",
-                alignItems: "center",
-                justifyContent: "center",
-                mb: 1,
-              }}
-            >
-              {colorMode === "dark" ? (
-                <Sun weight="bold" size="16px" />
-              ) : (
-                <Moon weight="bold" size="16px" />
-              )}
-            </Box>
+            <ThemeChanger />
           </Stack>
 
-          <Wallet sx={{ marginLeft: "auto", pb: 3, width: "100%" }} />
+          <Wallet css={{ marginLeft: "auto", pb: "$3", width: "100%" }} />
         </Container>
       </Box>
-    </Flex>
+    </Box>
   );
 };
 
 const Navigation = () => {
-  const breakpointIndex = useBreakpointIndex();
-  return breakpointIndex > 2 ? <DesktopNavigation /> : <MobileNavigation />;
+  // const breakpointIndex = useBreakpointIndex();
+
+  return (
+    <>
+      <Box
+        css={{
+          display: "block",
+          "@lg": {
+            display: "none",
+          },
+        }}
+      >
+        <MobileNavigation />
+      </Box>
+      <Box
+        css={{
+          display: "none",
+          "@lg": {
+            display: "block",
+          },
+        }}
+      >
+        <DesktopNavigation />
+      </Box>
+    </>
+  );
 };
 
 export default Navigation;

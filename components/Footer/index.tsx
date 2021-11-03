@@ -1,12 +1,4 @@
-import {
-  Flex,
-  Box,
-  Container,
-  Text,
-  useColorMode,
-  Grid,
-  ThemeUIStyleObject,
-} from "theme-ui";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,10 +8,15 @@ import {
   TwitterLogo,
   GithubLogo,
 } from "phosphor-react";
+import type * as Stitches from "@stitches/react";
 
 import Stack from "../Stack";
 import Wallet from "../Wallet";
 import NavLink from "../NavLink";
+import Text from "../Text";
+import Box from "../Box";
+import Flex from "../Flex";
+import Container from "../Container";
 
 const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (
@@ -27,17 +24,19 @@ const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
       {typeof children === "string" ? (
         <Text
           as="a"
-          sx={{
-            color: "primary",
+          css={{
+            color: "$primary",
             textDecoration: "none",
-            ":hover": {
-              color: "text",
+            "&:hover": {
+              color: "$text",
             },
             display: "flex",
             alignItems: "center",
           }}
         >
-          <ArrowCircleUpRight size={24} style={{ marginRight: 12 }} />
+          <Box>
+            <ArrowCircleUpRight size={"24px"} style={{ marginRight: 12 }} />
+          </Box>
           {children}
         </Text>
       ) : (
@@ -47,82 +46,85 @@ const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
   );
 };
 
-const RegularLink: React.FC<{ href: string; sx?: ThemeUIStyleObject }> = ({
+const RegularLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
   href,
   children,
-  sx,
+  css,
 }) => {
   return (
     <Link href={href} passHref>
       {typeof children === "string" ? (
         <Text
           as="a"
-          sx={{
-            fontSize: 2,
-            color: "text",
+          css={{
+            color: "$text",
             textDecoration: "none",
-            ":hover": {
+            "&:hover": {
               color: "text",
             },
             display: "flex",
             alignItems: "center",
-            ...sx,
+            ...css,
           }}
         >
           {children}
         </Text>
       ) : (
-        <Flex
+        <Box
           as="a"
-          sx={{
-            fontSize: 2,
-            color: "text",
+          css={{
+            display: "flex",
+            color: "$text",
             textDecoration: "none",
-            ":hover": {
+            "&hover": {
               color: "text",
             },
-            display: "flex",
             alignItems: "center",
-            ...sx,
+            ...css,
           }}
         >
           {children}
-        </Flex>
+        </Box>
       )}
     </Link>
   );
 };
 
 const Footer = () => {
-  const [mode] = useColorMode();
+  const { theme } = useTheme();
   return (
     <Flex
       as="footer"
-      pt={4}
-      sx={{
-        borderTop: "1px solid",
-        borderColor: "extraMuted",
+      css={{
+        paddingTop: "$4",
+        display: "flex",
+        borderTop: "1px solid $extraMuted",
         flexDirection: "column",
       }}
     >
-      <Container sx={{ flexWrap: "wrap" }}>
+      <Container css={{ flex: 1 }}>
         <Flex
-          sx={{
+          css={{
+            display: "flex",
             alignItems: "center",
             flexWrap: "wrap",
             justifyContent: "space-between",
+            mb: "$8",
           }}
         >
           <Box
-            sx={{
+            css={{
               minWidth: "130px",
               position: "relative",
               marginRight: "0px",
             }}
           >
             <Link href="/" passHref>
-              <Box as="a" sx={{ display: "block", marginTop: "5px" }}>
-                {mode === "dark" ? (
+              <Box
+                as="a"
+                css={{ display: "block", marginTop: "5px", mr: "$4" }}
+              >
+                {theme === "dark" ? (
                   <Image
                     alt="Vanilla Logo"
                     src="/vanilla-logo.svg"
@@ -142,9 +144,17 @@ const Footer = () => {
           </Box>
 
           <Stack
-            spacing={4}
-            direction={"row"}
-            sx={{ display: ["none", null, "flex"] }}
+            css={{
+              display: "none",
+              mr: "$4",
+              flexDirection: "row",
+              "@initial": {
+                display: "none",
+              },
+              "@md": {
+                display: "flex",
+              },
+            }}
           >
             <NavLink href="/trade">Trade</NavLink>
             <NavLink href="/stake">Stake</NavLink>
@@ -154,21 +164,33 @@ const Footer = () => {
           </Stack>
 
           <Wallet
-            sx={{
+            css={{
+              display: "none",
               flexShrink: 0,
-              width: ["100%", "100%", "100%", "auto"],
-              display: ["none", "none", "flex"],
+              "@initial": {
+                width: "100%",
+                display: "none",
+              },
+              "@lg": {
+                width: "auto",
+                display: "flex",
+              },
             }}
           />
         </Flex>
 
-        <Flex sx={{ flexWrap: "wrap" }}>
+        <Flex css={{ flexWrap: "wrap" }}>
           <Stack
-            spacing={3}
-            direction="column"
-            marginTop={4}
-            mb={4}
-            sx={{ order: 1, width: ["100%", "50%", "50%", "50%"] }}
+            css={{
+              flexDirection: "column",
+              gap: "$3",
+              mb: "$6",
+              order: 1,
+              width: "100%",
+              "@md": {
+                width: "50%",
+              },
+            }}
           >
             <EtherScanLink href="/">
               $VNL ERC-20 Contract on Etherscan
@@ -177,54 +199,61 @@ const Footer = () => {
             <EtherScanLink href="/">VanillaDAO on Etherscan</EtherScanLink>
           </Stack>
           <Stack
-            spacing={3}
-            marginTop={[null, 4]}
-            direction="column"
-            sx={{
+            css={{
+              flexDirection: "column",
               textAlign: "right",
               marginLeft: "auto",
-              order: [3, 2, 2, 2],
               alignSelf: "flex-start",
               width: "50%",
+              order: 3,
+              "@md": {
+                order: 2,
+              },
             }}
           >
-            <RegularLink sx={{ justifyContent: "flex-end" }} href="/">
+            <RegularLink css={{ justifyContent: "flex-end" }} href="/">
               Bug bounty
             </RegularLink>
-            <RegularLink sx={{ justifyContent: "flex-end" }} href="/">
+            <RegularLink css={{ justifyContent: "flex-end" }} href="/">
               Terms of Use
             </RegularLink>
-            <RegularLink sx={{ justifyContent: "flex-end" }} href="/">
+            <RegularLink css={{ justifyContent: "flex-end" }} href="/">
               Privacy Policy
             </RegularLink>
           </Stack>
 
           <Stack
-            spacing={[3, 2, 2]}
-            mb={3}
-            direction={["column", "row", "row"]}
-            sx={{ order: [2, 3, 3, 3] }}
+            css={{
+              flexDirection: "column",
+              width: "50%",
+              order: 2,
+              mb: "$6",
+              "@md": {
+                order: 3,
+                flexDirection: "row",
+              },
+            }}
           >
-            <RegularLink href="/" sx={{ mr: 3 }}>
-              <Flex color="text" sx={{ mr: 2 }}>
+            <RegularLink href="/" css={{ mr: "$3" }}>
+              <Flex color="text" css={{ mr: "$2" }}>
                 <TelegramLogo size="24px" weight="fill" />
               </Flex>
               Telegram
             </RegularLink>
-            <RegularLink href="/" sx={{ mr: 3 }}>
-              <Flex color="text" sx={{ mr: 2 }}>
+            <RegularLink href="/" css={{ mr: "$3" }}>
+              <Flex color="text" css={{ mr: "$2" }}>
                 <TwitterLogo size="24px" weight="fill" />
               </Flex>
               Twitter
             </RegularLink>
-            <RegularLink href="/" sx={{ mr: 3 }}>
-              <Flex color="text" sx={{ mr: 2 }}>
+            <RegularLink href="/" css={{ mr: "$3" }}>
+              <Flex color="text" css={{ mr: "$2" }}>
                 <GithubLogo size="24px" weight="fill" />{" "}
               </Flex>
               Github
             </RegularLink>
-            <RegularLink href="/" sx={{ mr: 3 }}>
-              <Flex color="text" sx={{ mr: 2 }}>
+            <RegularLink href="/" css={{ mr: "$3" }}>
+              <Flex color="text" css={{ mr: "$2" }}>
                 <MediumLogo size="24px" weight="fill" />
               </Flex>
               Medium
@@ -232,17 +261,27 @@ const Footer = () => {
           </Stack>
         </Flex>
       </Container>
-      <Flex sx={{ borderTop: "1px solid", borderTopColor: "extraMuted" }}>
+      <Flex css={{ borderTop: "1px solid", borderTopColor: "extraMuted" }}>
         <Container>
-          <Flex py={2} sx={{ alignItems: "center", flexWrap: "wrap" }}>
-            <Flex sx={{ alignItems: "center", width: ["100%", "100%", "50%"] }}>
+          <Flex css={{ py: "$2", alignItems: "center", flexWrap: "wrap" }}>
+            <Flex
+              css={{
+                alignItems: "center",
+                width: "100%",
+                "@md": { width: "50%" },
+              }}
+            >
               Made by
               <Box
-                ml={2}
-                mt={"2px"}
-                sx={{ width: "100px", height: "30px", position: "relative" }}
+                css={{
+                  width: "100px",
+                  height: "30px",
+                  ml: "$2",
+                  mt: "2px",
+                  position: "relative",
+                }}
               >
-                {mode === "dark" ? (
+                {theme === "dark" ? (
                   <Image
                     alt="Equilibrium Logo"
                     src="/eq-logo.svg"
@@ -257,8 +296,22 @@ const Footer = () => {
                 )}
               </Box>
             </Flex>
-            <Flex ml="auto" sx={{ width: ["100%", "100%", "50%"] }}>
-              <Text ml={["none", "auto", "auto"]}>
+            <Flex
+              css={{
+                ml: "none",
+                "@md": {
+                  width: "50%",
+                },
+              }}
+            >
+              <Text
+                css={{
+                  ml: "none",
+                  "@sm": {
+                    ml: "auto",
+                  },
+                }}
+              >
                 Copyright © {new Date().getFullYear()} Vanilla
               </Text>
             </Flex>

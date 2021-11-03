@@ -1,32 +1,35 @@
-import { Text, ThemeUIStyleObject } from "theme-ui";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type * as Stitches from "@stitches/react";
 
-const NavLink: React.FC<{ href: string; sx?: ThemeUIStyleObject }> = ({
+import Text from "../Text";
+
+const NavLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
   href,
-  sx,
+  css,
   children,
 }) => {
   const router = useRouter();
-
   const isActive = router.pathname === href;
   return (
     <Link href={href} passHref>
       <Text
         as="a"
-        sx={{
+        css={{
           display: "flex",
-          fontSize: 3,
-          fontFamily: "heading",
-          color: isActive ? "text" : "muted",
+          fontFamily: "$heading",
+          color: isActive ? "$text" : "$muted",
           textDecoration: "none",
           textTransform: "uppercase",
           borderBottom: "1px solid",
-          borderColor: isActive ? "muted" : "transparent",
-          ":hover": {
-            color: "text",
+          py: "$5",
+          fontSize: "$md",
+          alignItems: "center",
+          borderColor: isActive ? "$muted" : "transparent",
+          "&:hover": {
+            color: "$text",
           },
-          ...sx,
+          ...css,
         }}
       >
         {children}
