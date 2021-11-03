@@ -1,11 +1,13 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { ThemeProvider, Box } from "theme-ui";
+import { ThemeProvider } from "next-themes";
 import Head from "next/head";
 
-import { theme } from "../theme";
+import { darkTheme, getCssText } from "../stitches.config";
 import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
+import Box from "../components/Box";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -35,13 +37,24 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="theme-color" content="#000000" />
         <title>Vanilla DeFi</title>
+        <style
+          id="stitches"
+          dangerouslySetInnerHTML={{ __html: getCssText() }}
+        />
         <meta
           name="description"
           content="The world’s first decentralised asset manager"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        value={{
+          dark: darkTheme.className,
+          light: "light",
+        }}
+      >
         <Box>
           <Navigation />
           <Component {...pageProps} />

@@ -1,54 +1,77 @@
-import {
-  BaseStyles,
-  Button,
-  Box,
-  Container,
-  Heading as ThemeHeading,
-  Text,
-  Link as ThemeLink,
-} from "theme-ui";
-import Link from "next/link";
+import { styled } from "../stitches.config";
 import Image from "next/image";
 import TeX from "@matejmazur/react-katex";
-import { Link as LinkIcon } from "phosphor-react";
+import { Link as LinkIconP } from "phosphor-react";
 import "katex/dist/katex.min.css";
+
+import Box from "../components/Box";
+import Text from "../components/Text";
+import Link from "../components/Link";
+import Button from "../components/Button";
+import ThemeHeading from "../components/Heading";
+import Container from "../components/Container";
 
 import Stack from "../components/Stack";
 
-const Heading = (props: any) => (
-  <ThemeHeading
-    as="h2"
-    sx={{
-      fontFamily: "body",
-      textTransform: "none",
-      my: 4,
-      lineHeight: 1.2,
-    }}
-    {...props}
-  />
-);
+const Heading = styled(ThemeHeading, {
+  fontFamily: "$body",
+  textTransform: "none",
+  my: "$6",
+  lineHeight: "$body",
+});
+
+const LinkIcon = styled(LinkIconP, {
+  color: "$text",
+});
+
+const ThemeLink = styled(Link);
 
 const Faq = () => {
   return (
-    <Container sx={{ maxWidth: ["copy", "copyPlus"] }}>
+    <Container
+      css={{
+        maxWidth: "$4xl",
+      }}
+    >
       <ThemeHeading
         as="h1"
-        sx={{
-          fontSize: [6, 7, 8, 8],
-          py: 4,
-          borderBottom: "1px solid",
-          borderColor: "muted",
+        css={{
+          boxSizing: "border-box",
+          py: "$16",
+          my: 0,
+          borderBottom: "1px solid $muted",
+          "@initial": {
+            fontSize: "$3xl",
+          },
+          "@sm": {
+            fontSize: "$4xl",
+          },
+          "@md": {
+            fontSize: "$6xl",
+          },
+          "@lg": {
+            fontSize: "$7xl",
+          },
         }}
       >
         Frequently asked questions
       </ThemeHeading>
-      <Stack direction="column" mb={5}>
+      <Stack
+        css={{
+          flexDirection: "column",
+          mb: "$5",
+          [`> ${Box}`]: {
+            borderBottom: "1px solid $muted",
+            pb: "$9",
+            "&:last-child": {
+              borderBottom: 0,
+            },
+          },
+        }}
+      >
         <Box>
           <Heading as="h2" id="how-do-i-migrate-my-VNL-from-v1.0-to-v1.1">
-            <ThemeLink
-              color="text"
-              href="#how-do-i-migrate-my-VNL-from-v1.0-to-v1.1"
-            >
+            <ThemeLink href="#how-do-i-migrate-my-VNL-from-v1.0-to-v1.1">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             How do I migrate my VNL from v1.0 to v1.1?
@@ -66,7 +89,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="What is Vanilla?">
-            <ThemeLink color="text" href="#What is Vanilla?">
+            <ThemeLink href="#What is Vanilla?">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             What is Vanilla?
@@ -78,7 +101,7 @@ const Faq = () => {
             hypothesize that a dynamic meritocracy will consistently outperform
             any other governance system.
           </Text>
-          <Box mt={3}>
+          <Box css={{ mt: "$3" }}>
             <Link href="/trade" passHref>
               <Button as="a" variant="primary">
                 Start #ProfitMining
@@ -88,7 +111,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="what-is-profitmining">
-            <ThemeLink color="text" href="what-is-profitmining">
+            <ThemeLink href="what-is-profitmining">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             What is #ProfitMining?
@@ -105,7 +128,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="how-do-i-trade-tokens-using-vanilla">
-            <ThemeLink color="text" href="#how-do-i-trade-tokens-using-vanilla">
+            <ThemeLink href="#how-do-i-trade-tokens-using-vanilla">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             How do I trade tokens using Vanilla?
@@ -130,10 +153,7 @@ const Faq = () => {
             as="h2"
             id="can-i-move-tokens-ive-purchased-through-vanilla?"
           >
-            <ThemeLink
-              color="text"
-              href="#can-i-move-tokens-ive-purchased-through-vanilla?"
-            >
+            <ThemeLink href="#can-i-move-tokens-ive-purchased-through-vanilla?">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             Can I move tokens I&apos;ve purchased through Vanilla?
@@ -146,7 +166,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="does-vanilla-include-a-native-token">
-            <ThemeLink color="text" href="#does-vanilla-include-a-native-token">
+            <ThemeLink href="#does-vanilla-include-a-native-token">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             Does Vanilla include a native token?
@@ -158,7 +178,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="was-there-an-ico-or-premine">
-            <ThemeLink color="text" href="#was-there-an-ico-or-premine">
+            <ThemeLink href="#was-there-an-ico-or-premine">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             Was there an ICO or premine?
@@ -172,7 +192,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="who-created-vanilla">
-            <ThemeLink color="text" href="#who-created-vanilla">
+            <ThemeLink href="#who-created-vanilla">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             Who created Vanilla?
@@ -186,7 +206,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="is-vanilla-secure">
-            <ThemeLink color="text" href="#is-vanilla-secure">
+            <ThemeLink href="#is-vanilla-secure">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             Is Vanilla secure?
@@ -206,7 +226,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="is-vanilla-decentralized">
-            <ThemeLink color="text" href="#is-vanilla-decentralized">
+            <ThemeLink href="#is-vanilla-decentralized">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             Is Vanilla decentralized?
@@ -219,7 +239,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="what-is-the-vanilladao">
-            <ThemeLink color="text" href="#what-is-the-vanilladao">
+            <ThemeLink href="#what-is-the-vanilladao">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             What is the VanillaDAO?
@@ -234,7 +254,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="can-i-profit-mine-with-any-erc-20">
-            <ThemeLink color="text" href="#can-i-profit-mine-with-any-erc-20">
+            <ThemeLink href="#can-i-profit-mine-with-any-erc-20">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             Can I profit-mine with any ERC-20?
@@ -252,10 +272,7 @@ const Faq = () => {
             as="h2"
             id="how-are-profit-mining-rewards-calculated-for-trading"
           >
-            <ThemeLink
-              color="text"
-              href="#how-are-profit-mining-rewards-calculated-for-trading"
-            >
+            <ThemeLink href="#how-are-profit-mining-rewards-calculated-for-trading">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             How are profit mining rewards calculated for trading?
@@ -283,7 +300,7 @@ const Faq = () => {
         </Box>
         <Box>
           <Heading as="h2" id="how-is-rewardable-profit-calculated">
-            <ThemeLink color="text" href="#how-is-rewardable-profit-calculated">
+            <ThemeLink href="#how-is-rewardable-profit-calculated">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             How is rewardable profit calculated?
@@ -343,7 +360,7 @@ E_{i}&=\frac{E_{i-1}*T_{i}}{T_{i-1}}
         </Box>
         <Box>
           <Heading as="h2" id="            {">
-            <ThemeLink color="text" href="#            {">
+            <ThemeLink href="#            {">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             What is &quot;observation cardinality&quot; and why it matters in
@@ -396,10 +413,7 @@ P_{i}^{R}&=\frac{P_{i}^{pool} * t + {price}_{i}^{avg} * (300-t)}{300}
             as="h2"
             id="what-is-the-holding-trading-ratio-squared-and-why-does-vanilla-use-it"
           >
-            <ThemeLink
-              color="text"
-              href="#what-is-the-holding-trading-ratio-squared-and-why-does-vanilla-use-it"
-            >
+            <ThemeLink href="#what-is-the-holding-trading-ratio-squared-and-why-does-vanilla-use-it">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             What is the Holding/Trading Ratio (Squared) and why does Vanilla use
@@ -464,15 +478,12 @@ A_{i} &= \frac{A_{i-1}*T_i}{T_{i-1}}
             as="h2"
             id="simple-heuristics-to-illustrate-the-core-mechanisms"
           >
-            <ThemeLink
-              color="text"
-              href="#simple-heuristics-to-illustrate-the-core-mechanisms"
-            >
+            <ThemeLink href="#simple-heuristics-to-illustrate-the-core-mechanisms">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             Simple heuristics to illustrate the core mechanisms
           </Heading>
-          <Text mb={3}>
+          <Text css={{ mb: "$3" }}>
             The following charts and tables depict simple heuristics of the
             incentive mechanisms. In all heuristics we vary one input in the VNL
             reward formula while keeping the other inputs unchanged and plot the
@@ -485,7 +496,12 @@ A_{i} &= \frac{A_{i-1}*T_i}{T_{i-1}}
             relationship with the increase associated with the VNL reward.
           </Text>
           <Box
-            sx={{ position: "relative", width: "100%", height: "400px", my: 3 }}
+            css={{
+              position: "relative",
+              width: "100%",
+              height: "400px",
+              my: "$5",
+            }}
           >
             <Image
               src="/images/faq/VNL_vs_profit.jpg"
@@ -494,7 +510,7 @@ A_{i} &= \frac{A_{i-1}*T_i}{T_{i-1}}
               objectFit="scale-down"
             />
           </Box>
-          <Text mb={3}>
+          <Text css={{ mb: "$3" }}>
             The second case observes the VNL attribution when we keep profits
             constant, but vary the Holding/Trading Ratio (Squared). The ratio is
             determined by how early the trader is participating in the Vanilla
@@ -503,11 +519,11 @@ A_{i} &= \frac{A_{i-1}*T_i}{T_{i-1}}
             block number and keep the weighted average block constant.
           </Text>
           <Box
-            sx={{
+            css={{
               position: "relative",
               width: "100%",
               height: "400px",
-              my: 3,
+              my: "$5",
             }}
           >
             <Image

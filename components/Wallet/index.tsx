@@ -1,12 +1,11 @@
-import { Box, ThemeUIStyleObject } from "theme-ui";
+import Box from "../Box";
+import type * as Stitches from "@stitches/react";
 
-const Wallet: React.FC<{ sx?: ThemeUIStyleObject }> = ({ sx }) => {
+const Wallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   return (
-    <Box sx={{ display: "flex", ...sx }}>
+    <Box css={{ display: "flex", ...css }}>
       <Box
-        py={2}
-        px={3}
-        sx={{
+        css={{
           display: "flex",
           flex: 1,
           minWidth: "150px",
@@ -15,14 +14,14 @@ const Wallet: React.FC<{ sx?: ThemeUIStyleObject }> = ({ sx }) => {
           textTransform: "uppercase",
           textAlign: "center",
           justifyContent: "center",
+          py: "$4",
+          px: "$3",
         }}
       >
         12.34534 VNL
       </Box>
       <Box
-        py={2}
-        px={3}
-        sx={{
+        css={{
           display: "flex",
           flex: 1,
           minWidth: "150px",
@@ -32,6 +31,8 @@ const Wallet: React.FC<{ sx?: ThemeUIStyleObject }> = ({ sx }) => {
           textTransform: "uppercase",
           textAlign: "center",
           justifyContent: "center",
+          py: "$4",
+          px: "$3",
         }}
       >
         1.324 ETH
