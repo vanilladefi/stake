@@ -1,9 +1,13 @@
 import type * as Stitches from "@stitches/react";
 import * as sdk from '@vanilladefi/sdk';
+import { VanillaVersion } from "@vanilladefi/sdk/lib/types/general";
+import useData from "../../lib/use-data";
 import Box from "../Box";
 
-const WalletInfo: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  console.log(sdk)
+const WalletInfo: React.FC<{ css?: Stitches.CSS, walletAddress: string }> = ({ css, walletAddress }) => {
+  const data = useData(
+    'basicWalletDetails', () => sdk.getBasicWalletDetails(VanillaVersion.V1_1, walletAddress))
+
   return (
     <Box css={{ display: "flex", ...css }}>
       <Box
@@ -20,7 +24,7 @@ const WalletInfo: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           px: "$3",
         }}
       >
-        12.34534 VNL
+        {data?.vnlBalance || '0'} VNL
       </Box>
       <Box
         css={{
@@ -37,7 +41,7 @@ const WalletInfo: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           px: "$3",
         }}
       >
-        1.324 ETH
+        {data?.ethBalance || '0'} ETH
       </Box>
     </Box>
   );
