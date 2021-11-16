@@ -1,7 +1,9 @@
-import Box from "../Box";
 import type * as Stitches from "@stitches/react";
+import * as sdk from '@vanilladefi/sdk';
+import Box from "../Box";
 
-const Wallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
+const WalletInfo: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
+  console.log(sdk)
   return (
     <Box css={{ display: "flex", ...css }}>
       <Box
@@ -41,4 +43,4 @@ const Wallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   );
 };
 
-export default Wallet;
+export default WalletInfo;

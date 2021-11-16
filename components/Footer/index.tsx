@@ -1,21 +1,18 @@
+import type * as Stitches from "@stitches/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import {
   ArrowCircleUpRight,
-  DiscordLogo,
-  TelegramLogo,
-  Notebook,
-  TwitterLogo,
-  GithubLogo,
+  DiscordLogo, GithubLogo, Notebook, TelegramLogo, TwitterLogo
 } from "phosphor-react";
-import type * as Stitches from "@stitches/react";
-
-import Stack from "../Stack";
-import Navigation from "../Navigation";
-import Text from "../Text";
 import Box from "../Box";
-import Flex from "../Flex";
 import Container from "../Container";
+import Flex from "../Flex";
+import Navigation from "../Navigation";
+import Stack from "../Stack";
+import Text from "../Text";
+
+
 
 const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (

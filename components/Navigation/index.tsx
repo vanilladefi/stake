@@ -1,14 +1,20 @@
-import { useState, useEffect } from "react";
-import Box from "../Box";
-import Container from "../Container";
-import { ArrowUpRight, DotsThreeVertical, Moon, Sun, X } from "phosphor-react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "next-themes";
-
+import {
+  ArrowUpRight,
+  DotsThreeVertical,
+  Moon,
+  Sun,
+  X
+} from "phosphor-react";
+import { useEffect, useState } from "react";
+import Box from "../Box";
+import Container from "../Container";
 import NavLink from "../NavLink";
-import Wallet from "../Wallet";
 import Stack from "../Stack";
+import WalletInfo from "../WalletInfo";
+
 
 const ThemeChanger = () => {
   const { theme, setTheme } = useTheme();
@@ -109,7 +115,7 @@ const DesktopNavigation = () => {
           </NavLink>
           <ThemeChanger />
         </Stack>
-        <Wallet css={{ marginLeft: "auto" }} />
+        <WalletInfo css={{ marginLeft: "auto" }} />
       </Container>
     </Box>
   );
@@ -232,7 +238,7 @@ const MobileNavigation = () => {
             <ThemeChanger />
           </Stack>
 
-          <Wallet css={{ marginLeft: "auto", pb: "$3", width: "100%" }} />
+          <WalletInfo css={{ marginLeft: "auto", pb: "$3", width: "100%" }} />
         </Container>
       </Box>
     </Box>
