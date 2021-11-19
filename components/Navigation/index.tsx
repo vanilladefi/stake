@@ -238,7 +238,7 @@ const MobileNavigation = () => {
             <ThemeChanger />
           </Stack>
 
-          <WalletInfo css={{ marginLeft: "auto", pb: "$3", width: "100%" }} />
+          <WalletInfo css={{ marginLeft: "auto", pb: "$3", width: "100%" }} walletAddress='0x35434a35C19cabC4bD508Edf538cC1Cf33BDA688' />
         </Container>
       </Box>
     </Box>

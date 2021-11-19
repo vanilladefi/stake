@@ -1830,10 +1830,10 @@
   resolved "https://registry.yarnpkg.com/@urql/introspection/-/introspection-0.3.0.tgz#545f2425b68d95892afa5961433a19aab1867268"
   integrity sha512-dw87YiSmCgEUFnWj7fYu+wnrFcSEhYyQ8DykTvL1UzCKPm9uLDeey1z0yiSxZeX2qP9oD+TSGIq+61AZHhQO0w==
 
-"@vanilladefi/sdk@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@vanilladefi/sdk/-/sdk-1.1.7.tgz#9a1f11ade3a5580d7a018e83822bd2ad814b6bc0"
-  integrity sha512-fgkXzNCXHuf3BOOHijMZwrKhkcBUF+KK99B266ZMy+C4QPxNmyX3ohmLgHy+yP9RvyefbhdTNd6HLvPNv3UN9A==
+"@vanilladefi/sdk@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@vanilladefi/sdk/-/sdk-2.0.2.tgz#29997fa440df0e196071f5f6c7c771f30ecaeac5"
+  integrity sha512-a9fIogihuZjgUEPw6JAYzjvZh1fPLgdTu7S+73aASsLaQ6B8wK0URXD+dpREf1Wql0/Y9WtAMSmRK/JKD1lpOw==
   dependencies:
     "@uniswap/default-token-list" "^2.0.0"
     "@uniswap/sdk" "^3.0.3"
