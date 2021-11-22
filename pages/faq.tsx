@@ -103,7 +103,11 @@ const Faq = () => {
           </Text>
           <Box css={{ mt: "$3" }}>
             <Link href="/trade" passHref>
-              <Button as="a" variant="primary">
+              <Button
+                as="a"
+                css={{ fontFamily: "$monospace" }}
+                variant="primary"
+              >
                 Start #ProfitMining
               </Button>
             </Link>
