@@ -1,0 +1,19 @@
+subscription SubscribeAssetPairs {
+  assetPairs {
+    id
+    currentPrice
+    decimals
+    roundId
+    hourRoundId
+    timestamp
+    hourlyHistory(orderBy: hourStamp, orderDirection: asc) {
+      hourStamp
+      id
+      openingPrice
+      closingPrice
+      lowPrice
+      highPrice
+      timestamp
+    }
+  }
+}

@@ -1,0 +1,19 @@
+query GetAssetPairs {
+  assetPairs {
+    id
+    currentPrice
+    decimals
+    roundId
+    hourRoundId
+    timestamp
+    hourlyHistory(first: 3, orderBy: hourStamp, orderDirection: asc) {
+      hourStamp
+      id
+      openingPrice
+      closingPrice
+      lowPrice
+      highPrice
+      timestamp
+    }
+  }
+}
