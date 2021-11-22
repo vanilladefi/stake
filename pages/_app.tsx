@@ -1,16 +1,20 @@
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
+import { Provider } from "urql";
 import Head from "next/head";
 
 import { darkTheme } from "../stitches.config";
 import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import Box from "../components/Box";
-import { Provider } from "urql";
 import "../styles/globals.css";
-import client from "../urql";
+import client, { ssrCache } from "../urql";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  console.log("paage", pageProps);
+  if (pageProps.urqlState) {
+    ssrCache.restoreData(pageProps.urqlState);
+  }
   return (
     <>
       <Head>

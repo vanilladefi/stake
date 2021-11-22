@@ -18,8 +18,8 @@ import { ethers } from "ethers";
 import tokens from "../tokensV2";
 import Input from "../components/Input";
 import { rgba } from "polished";
-import { GetServerSideProps } from "next";
-import client, { ssr } from "../urql";
+import { GetStaticProps } from "next";
+import client, { ssrCache } from "../urql";
 
 type ColumnType = {
   __typename?: "AssetPair";
@@ -42,8 +42,7 @@ type ColumnType = {
 };
 
 const Predict = () => {
-  const [{ fetching, data }, executeQuery] = useGetAssetPairsQuery({});
-
+  const [{ fetching, data }, executeQuery] = useGetAssetPairsQuery();
   // refetch data every 60 seconds
   useEffect(() => {
     if (!fetching) {
@@ -184,7 +183,7 @@ const Predict = () => {
   return (
     <Container>
       <Heading as="h1">Available Tokens</Heading>
-      {fetching && !data ? (
+      {!data ? (
         <p>loading</p>
       ) : (
         <Box css={{ overflowX: "scroll" }}>
@@ -333,20 +332,23 @@ const SubRow = ({ row }: { row: Row<ColumnType> }) => {
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   try {
-//     const res = await client.query(GetAssetPairsDocument).toPromise();
-//     return {
-//       props: {
-//         initialData: res.data,
-//       },
-//     };
-//   } catch (err) {
-//     console.log(err);
-//     return {
-//       props: {},
-//     };
-//   }
-// };
+export const getStaticProps: GetStaticProps = async (context) => {
+  try {
+    const res = await client.query(GetAssetPairsDocument).toPromise();
+    return {
+      props: {
+        // urql uses this to rehydrate cache
+        urqlState: ssrCache.extractData(),
+      },
+      revalidate: 60,
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {},
+      revalidate: 60,
+    };
+  }
+};
 
 export default Predict;
