@@ -3,6 +3,7 @@ import Box from "../Box";
 import Container from "../Container";
 import {
   ArrowSquareOut,
+  ArrowUpRight,
   DotsThreeVertical,
   Moon,
   Sun,
@@ -93,18 +94,20 @@ const DesktopNavigation = () => {
             flexShrink: 0,
           }}
         >
-          <NavLink css={{ py: "$8" }} href="/predict">
-            Predict
+          <NavLink css={{ py: "$8" }} href="/stake">
+            stake
           </NavLink>
-          <NavLink css={{ py: "$8" }} href="/subscribe">
-            Subscribe
+          <NavLink css={{ py: "$8" }} href="/invest">
+            Invest
+            <ArrowUpRight
+              weight="bold"
+              style={{ marginBottom: "3px", marginLeft: "5px" }}
+              size="15px"
+            />
           </NavLink>
           <NavLink css={{ py: "$8" }} href="/community">
             Community
-          </NavLink>
-          <NavLink css={{ py: "$8" }} href="/trade">
-            Trade{" "}
-            <ArrowSquareOut
+            <ArrowUpRight
               weight="bold"
               style={{ marginBottom: "3px", marginLeft: "5px" }}
               size="15px"
@@ -169,11 +172,16 @@ const MobileNavigation = () => {
             mx: "$5",
           }}
         >
-          <NavLink css={{ py: "$4" }} href="/predict">
-            Predict
+          <NavLink css={{ py: "$4" }} href="/stake">
+            Stake
           </NavLink>
-          <NavLink css={{ py: "$4" }} href="/subscribe">
-            Subscribe
+          <NavLink css={{ py: "$4" }} href="/invest">
+            Invest
+            <ArrowUpRight
+              weight="bold"
+              style={{ marginBottom: "3px", marginLeft: "5px" }}
+              size="15px"
+            />
           </NavLink>
         </Stack>
         <Box
@@ -222,25 +230,7 @@ const MobileNavigation = () => {
           >
             <NavLink css={{ py: "$5", alignItems: "center" }} href="/community">
               Community
-            </NavLink>
-            <NavLink
-              css={{
-                py: "$5",
-                alignItems: "center",
-              }}
-              href="/faq"
-            >
-              Faq
-            </NavLink>
-            <NavLink
-              css={{
-                py: "$5",
-                alignItems: "center",
-              }}
-              href="/trade"
-            >
-              Trade{" "}
-              <ArrowSquareOut
+              <ArrowUpRight
                 weight="bold"
                 style={{ marginBottom: "3px", marginLeft: "5px" }}
                 size="15px"
