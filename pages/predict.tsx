@@ -10,11 +10,16 @@ import Text from "../components/Text";
 
 import { Column, Row } from "react-table";
 import valueUSD from "../utils/valueUSD";
-import { useGetAssetPairsQuery } from "../generated/graphql";
+import {
+  GetAssetPairsDocument,
+  useGetAssetPairsQuery,
+} from "../generated/graphql";
 import { ethers } from "ethers";
 import tokens from "../tokensV2";
 import Input from "../components/Input";
 import { rgba } from "polished";
+import { GetServerSideProps } from "next";
+import client, { ssr } from "../urql";
 
 type ColumnType = {
   __typename?: "AssetPair";
@@ -38,6 +43,7 @@ type ColumnType = {
 
 const Predict = () => {
   const [{ fetching, data }, executeQuery] = useGetAssetPairsQuery({});
+
   // refetch data every 60 seconds
   useEffect(() => {
     if (!fetching) {
@@ -328,24 +334,19 @@ const SubRow = ({ row }: { row: Row<ColumnType> }) => {
 };
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const provider = new ethers.providers.JsonRpcProvider(
-//     "https://polygon-mainnet.g.alchemy.com/v2/XYdYJcT9qMRjn9g3CQItb1FuMru5Zol8"
-//   );
-//   const priceFeed = new ethers.Contract(
-//     "0x72484B12719E23115761D5DA1646945632979bB6",
-//     aggregatorV3InterfaceABI,
-//     provider
-//   );
-//   const addr = "0x2A8758b7257102461BC958279054e372C2b1bDE6";
-//   const roundData = await priceFeed.latestRoundData();
-//   console.log(roundData);
-//   console.log("answer", roundData.answer.toString());
-//   console.log("answer", roundData.roundId.toString());
-//   return {
-//     props: {
-//       // roundData,
-//     },
-//   };
+//   try {
+//     const res = await client.query(GetAssetPairsDocument).toPromise();
+//     return {
+//       props: {
+//         initialData: res.data,
+//       },
+//     };
+//   } catch (err) {
+//     console.log(err);
+//     return {
+//       props: {},
+//     };
+//   }
 // };
 
 export default Predict;

@@ -26,8 +26,6 @@ export const {
       extraMuted: '#DDCDB9',
       green: "#A1F161",
       red: "#FD5247"
-
-
     },
     fonts: {
       body: 'PolySans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
