@@ -93,7 +93,7 @@ const DesktopNavigation = () => {
             flexShrink: 0,
           }}
         >
-          <NavLink css={{ py: "$8" }} href="/">
+          <NavLink css={{ py: "$8" }} href="/predict">
             Predict
           </NavLink>
           <NavLink css={{ py: "$8" }} href="/subscribe">
@@ -169,7 +169,7 @@ const MobileNavigation = () => {
             mx: "$5",
           }}
         >
-          <NavLink css={{ py: "$4" }} href="/">
+          <NavLink css={{ py: "$4" }} href="/predict">
             Predict
           </NavLink>
           <NavLink css={{ py: "$4" }} href="/subscribe">

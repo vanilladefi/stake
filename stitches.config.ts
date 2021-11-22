@@ -17,13 +17,15 @@ export const {
     colors: {
       black: '#10070F',
       text: '#10070F',
-      textA: transparentize(0.3, '#10070F'),
+      textA: transparentize(0.1, '#10070F'),
       background: '#F1EBD4',
-      backgroundA: transparentize(0.3, '#F1EBD4'),
+      backgroundA: transparentize(0.1, '#F1EBD4'),
       primary: '#E5B754',
       secondary: '#30c',
       muted: '#4F3428',
       extraMuted: '#DDCDB9',
+      green: "#A1F161",
+      red: "#FD5247"
     },
     fonts: {
       body: 'PolySans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
@@ -265,9 +267,9 @@ export const {
 export const darkTheme = createTheme('dark', {
   colors: {
     text: '#F1EBD4',
-    textA: transparentize(0.3, '#F1EBD4'),
+    textA: transparentize(0.1, '#F1EBD4'),
     background: '#10070F',
-    backgroundA: transparentize(0.3, '#10070F'),
+    backgroundA: transparentize(0.1, '#10070F'),
     primary: '#E5B754',
     secondary: '#30c',
     muted: '#AF9E88',
@@ -277,5 +279,12 @@ export const darkTheme = createTheme('dark', {
 
 export const globalStyles = globalCss({
   // body: { backgroundColor: '$background', color: '$text', fontFamily: 'Helvetica' },
-  'html, body': { backgroundColor: '$background', color: '$text', fontFamily: '$body', fontSize: '$md' },
+  'html, body': {
+    backgroundColor: '$background',
+    color: '$text',
+    fontFamily: '$body',
+    fontSize: '$md',
+    '-webkit-font-smoothing': 'antialiased',
+    '-moz-osx-font-smoothing': 'grayscale'
+  },
 });

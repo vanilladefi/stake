@@ -23,7 +23,8 @@ import { styled } from "../../stitches.config";
  * */
 
 const TableContainer = styled(Box, {
-  padding: "$3",
+  py: "$3",
+  color: "$muted",
   input: {
     border: "0px",
     padding: "0.4rem",
@@ -84,7 +85,7 @@ function Table<T extends object>({
   renderRowSubComponent,
 }: TableProps<T>): React.ReactElement {
   /**
-   * Custom Filter Fucntion ----
+   * Custom Filter Function ----
    * Only filter by: code * name
    */
   const ourGlobalFilterFunction = useCallback(
@@ -117,6 +118,10 @@ function Table<T extends object>({
       data,
       // Use our custom function
       globalFilter: ourGlobalFilterFunction,
+      // keep sort state when data updates
+      autoResetSortBy: false,
+      // keep expanded state when data updates
+      autoResetExpanded: false,
     },
     useGlobalFilter,
     useSortBy,
@@ -138,26 +143,27 @@ function Table<T extends object>({
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                <th
+                  {...column.getHeaderProps({
+                    ...column.getSortByToggleProps(),
+                    style: {
+                      minWidth: column.minWidth,
+                      width: column.width,
+                      textAlign: column.align || "center",
+                    },
+                  })}
+                >
                   {/* Render the columns filter UI */}
-                  <Box
-                    css={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    {column.render("Header")}
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <ArrowDown />
-                      ) : (
-                        <ArrowUp />
-                      )
+                  {column.render("Header")}
+                  {column.isSorted ? (
+                    column.isSortedDesc ? (
+                      <ArrowDown style={{ top: 20 }} />
                     ) : (
-                      ""
-                    )}
-                  </Box>
+                      <ArrowUp />
+                    )
+                  ) : (
+                    ""
+                  )}
                 </th>
               ))}
             </tr>
@@ -173,7 +179,17 @@ function Table<T extends object>({
                 <tr {...rowProps}>
                   {row.cells.map((cell) => {
                     return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                      <td
+                        {...cell.getCellProps({
+                          style: {
+                            minWidth: cell.column.minWidth,
+                            width: cell.column.width,
+                            textAlign: cell.column.align || "center",
+                          },
+                        })}
+                      >
+                        {cell.render("Cell")}
+                      </td>
                     );
                   })}
                 </tr>
@@ -183,7 +199,7 @@ function Table<T extends object>({
                   */}
                 {row.isExpanded && renderRowSubComponent ? (
                   <tr {...rowProps}>
-                    <td colSpan={visibleColumns.length}>
+                    <td colSpan={visibleColumns.length} style={{ padding: 0 }}>
                       {/*
                           Inside it, call our renderRowSubComponent function. In reality,
                           you could pass whatever you want as props to

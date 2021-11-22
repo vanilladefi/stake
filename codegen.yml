@@ -1,0 +1,13 @@
+overwrite: true
+schema: "https://api.thegraph.com/subgraphs/id/QmPF3iZqdKz4Nm7cSN9Rs8U2K8yJu8pKzuqRr8HtYWaF9u"
+documents: "graphql/**/*.graphql"
+generates:
+  generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"
+      - "urql-introspection"
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"
