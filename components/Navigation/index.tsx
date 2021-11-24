@@ -13,8 +13,7 @@ import Box from "../Box";
 import Container from "../Container";
 import NavLink from "../NavLink";
 import Stack from "../Stack";
-import WalletInfo from "../WalletButton";
-
+import WalletButton from "../Wallet";
 
 const ThemeChanger = () => {
   const { theme, setTheme } = useTheme();
@@ -115,7 +114,7 @@ const DesktopNavigation = () => {
           </NavLink>
           <ThemeChanger />
         </Stack>
-        <WalletInfo css={{ marginLeft: "auto" }} walletAddress='0x35434a35C19cabC4bD508Edf538cC1Cf33BDA688' />
+        <WalletButton css={{ marginLeft: "auto" }} walletAddress='0x35434a35C19cabC4bD508Edf538cC1Cf33BDA688' />
       </Container>
     </Box>
   );
@@ -238,7 +237,7 @@ const MobileNavigation = () => {
             <ThemeChanger />
           </Stack>
 
-          <WalletInfo css={{ marginLeft: "auto", pb: "$3", width: "100%" }} walletAddress='0x35434a35C19cabC4bD508Edf538cC1Cf33BDA688' />
+          <WalletButton css={{ marginLeft: "auto", pb: "$3", width: "100%" }} walletAddress='0x35434a35C19cabC4bD508Edf538cC1Cf33BDA688' />
         </Container>
       </Box>
     </Box>

@@ -12,6 +12,7 @@ import Flex from "../components/Flex";
 import Heading from "../components/Heading";
 import Link from "../components/Link";
 import Text from "../components/Text";
+import WalletModal from "../components/Wallet/WalletModal";
 import { styled } from "../stitches.config";
 
 const StyledDiamond = styled(Diamond, {
@@ -128,6 +129,7 @@ const Divider = styled(_Divider, { my: "$8", width: "100%" });
 const Home: NextPage = () => {
   return (
     <>
+    <WalletModal />
       <Container>
         <Box as="main" css={{ position: "relative" }}>
           <StyledDiamond />
@@ -166,16 +168,6 @@ const Home: NextPage = () => {
             "@md": {
               flexDirection: "row",
             },
-            margin: "auto",
-            py: "$32",
-            textAlign: "center",
-            maxWidth: "$5xl",
-            position: "relative",
-            zIndex: 2,
-            "@initial": {
-              maxWidth: "100%",
-              fontSize: "$6xl",
-            },
           }}
         >
           <Flex
@@ -211,6 +203,7 @@ const Home: NextPage = () => {
           </Flex>
         </Flex>
       </Container>
+      
       <Flex css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}>
         <Container>
           <Flex

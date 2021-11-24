@@ -1,5 +1,4 @@
 import { providers } from 'ethers'
-import { IProviderOptions } from 'web3modal'
 import { apiKey, ssrApiKey } from './secrets'
 
 export const useWebsocketRpc: boolean =
@@ -32,9 +31,6 @@ export const defaultProvider =
     ? new providers.AlchemyProvider(network, apiKey)
     : new providers.JsonRpcProvider(rpcUrl, network)
 // TODO: Check if this works in the future (reduces calls to API): new providers.JsonRpcBatchProvider(rpcUrl, network)
-
-export const defaultProviderOptions: IProviderOptions = {
-}
 
 export const blockDeadlineThreshold = 60000 // 600 seconds added to the latest block timestamp (10 minutes)
 
