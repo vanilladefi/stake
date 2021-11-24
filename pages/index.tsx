@@ -1,23 +1,18 @@
 import type { NextPage } from "next";
-import Container from "../components/Container";
-import Heading from "../components/Heading";
-import Flex from "../components/Flex";
-import Box from "../components/Box";
-import Link from "../components/Link";
-import Text from "../components/Text";
-import { styled } from "../stitches.config";
 import {
   ArrowRight,
   CommunityIcon,
-  Diamond,
-  JuiceSignalIcon,
-  JuicingIcon,
-  JuiceFlow,
-  Three,
-  Two,
-  One,
-  Divider as _Divider,
+  Diamond, Divider as _Divider, JuiceFlow, JuiceSignalIcon,
+  JuicingIcon, One, Three,
+  Two
 } from "../assets";
+import Box from "../components/Box";
+import Container from "../components/Container";
+import Flex from "../components/Flex";
+import Heading from "../components/Heading";
+import Link from "../components/Link";
+import Text from "../components/Text";
+import { styled } from "../stitches.config";
 
 const StyledDiamond = styled(Diamond, {
   position: "absolute",
@@ -170,6 +165,16 @@ const Home: NextPage = () => {
             flexDirection: "column",
             "@md": {
               flexDirection: "row",
+            },
+            margin: "auto",
+            py: "$32",
+            textAlign: "center",
+            maxWidth: "$5xl",
+            position: "relative",
+            zIndex: 2,
+            "@initial": {
+              maxWidth: "100%",
+              fontSize: "$6xl",
             },
           }}
         >

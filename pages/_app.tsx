@@ -1,12 +1,11 @@
-import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
+import type { AppProps } from "next/app";
 import Head from "next/head";
-
-import { darkTheme } from "../stitches.config";
-import Navigation from "../components/Navigation";
-import Footer from "../components/Footer";
-import Box from "../components/Box";
 import { Provider } from "urql";
+import Box from "../components/Box";
+import Footer from "../components/Footer";
+import Navigation from "../components/Navigation";
+import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
 import client from "../urql";
 

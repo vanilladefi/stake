@@ -13,7 +13,7 @@ import Box from "../Box";
 import Container from "../Container";
 import NavLink from "../NavLink";
 import Stack from "../Stack";
-import WalletInfo from "../WalletInfo/index.server";
+import WalletInfo from "../WalletButton";
 
 
 const ThemeChanger = () => {
