@@ -25,7 +25,8 @@ export const {
       muted: '#4F3428',
       extraMuted: '#DDCDB9',
       green: "#A1F161",
-      red: "#FD5247"
+      red: "#FD5247",
+      background2: "#ddd5bf",
     },
     fonts: {
       body: 'PolySans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
@@ -38,6 +39,7 @@ export const {
       md: "1rem",
       lg: "1.125rem",
       xl: "1.25rem",
+      "xxl": "1.3rem",
       "2xl": "1.5rem",
       "3xl": "1.875rem",
       "4xl": "2.25rem",
@@ -274,6 +276,7 @@ export const darkTheme = createTheme('dark', {
     secondary: '#30c',
     muted: '#AF9E88',
     extraMuted: '#776464',
+    background2: '#1c1217'
   },
 });
 
