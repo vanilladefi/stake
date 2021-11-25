@@ -1,10 +1,10 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useEffect } from "react";
 import Web3Modal, { IProviderOptions } from "web3modal";
-import { state, useSnapshot } from "../../state";
+import { ref, state, useSnapshot } from "../../state";
 
 const WalletModal: React.FC = () => {
-  const { signer, provider } = useSnapshot(state)
+  const { provider, signer } = useSnapshot(state)
 
   useEffect(() => {
     const web3ModalOptions: IProviderOptions = {
@@ -17,17 +17,26 @@ const WalletModal: React.FC = () => {
         },
       }
     }
-    
-    let modal: Web3Modal
+
     if (typeof window !== 'undefined') {
-      modal = new Web3Modal({
+      const modal = new Web3Modal({
         network: "matic",
         cacheProvider: false,
         providerOptions: web3ModalOptions
       });
+      state.modal = ref(modal)
     }
-    state.modal = modal
   }, [])
+
+  useEffect(() => {
+    const getAddress = async () => {
+      const address = await signer?.getAddress()
+      state.walletAddress = address
+      console.log(address)
+    }
+
+    signer && getAddress()
+  }, [signer])
 
   useEffect(() => {
     if (provider?.on) {
@@ -55,7 +64,7 @@ const WalletModal: React.FC = () => {
         }
       }
     }
-  }, [provider, signer])
+  }, [provider])
 
   return <></>
 }

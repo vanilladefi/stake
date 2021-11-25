@@ -2,14 +2,15 @@ import type * as Stitches from "@stitches/react";
 import * as sdk from '@vanilladefi/sdk';
 import { PrerenderProps } from "@vanilladefi/sdk/lib/types/content";
 import { VanillaVersion } from "@vanilladefi/sdk/lib/types/general";
+import { providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
-import { state, useSnapshot } from '../../state';
+import { ref, state, useSnapshot } from '../../state';
 import Box from "../Box";
 
 
 const WalletButton: React.FC<{ css?: Stitches.CSS, walletAddress: string }> = ({ css, walletAddress }) => {
   const [data, setData] = useState<PrerenderProps>()
-  const { signer, provider, modal } = useSnapshot(state)
+  const { modal } = useSnapshot(state)
 
   const disconnect = useCallback(
     async () => {
@@ -21,14 +22,22 @@ const WalletButton: React.FC<{ css?: Stitches.CSS, walletAddress: string }> = ({
     [modal]
   )
   
+  const connect = useCallback(async () => {
+    const provider = await modal?.connect()
+    console.log(provider)
+    const web3Provider = new providers.Web3Provider(provider)
+    state.signer = ref(web3Provider.getSigner())
+  }, [modal])
+
   useEffect(
-   () =>{
-     const getData = async () => {
-      setData(await sdk.getBasicWalletDetails(VanillaVersion.V1_1, walletAddress))
-     }
-     getData()
-   }, [walletAddress]
-   )
+    () =>{
+      const getData = async () => {
+        setData(await sdk.getBasicWalletDetails(VanillaVersion.V1_1, walletAddress))
+      }
+      getData()
+    },
+    [walletAddress]
+  )
 
   /* useEffect(() => {
     if (modal?.cachedProvider) {
@@ -37,7 +46,7 @@ const WalletButton: React.FC<{ css?: Stitches.CSS, walletAddress: string }> = ({
   }, [connect, modal?.cachedProvider]) */
 
   return (
-    <Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => modal?.connect()}>
+    <Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => connect()}>
       <Box
         css={{
           display: "flex",

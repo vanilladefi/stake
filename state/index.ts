@@ -1,5 +1,5 @@
 import { providers, Signer } from 'ethers';
-import { proxy, subscribe, useSnapshot } from 'valtio';
+import { proxy, ref, snapshot, subscribe, useSnapshot } from 'valtio';
 import Web3Modal from "web3modal";
 
 type BalanceMapping = {
@@ -16,5 +16,5 @@ type State = {
 
 const state = proxy<State>({})
 
-export { state, useSnapshot, subscribe };
+export { state, useSnapshot, subscribe, snapshot, ref };
 
