@@ -114,7 +114,7 @@ const DesktopNavigation = () => {
           </NavLink>
           <ThemeChanger />
         </Stack>
-        <WalletButton css={{ marginLeft: "auto" }} walletAddress='0x35434a35C19cabC4bD508Edf538cC1Cf33BDA688' />
+        <WalletButton css={{ marginLeft: "auto" }} />
       </Container>
     </Box>
   );
@@ -237,7 +237,7 @@ const MobileNavigation = () => {
             <ThemeChanger />
           </Stack>
 
-          <WalletButton css={{ marginLeft: "auto", pb: "$3", width: "100%" }} walletAddress='0x35434a35C19cabC4bD508Edf538cC1Cf33BDA688' />
+          <WalletButton css={{ marginLeft: "auto", pb: "$3", width: "100%" }} />
         </Container>
       </Box>
     </Box>

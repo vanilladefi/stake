@@ -32,7 +32,6 @@ const WalletModal: React.FC = () => {
     const getAddress = async () => {
       const address = await signer?.getAddress()
       state.walletAddress = address
-      console.log(address)
     }
 
     signer && getAddress()

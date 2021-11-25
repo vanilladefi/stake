@@ -8,9 +8,9 @@ import { ref, state, useSnapshot } from '../../state';
 import Box from "../Box";
 
 
-const WalletButton: React.FC<{ css?: Stitches.CSS, walletAddress: string }> = ({ css, walletAddress }) => {
+const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css, walletAddress }) => {
   const [data, setData] = useState<PrerenderProps>()
-  const { modal } = useSnapshot(state)
+  const { modal, walletAddress } = useSnapshot(state)
 
   const disconnect = useCallback(
     async () => {
@@ -24,7 +24,6 @@ const WalletButton: React.FC<{ css?: Stitches.CSS, walletAddress: string }> = ({
   
   const connect = useCallback(async () => {
     const provider = await modal?.connect()
-    console.log(provider)
     const web3Provider = new providers.Web3Provider(provider)
     state.signer = ref(web3Provider.getSigner())
   }, [modal])
@@ -46,7 +45,7 @@ const WalletButton: React.FC<{ css?: Stitches.CSS, walletAddress: string }> = ({
   }, [connect, modal?.cachedProvider]) */
 
   return (
-    <Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => connect()}>
+    walletAddress ? (<Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => null}>
       <Box
         css={{
           display: "flex",
@@ -80,7 +79,9 @@ const WalletButton: React.FC<{ css?: Stitches.CSS, walletAddress: string }> = ({
       >
         {data?.ethBalance || '0'} ETH
       </Box>
-    </Box>
+    </Box>) : (<Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => connect()}>
+      Connect
+    </Box>)
   );
 };
 
