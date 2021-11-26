@@ -1,48 +1,32 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
 import Image from "next/image";
+import { ethers } from "ethers";
+import { GetStaticProps } from "next";
+import { Column, Row } from "react-table";
+
 import Box from "../components/Box";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Flex from "../components/Flex";
 import Heading from "../components/Heading";
+import Stack from "../components/Stack";
 import Table from "../components/Table";
 import Text from "../components/Text";
 
-import { Column, Row } from "react-table";
 import valueUSD from "../utils/valueUSD";
 import {
   GetAssetPairsDocument,
   useGetAssetPairsQuery,
 } from "../generated/graphql";
-import { ethers } from "ethers";
 import tokens from "../tokensV2";
-import Input from "../components/Input";
-import { rgba } from "polished";
-import { GetStaticProps } from "next";
 import client, { ssrCache } from "../urql";
-
-type ColumnType = {
-  __typename?: "AssetPair";
-  id: string;
-  currentPrice: any;
-  decimals: number;
-  roundId: any;
-  hourRoundId: number;
-  timestamp: any;
-  hourlyHistory: Array<{
-    __typename?: "HourlyPriceHistory";
-    hourStamp: any;
-    id: string;
-    openingPrice: any;
-    closingPrice: any;
-    lowPrice: any;
-    highPrice: any;
-    timestamp: any;
-  }>;
-};
+import StakeSubRow, { ColumnType } from "../components/StakeSubRow";
+import { ArrowRight } from "phosphor-react";
+import TableFilter from "../components/TableFilter";
 
 const Predict = () => {
   const [{ fetching, data }, executeQuery] = useGetAssetPairsQuery();
+  const [filterValue, setFilterValue] = useState("");
   // refetch data every 60 seconds
   useEffect(() => {
     if (!fetching) {
@@ -175,160 +159,141 @@ const Predict = () => {
 
   const renderRowSubComponent = useCallback(
     ({ row }: { row: Row<ColumnType> }) => {
-      return <SubRow row={row} />;
+      return <StakeSubRow row={row} />;
     },
     []
   );
 
   return (
-    <Container>
-      <Heading as="h1">Available Tokens</Heading>
-      {!data ? (
-        <p>loading</p>
-      ) : (
-        <Box css={{ overflowX: "scroll" }}>
-          <Table
-            columns={columns}
-            data={data?.assetPairs || []}
-            renderRowSubComponent={renderRowSubComponent}
-          />
-        </Box>
-      )}
-    </Container>
-  );
-};
-
-const SubRow = ({ row }: { row: Row<ColumnType> }) => {
-  const [stakeAmount, setStakeAmount] = useState("100");
-  const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
-  return (
-    <Flex
-      css={{
-        flex: 1,
-        boxShadow: "inset 0px 0px 0px 1px $colors$muted",
-      }}
-    >
+    <>
       <Flex
         css={{
-          p: "$3 $5",
-          borderRight: "1px solid $colors$muted",
-          alignItems: "center",
+          backgroundColor: "rgba(255, 201, 170, 0.02)",
+          py: "$16",
         }}
       >
-        <Text css={{ color: "$muted", fontSize: "$xl" }}>Stake</Text>
-        <Input
-          size="lg"
-          type="number"
-          value={stakeAmount}
-          onChange={(e) => setStakeAmount(e.target.value)}
-          css={{ width: "200px", textAlign: "right", mx: "$3" }}
-        />{" "}
-        <Image
-          alt="Vanilla drop icon"
-          width="20px"
-          height="20px"
-          src="/vanilla-drop.svg"
-        />
+        <Container>
+          <Stack
+            css={{
+              flexDirection: "column-reverse",
+              flex: 1,
+              "@md": {
+                flexDirection: "row",
+              },
+            }}
+          >
+            <Stack
+              css={{
+                width: "70%",
+                flexDirection: "column",
+                gap: "$8",
+              }}
+            >
+              <Heading css={{ fontSize: "$6xl", maxWidth: "300px" }}>
+                Start
+                <br /> Staking
+              </Heading>
+              <Text
+                css={{
+                  fontWeight: 300,
+                  fontSize: "$2xl",
+                  color: "$offWhite85",
+                }}
+              >
+                Create an investment portfolio by staking $JUICE. Earn rewards.
+              </Text>
+              <Stack
+                css={{
+                  flexDirection: "column",
+                  gap: "$3",
+                  mt: "$3",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Flex
+                  css={{
+                    color: "$primary",
+                    alignItems: "center",
+                    gap: "$3",
+                    fontSize: "$2xl",
+                    lineHeight: 1,
+                    fontWeight: 300,
+                    cursor: "pointer",
+                    borderColor: "$primary",
+                    "&:hover": {
+                      color: "$primaryDark",
+                      borderColor: "$primaryDark",
+                    },
+                  }}
+                >
+                  <ArrowRight />{" "}
+                  <Box as="span" css={{ borderBottom: "1px solid" }}>
+                    Connect wallet
+                  </Box>
+                </Flex>
+                <Flex
+                  css={{
+                    color: "$primary",
+                    alignItems: "center",
+                    gap: "$3",
+                    fontSize: "$2xl",
+                    fontWeight: 300,
+                    cursor: "pointer",
+                    "&:hover": {
+                      color: "$primaryDark",
+                    },
+                  }}
+                >
+                  <ArrowRight />{" "}
+                  <Box as="span" css={{ borderBottom: "1px solid" }}>
+                    Learn more
+                  </Box>
+                </Flex>
+              </Stack>
+            </Stack>
+            <Flex
+              css={{
+                width: "30%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Box
+                css={{
+                  position: "relative",
+                  width: "153px",
+                  height: "199px",
+                }}
+              >
+                <Image
+                  src="/juicing.svg"
+                  alt="Juicing Icon"
+                  width="153px"
+                  height="199px"
+                  objectFit="contain"
+                />
+              </Box>
+            </Flex>
+          </Stack>
+        </Container>
       </Flex>
-      <Box css={{ p: "$5", borderRight: "1px solid $colors$muted" }}>
-        <Text css={{ color: "$muted", fontSize: "$xl", mr: "$5" }}>To</Text>
-        <Button
-          onClick={() => setStakePosition("long")}
-          outline
-          uppercase
-          size="sm"
-          css={{
-            width: "90px",
-          }}
-          active={stakePosition === "long"}
-        >
-          Long
-        </Button>
-        <Button
-          onClick={() => setStakePosition("short")}
-          outline
-          uppercase
-          size="sm"
-          css={{
-            width: "90px",
-          }}
-          active={stakePosition === "short"}
-        >
-          Short
-        </Button>
-      </Box>
-      <Flex
-        css={{
-          p: "$5",
-          alignItems: "center",
-          borderRight: "1px solid $colors$muted",
-          flex: 1,
-        }}
-      >
-        <Box
-          css={{
-            width: "24px",
-            height: "24px",
-            backgroundColor: "#ffffff",
-            borderRadius: "5px",
-            position: "relative",
-            overflow: "hidden",
-            padding: "3px",
-          }}
-        >
-          {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
-            ?.imageUrl ? (
-            <Image
-              width="18px"
-              height="18px"
-              layout="fixed"
-              objectFit="cover"
-              src={`/token-assets/${row.original.id.split("/")[0]}.png`}
-              alt="Token icon"
+      <TableFilter onChange={(value) => setFilterValue(value)} />
+      <Container css={{ py: "$5" }}>
+        <Heading as="h1">Available Stakes</Heading>
+        {!data ? (
+          <p>loading</p>
+        ) : (
+          <Box css={{ overflowX: "scroll" }}>
+            <Table
+              filter={filterValue}
+              columns={columns}
+              data={data?.assetPairs || []}
+              renderRowSubComponent={renderRowSubComponent}
             />
-          ) : null}
-        </Box>
-        <Box css={{ ml: "10px" }}>
-          {
-            tokens.find((token) => token.id === row.original.id.split("/")[0])
-              ?.name
-          }
-        </Box>
-      </Flex>
-      <Flex
-        css={{
-          width: "110px",
-          px: "$3",
-          borderRight: "1px solid $colors$muted",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          color: "$red",
-          "&:hover": {
-            backgroundColor: rgba(255, 255, 255, 0.1),
-            cursor: "pointer",
-          },
-        }}
-      >
-        Close position
-      </Flex>
-      <Flex
-        css={{
-          width: "110px",
-          px: "$3",
-          borderRight: "1px solid $colors$muted",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          "&:hover": {
-            backgroundColor: rgba(255, 255, 255, 0.1),
-            cursor: "pointer",
-          },
-        }}
-      >
-        Short
-      </Flex>
-    </Flex>
+          </Box>
+        )}
+      </Container>
+    </>
   );
 };
 
