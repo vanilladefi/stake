@@ -19,7 +19,6 @@ import {
     One,
     Divider as _Divider,
 } from '../assets'
-// import JuiceFlow from '../assets/juice-flow.png'
 
 const StyledDiamond = styled(Diamond, {
     position: 'absolute',
@@ -110,7 +109,7 @@ const StyledOne = styled(One, { color: '$text2' })
 const StyledTwo = styled(Two, { color: '$text2' })
 const StyledThree = styled(Three, { color: '$text2' })
 
-const StyledJuiceFlow = styled(JuiceFlow, { width: '100%', minWidth: 'auto' })
+const StyledJuiceFlow = styled(JuiceFlow, { width: '100%', minWidth: 'auto', maxWidth: '400px' })
 
 const Divider = styled(_Divider, { my: '$8', width: '100%' })
 
@@ -249,6 +248,7 @@ const Home: NextPage = () => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             width: '100%',
+                            my: "$2",
                             '@md': {
                                 flexDirection: 'row',
                             },
@@ -300,7 +300,6 @@ const Home: NextPage = () => {
                                 },
                             }}
                         >
-                            {/* <Image src={JuiceFlow} alt="Juice flow" /> */}
                             <StyledJuiceFlow />
                         </Flex>
                     </Flex>
@@ -383,7 +382,7 @@ const Home: NextPage = () => {
                     <Flex
                         css={{
                             flexDirection: 'column',
-                            md: {
+                            "@md": {
                                 flexDirection: 'row',
                             },
                         }}
