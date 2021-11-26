@@ -6,6 +6,7 @@ export const Input = styled("input", {
   borderWidth: "0",
   boxSizing: "border-box",
   fontFamily: "inherit",
+  boxShadow: `0 1px 0 0px $colors$lightStroke`,
   outline: "none",
   width: "100%",
   flex: "1",
@@ -81,7 +82,7 @@ export const Input = styled("input", {
         },
       },
       lg: {
-        height: "$12",
+        height: "$10",
         fontSize: "$2xl",
         lineHeight: "$sizes$6",
         "&:-webkit-autofill::first-line": {

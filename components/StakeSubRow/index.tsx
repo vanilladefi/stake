@@ -49,10 +49,9 @@ const StakeSubRow = ({ row }: { row: Row<ColumnType> }) => {
       >
         <Text css={{ color: "$muted", fontSize: "$xl", mr: "$2" }}>Stake</Text>
         <Input
-          variant="ghost"
           size="lg"
           type="number"
-          placeholder="Amount..."
+          placeholder=""
           value={stakeAmount}
           onChange={(e) => setStakeAmount(e.target.value)}
           css={{ width: "200px", textAlign: "right", mx: "$3" }}
@@ -132,7 +131,10 @@ const StakeSubRow = ({ row }: { row: Row<ColumnType> }) => {
       <Flex
         css={{
           width: "140px",
+          color: "$primaryDark",
           px: "$3",
+          fontSize: "18px",
+          fontWeight: 300,
           borderRight: "1px solid $colors$extraMuted",
           alignItems: "center",
           justifyContent: "center",
