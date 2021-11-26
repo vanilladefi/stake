@@ -9,6 +9,7 @@ export const Input = styled("input", {
   outline: "none",
   width: "100%",
   flex: "1",
+  fontWeight: "$body",
   backgroundColor: "$mauve4",
   display: "inline-flex",
   alignItems: "center",
@@ -44,7 +45,9 @@ export const Input = styled("input", {
     fontFamily: "$untitled",
     color: "$mauve12",
   },
-
+  "&::placeholder": {
+    color: "$offWhite50",
+  },
   "&:focus": {
     boxShadow: `0 1px 0 0px $colors$muted`,
     "&:-webkit-autofill": {
