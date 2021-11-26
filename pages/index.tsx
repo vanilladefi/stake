@@ -1,12 +1,23 @@
 import type { NextPage } from "next"
-import Container from "../components/Container"
+import _Container from "../components/Container"
 import Heading from "../components/Heading"
 import Flex from "../components/Flex"
 import Box from "../components/Box"
 import Link from "../components/Link"
 import Text from "../components/Text"
 import { styled } from "../stitches.config"
-import { ArrowRight, CommunityIcon, Diamond, JuiceSignalIcon, JuicingIcon } from "../assets"
+import {
+  ArrowRight,
+  CommunityIcon,
+  Diamond,
+  JuiceSignalIcon,
+  JuicingIcon,
+  JuiceFlow,
+  Three,
+  Two,
+  One,
+  Divider as _Divider
+} from "../assets"
 
 const StyledDiamond = styled(Diamond, {
   position: "absolute",
@@ -45,11 +56,18 @@ const SectionHeading = ({ text = '', muted = false, topSegment = false }: { text
   }} >{text}</Heading>
 )
 
-const SectionDescription = ({ text = '' }: { text?: string }) => (
-  <Text as="div" css={{ fontSize: "$xl", color: '$text' }}>{text}</Text>
+const SectionDescription = ({ text = '', muted = false }: { text?: string, muted?: boolean }) => (
+  <Text as="div" css={{ fontSize: "$xl", color: muted ? '$muted' : '$text2' }}>{text}</Text>
 )
 
-const Divider = styled('div', { width: '100%', height: '1px', backgroundColor: '$extraMuted', mb: '$5' })
+const Container = styled(_Container, { pl: '$5' })
+
+const StyledOne = styled(One, { color: '$text2' })
+const StyledTwo = styled(Two, { color: '$text2' })
+const StyledThree = styled(Three, { color: '$text2' })
+
+const Divider = styled(_Divider, { my: '$8' })
+
 
 const Home: NextPage = () => {
   return (
@@ -84,7 +102,7 @@ const Home: NextPage = () => {
           </Heading>
         </Box>
 
-        <Flex css={{ p: '$10', width: '100%' }}>
+        <Flex css={{ p: '$3', width: '100%' }}>
           <Text as="div" css={{ fontSize: "$xxl", color: '$muted', width: '50%', }}>Vanilla is an on-chain investment pool managed by the best investors.</Text>
           <Flex css={{ flexDirection: 'column', alignItems: 'start', width: '50%', ml: '$10', }}>
             <ArrowLink text="Stake $JUICE to earn rewards" />
@@ -93,6 +111,53 @@ const Home: NextPage = () => {
         </Flex>
 
       </Container>
+
+      <Flex css={{ py: '$20', width: '100%', borderTop: '1px solid $extraMuted' }}>
+        <Container>
+          <Flex css={{ flexDirection: "row" }} >
+            <Box css={{ width: '50%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <Flex css={{ flexDirection: 'column', ml: '$3' }}>
+                <SectionHeading text="GET INFORMED, win $JUICE" />
+                <Divider />
+                <SectionDescription muted text="Get the latest Vanilla scoops and a possibility to win a $JUICE airdrop." />
+              </Flex>
+            </Box>
+            <Flex css={{ flexDirection: 'column', alignItems: 'start', justifyContent: 'center', width: '50%', ml: '$10', }}>
+
+            </Flex>
+          </Flex>
+        </Container>
+      </Flex>
+
+      <Flex css={{ width: '100%', borderTop: '1px solid $extraMuted', backgroundColor: '$background2' }}>
+        <Container>
+          <Flex css={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+            <Flex css={{ flexDirection: 'column', alignItems: 'start', width: '50%' }}>
+              <Box css={{ my: "$10" }}>
+                <SectionHeading text="HOW VANILLA WORKS" />
+              </Box>
+              <Flex css={{ flexDirection: 'row', alignItems: 'center', mb: '$5' }}>
+                <StyledOne css={{ mr: '$5' }} />
+                <SectionDescription text="Juicers create investment portfolios." />
+              </Flex>
+              <Flex css={{ flexDirection: 'row', alignItems: 'center', mb: '$5' }}>
+                <StyledTwo css={{ mr: '$5' }} />
+                <SectionDescription text="Vanilla Pool invests in line with the best performing Juicers." />
+              </Flex>
+              <Flex css={{ flexDirection: 'row', alignItems: 'center', mb: '$5' }}>
+                <StyledThree css={{ mr: '$5' }} />
+                <SectionDescription text="VanillaDAO channels a share of returns back to Juicers." />
+              </Flex>
+              <Box css={{ mt: '$5' }}>
+                <ArrowLink text="Read the FAQ" />
+              </Box>
+            </Flex>
+            <Flex css={{ flexDirection: 'column', alignItems: 'center', width: '50%', pl: '$10' }}>
+              <JuiceFlow />
+            </Flex>
+          </Flex>
+        </Container>
+      </Flex >
 
       <Flex css={{ width: '100%', borderTop: '1px solid $extraMuted' }}>
         <Container css={{ display: 'flex', flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
@@ -110,7 +175,7 @@ const Home: NextPage = () => {
               <ArrowLink text="Start staking" />
             </Flex>
           </Flex>
-          <Flex css={{ height: '100%', width: '50%', pl: '$10', flexDirection: 'column' }}>
+          <Flex css={{ height: '100%', width: '50%', pl: '$16', flexDirection: 'column' }}>
             <Flex css={{ flexDirection: 'row', alignItems: 'center', my: '$10' }}>
               <JuiceSignalIcon css={{ m: '$5' }} />
               <Box css={{ ml: '$10' }}>
@@ -146,7 +211,6 @@ const Home: NextPage = () => {
           </Flex>
         </Container>
       </Flex>
-
 
     </>
   )

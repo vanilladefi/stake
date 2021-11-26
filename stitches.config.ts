@@ -17,6 +17,7 @@ export const {
     colors: {
       black: '#10070F',
       text: '#10070F',
+      text2: "#311d15",
       textA: transparentize(0.1, '#10070F'),
       background: '#F1EBD4',
       backgroundA: transparentize(0.1, '#F1EBD4'),
@@ -270,6 +271,7 @@ export const darkTheme = createTheme('dark', {
   colors: {
     text: '#F1EBD4',
     textA: transparentize(0.1, '#F1EBD4'),
+    text2: '#ddcdb9',
     background: '#10070F',
     backgroundA: transparentize(0.1, '#10070F'),
     primary: '#E5B754',
