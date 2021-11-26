@@ -207,7 +207,7 @@ const MobileNavigation = () => {
           right: 0,
           zIndex: 999,
           backgroundColor: "$backgroundA",
-          borderBottom: "1px solid $extraMuted",
+          borderBottom: "1px solid $offWhite50",
           backdropFilter: "blur(8px)",
         }}
       >
