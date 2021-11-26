@@ -11,7 +11,6 @@ import "../styles/globals.css";
 import client, { ssrCache } from "../urql";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  console.log("paage", pageProps);
   if (pageProps.urqlState) {
     ssrCache.restoreData(pageProps.urqlState);
   }
