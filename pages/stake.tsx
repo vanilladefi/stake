@@ -280,7 +280,15 @@ const Predict = () => {
         {!data ? (
           <p>loading</p>
         ) : (
-          <Box css={{ overflowX: "scroll" }}>
+          <Box
+            css={{
+              overflowX: "scroll",
+              "&::-webkit-scrollbar": {
+                height: 0,
+                background: "transparent",
+              },
+            }}
+          >
             <Table
               filter={filterValue}
               columns={columns}
