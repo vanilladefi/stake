@@ -12,7 +12,6 @@ import Navigation from "../Navigation";
 import Stack from "../Stack";
 import Text from "../Text";
 
-
 const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (
     <Link href={href} passHref>

@@ -19,7 +19,7 @@ const Loader: React.FC<{ css?: Stitches.CSS }> = styled(Box, {
   width: "100%",
   minWidth: "150px",
   minHeight: "1em",
-  background: "linear-gradient(90deg, rgba(0,0,0,0.2), rgba(255,255,255,0.2), rgba(0,0,0,0.2))",
+  background: "linear-gradient(90deg, rgba(241,235,212,0.2), rgba(16,7,15,0.2), rgba(241,235,212,0.2))",
   backgroundSize: "400% 400%",
   animation: `${gradientAnimation} 2s linear infinite`,
   ...css,
