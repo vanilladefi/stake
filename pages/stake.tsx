@@ -282,7 +282,7 @@ const Predict = () => {
         ) : (
           <Box
             css={{
-              overflowX: "scroll",
+              overflowX: "auto",
               "&::-webkit-scrollbar": {
                 height: 0,
                 background: "transparent",
