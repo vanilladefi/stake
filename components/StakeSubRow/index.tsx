@@ -131,7 +131,7 @@ const StakeSubRow = ({ row }: { row: Row<ColumnType> }) => {
       <Flex
         css={{
           width: "140px",
-          color: "$primaryDark",
+          color: "$primary",
           px: "$3",
           fontSize: "18px",
           fontWeight: 300,
