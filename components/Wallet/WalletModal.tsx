@@ -4,7 +4,7 @@ import Web3Modal, { IProviderOptions } from "web3modal";
 import { ref, state, useSnapshot } from "../../state";
 
 const WalletModal: React.FC = () => {
-  const { provider, signer } = useSnapshot(state)
+  const { signer } = useSnapshot(state)
 
   useEffect(() => {
     const web3ModalOptions: IProviderOptions = {
@@ -21,7 +21,7 @@ const WalletModal: React.FC = () => {
     if (typeof window !== 'undefined') {
       const modal = new Web3Modal({
         network: "matic",
-        cacheProvider: false,
+        cacheProvider: true,
         providerOptions: web3ModalOptions
       });
       state.modal = ref(modal)
@@ -31,39 +31,11 @@ const WalletModal: React.FC = () => {
   useEffect(() => {
     const getAddress = async () => {
       const address = await signer?.getAddress()
-      state.walletAddress = address
+      state.walletAddress = address || null
     }
 
     signer && getAddress()
   }, [signer])
-
-  useEffect(() => {
-    if (provider?.on) {
-      const handleAccountsChanged = (accounts: string[]) => {
-        console.log('accountsChanged', accounts)
-      }
-
-      const handleChainChanged = (_hexChainId: string) => {
-        window.location.reload()
-      }
-
-      const handleDisconnect = (error: { code: number; message: string }) => {
-        console.log('disconnect', error)
-      }
-      
-      provider.on('accountsChanged', handleAccountsChanged)
-      provider.on('chainChanged', handleChainChanged)
-      provider.on('disconnect', handleDisconnect)
-
-      return () => {
-        if (provider.removeListener) {
-          provider.removeListener('accountsChanged', handleAccountsChanged)
-          provider.removeListener('chainChanged', handleChainChanged)
-          provider.removeListener('disconnect', handleDisconnect)
-        }
-      }
-    }
-  }, [provider])
 
   return <></>
 }

@@ -8,16 +8,16 @@ import { ref, state, useSnapshot } from '../../state';
 import Box from "../Box";
 
 
-const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css, walletAddress }) => {
+const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const [data, setData] = useState<PrerenderProps>()
   const { modal, walletAddress } = useSnapshot(state)
 
   const disconnect = useCallback(
     async () => {
       modal?.clearCachedProvider()
-      /* if (provider?.disconnect && typeof provider.disconnect === 'function') {
-        await provider.disconnect()
-      } */
+      state.signer = null
+      state.walletAddress = null
+      setData(undefined)
     },
     [modal]
   )
@@ -31,57 +31,53 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css, walletAddress }) 
   useEffect(
     () =>{
       const getData = async () => {
-        setData(await sdk.getBasicWalletDetails(VanillaVersion.V1_1, walletAddress))
+        if (walletAddress) {
+          const walletBalances = await sdk.getBasicWalletDetails(VanillaVersion.V1_1, walletAddress)
+          setData(walletBalances)
+        }
       }
       getData()
     },
     [walletAddress]
   )
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (modal?.cachedProvider) {
       connect()
     }
-  }, [connect, modal?.cachedProvider]) */
+  }, [connect, modal?.cachedProvider])
+
+  const buttonStyles = {
+    display: "flex",
+    flex: 1,
+    minWidth: "150px",
+    border: "1px solid",
+    borderColor: "muted",
+    textTransform: "uppercase",
+    textAlign: "center",
+    justifyContent: "center",
+    py: "$4",
+    px: "$3",
+    ...css,
+  }
 
   return (
-    walletAddress ? (<Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => null}>
+    <Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => disconnect()}>{
+      walletAddress ? (<>
       <Box
-        css={{
-          display: "flex",
-          flex: 1,
-          minWidth: "150px",
-          border: "1px solid",
-          borderColor: "muted",
-          textTransform: "uppercase",
-          textAlign: "center",
-          justifyContent: "center",
-          py: "$4",
-          px: "$3",
-        }}
+        css={buttonStyles}
       >
         {data?.vnlBalance || '0'} VNL
       </Box>
       <Box
-        css={{
-          display: "flex",
-          flex: 1,
-          minWidth: "150px",
-          border: "1px solid",
-          borderLeft: "1px",
-          borderColor: "muted",
-          textTransform: "uppercase",
-          textAlign: "center",
-          justifyContent: "center",
-          py: "$4",
-          px: "$3",
-        }}
+        css={buttonStyles}
       >
         {data?.ethBalance || '0'} ETH
-      </Box>
-    </Box>) : (<Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => connect()}>
+      </Box></>
+    ) : (<Box css={buttonStyles} onClick={() => connect()}>
       Connect
     </Box>)
+} </Box>
   );
 };
 
