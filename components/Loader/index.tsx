@@ -1,5 +1,4 @@
-import type * as Stitches from "@stitches/react";
-import { css, keyframes, styled } from "../../stitches.config";
+import { keyframes, styled } from "../../stitches.config";
 import Box from "../Box";
 
 const gradientAnimation = keyframes({
@@ -11,18 +10,17 @@ const gradientAnimation = keyframes({
   }
 })
 
-const Loader: React.FC<{ css?: Stitches.CSS }> = styled(Box, {
+const Loader = styled(Box, {
+  position: "relative",
   display: "flex",
   flex: 1,
-  position: "relative",
   height: "100%",
   width: "100%",
   minWidth: "150px",
   minHeight: "1em",
   background: "linear-gradient(90deg, rgba(241,235,212,0.2), rgba(16,7,15,0.2), rgba(241,235,212,0.2))",
   backgroundSize: "400% 400%",
-  animation: `${gradientAnimation} 2s linear infinite`,
-  ...css,
+  animation: `${gradientAnimation} 2s linear infinite`
 })
 
 export default Loader
