@@ -1,5 +1,6 @@
 import { getDefaultProvider, providers, Signer } from 'ethers';
 import { proxy, ref, snapshot, subscribe, useSnapshot } from 'valtio';
+import { subscribeKey } from 'valtio/utils';
 import Web3Modal from "web3modal";
 
 type BalanceMapping = {
@@ -28,5 +29,5 @@ const persistedKeys = {
 
 const state = proxy<State>(initialState)
 
-export { state, useSnapshot, subscribe, snapshot, ref, persistedKeys };
+export { state, useSnapshot, subscribe, subscribeKey, snapshot, ref, persistedKeys };
 

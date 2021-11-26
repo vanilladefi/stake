@@ -4,7 +4,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import Web3Modal, { IProviderOptions } from "web3modal";
-import { persistedKeys, ref, state, subscribe, useSnapshot } from "../../state";
+import { persistedKeys, ref, state, subscribeKey, useSnapshot } from "../../state";
 import { darkTheme, theme } from "../../stitches.config";
 
 const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
@@ -16,12 +16,10 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     if (walletAddress && isAddress(walletAddress)) {
       state.walletAddress = walletAddress
     }
-    if (state.walletAddress && isAddress(state.walletAddress)) {
-      // Persist walletAddress
-      subscribe(state.walletAddress, () => {
-        state.walletAddress !== walletAddress && localStorage.setItem(persistedKeys.walletAddress, JSON.stringify(state.walletAddress))
-      })
-    }
+    // Persist walletAddress
+    subscribeKey(state, 'walletAddress', (address) => {
+      address !== walletAddress && localStorage.setItem(persistedKeys.walletAddress, JSON.stringify(address))
+    })
   }, [])
 
   useEffect(() => {
