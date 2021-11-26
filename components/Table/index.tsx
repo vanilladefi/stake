@@ -90,7 +90,6 @@ function Table<T extends object>({
    */
   const ourGlobalFilterFunction = useCallback(
     (rows: Row<T>[], ids: IdType<T>[], query: string) => {
-      console.log("rows", rows);
       if (!filters || !filters.length || filters.length === 0) {
         return matchSorter(rows, query, {
           keys: Object.keys(rows?.[0].values).map((item) => `values.${item}`),
@@ -122,6 +121,7 @@ function Table<T extends object>({
       autoResetSortBy: false,
       // keep expanded state when data updates
       autoResetExpanded: false,
+      autoResetGlobalFilter: false,
     },
     useGlobalFilter,
     useSortBy,
