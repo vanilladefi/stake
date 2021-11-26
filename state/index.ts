@@ -22,7 +22,11 @@ const initialState: State = {
   modal: null,
 }
 
+const persistedKeys = {
+  walletAddress: 'vanilla-walletAddress'
+}
+
 const state = proxy<State>(initialState)
 
-export { state, useSnapshot, subscribe, snapshot, ref };
+export { state, useSnapshot, subscribe, snapshot, ref, persistedKeys };
 

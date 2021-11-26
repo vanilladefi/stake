@@ -1,14 +1,28 @@
 import type * as Stitches from "@stitches/react";
+import { isAddress } from "@vanilladefi/sdk";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import Web3Modal, { IProviderOptions } from "web3modal";
-import { ref, state, useSnapshot } from "../../state";
+import { persistedKeys, ref, state, subscribe, useSnapshot } from "../../state";
 import { darkTheme, theme } from "../../stitches.config";
 
 const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const { signer } = useSnapshot(state)
   const { resolvedTheme } = useTheme()
+
+  useEffect(() => {
+    const walletAddress = localStorage.getItem(persistedKeys.walletAddress)
+    if (walletAddress && isAddress(walletAddress)) {
+      state.walletAddress = walletAddress
+    }
+    if (state.walletAddress && isAddress(state.walletAddress)) {
+      // Persist walletAddress
+      subscribe(state.walletAddress, () => {
+        state.walletAddress !== walletAddress && localStorage.setItem(persistedKeys.walletAddress, JSON.stringify(state.walletAddress))
+      })
+    }
+  }, [])
 
   useEffect(() => {
     const web3ModalOptions: IProviderOptions = {
@@ -27,13 +41,13 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       main: darkTheme.colors.text.value,
       secondary: darkTheme.colors.muted.value,
       border: darkTheme.colors.extraMuted.value,
-      hover: darkTheme.colors.primary.value,
+      hover: darkTheme.colors.extraMuted.value,
     } : {
       background: theme.colors.background.value,
       main: theme.colors.text.value,
       secondary: theme.colors.muted.value,
       border: theme.colors.extraMuted.value,
-      hover: theme.colors.primary.value,
+      hover: theme.colors.extraMuted.value,
     }
 
     if (typeof window !== 'undefined') {

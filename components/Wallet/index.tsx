@@ -1,13 +1,13 @@
 import type * as Stitches from "@stitches/react";
 import * as sdk from '@vanilladefi/sdk';
+import { isAddress } from "@vanilladefi/sdk";
 import { PrerenderProps } from "@vanilladefi/sdk/lib/types/content";
 import { VanillaVersion } from "@vanilladefi/sdk/lib/types/general";
 import { providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
-import { ref, state, useSnapshot } from '../../state';
+import { persistedKeys, ref, state, useSnapshot } from '../../state';
 import Box from "../Box";
 import Loader from "../Loader";
-
 
 const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const [data, setData] = useState<PrerenderProps>()
@@ -18,6 +18,7 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       modal?.clearCachedProvider()
       state.signer = null
       state.walletAddress = null
+      localStorage.removeItem(persistedKeys.walletAddress)
       setData(undefined)
     },
     [modal]
@@ -30,10 +31,12 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   }, [modal])
 
   useEffect(
-    () =>{
+    () => {
       const getData = async () => {
-        if (walletAddress) {
+        if (walletAddress && isAddress(walletAddress)) {
           const walletBalances = await sdk.getBasicWalletDetails(VanillaVersion.V1_1, walletAddress)
+          walletBalances.vnlBalance = Number(walletBalances.vnlBalance).toFixed(3)
+          walletBalances.ethBalance = Number(walletBalances.ethBalance).toFixed(3)
           setData(walletBalances)
         }
       }
@@ -51,7 +54,7 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const buttonStyles = {
     display: "flex",
     flex: 1,
-    minWidth: "150px",
+    whiteSpace: "nowrap",
     border: "1px solid",
     borderColor: "muted",
     textTransform: "uppercase",
@@ -73,7 +76,7 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       <Box
         css={buttonStyles}
       >
-        {data ? (`${data?.ethBalance} ETH`) : <Loader />}
+        {data ? (`${data?.ethBalance} MATIC`) : <Loader />}
       </Box></>
     ) : (<Box css={buttonStyles} onClick={() => connect()}>
       Connect
