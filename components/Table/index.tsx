@@ -149,6 +149,7 @@ function Table<T extends object>({
                       minWidth: column.minWidth,
                       width: column.width,
                       textAlign: column.align || "center",
+                      cursor: column.canSort ? "pointer" : "unset",
                     },
                   })}
                 >
