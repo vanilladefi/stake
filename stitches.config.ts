@@ -294,7 +294,7 @@ export const globalStyles = globalCss({
       backgroundImage: 'radial-gradient(50.04% 28.4% at 6.4% -3.32%, #231308 0%, #10070F 100%)',
       backgroundPosition: 'top left',
       backgroundRepeat: 'no-repeat',
-      backgroundSize: '100% 2000px'
+      backgroundSize: '100% 3500px'
     }
   },
 });
