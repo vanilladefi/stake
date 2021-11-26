@@ -111,10 +111,7 @@ const Predict = () => {
           const oldPrice = value[0].closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
           const change = (newPrice - oldPrice) / oldPrice;
-          const lineData = value.map((i) => ({
-            x: Number(i.timestamp),
-            y: i.closingPrice,
-          }));
+
           return (
             <Box
               css={{
@@ -299,7 +296,7 @@ const Predict = () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   try {
-    const res = await client.query(GetAssetPairsDocument).toPromise();
+    await client.query(GetAssetPairsDocument).toPromise();
     return {
       props: {
         // urql uses this to rehydrate cache

@@ -110,7 +110,6 @@ function Table<T extends object>({
     prepareRow,
     setGlobalFilter,
     visibleColumns,
-    state: { expanded },
   } = useTable<T>(
     {
       columns,

@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
 import Box from "../Box";
 import Container from "../Container";
-import {
-  ArrowSquareOut,
-  ArrowUpRight,
-  DotsThreeVertical,
-  Moon,
-  Sun,
-  X,
-} from "phosphor-react";
+import { ArrowUpRight, DotsThreeVertical, Moon, Sun, X } from "phosphor-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
@@ -16,7 +9,6 @@ import { useTheme } from "next-themes";
 import NavLink from "../NavLink";
 import Wallet from "../Wallet";
 import Stack from "../Stack";
-import Flex from "../Flex";
 
 const ThemeChanger = () => {
   const { theme, setTheme } = useTheme();

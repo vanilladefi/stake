@@ -1,4 +1,4 @@
-import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange, Client } from 'urql';
+import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange } from 'urql';
 
 // let client: Client;
 
