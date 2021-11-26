@@ -1,7 +1,7 @@
 // stitches.config.ts
 import type Stitches from '@stitches/react';
 import { createStitches } from '@stitches/react';
-import { transparentize } from 'polished';
+import { transparentize, darken, lighten } from 'polished';
 
 export const {
   styled,
@@ -21,9 +21,13 @@ export const {
       background: '#F1EBD4',
       backgroundA: transparentize(0.1, '#F1EBD4'),
       primary: '#E5B754',
+      primaryDark: darken(0.2, '#E5B754'),
+      primaryLight: lighten(0.2, '#E5B754'),
       secondary: '#30c',
       muted: '#4F3428',
       extraMuted: '#DDCDB9',
+      offWhite85: '#DDCDB9',
+      offWhite50: '#AF9E88',
       green: "#A1F161",
       red: "#FD5247"
     },
@@ -168,13 +172,13 @@ export const {
       full: "9999px",
     },
     fontWeights: {
-      body: 400,
+      body: 300,
       heading: 400,
       bold: 700,
     },
     lineHeights: {
       one: 1,
-      body: 1.5,
+      body: 1.2,
       heading: 0.85,
     },
     letterSpacings: {},
@@ -280,11 +284,17 @@ export const darkTheme = createTheme('dark', {
 export const globalStyles = globalCss({
   // body: { backgroundColor: '$background', color: '$text', fontFamily: 'Helvetica' },
   'html, body': {
-    backgroundColor: '$background',
+    background: '$background',
     color: '$text',
     fontFamily: '$body',
     fontSize: '$md',
     '-webkit-font-smoothing': 'antialiased',
-    '-moz-osx-font-smoothing': 'grayscale'
+    '-moz-osx-font-smoothing': 'grayscale',
+    '.dark &': {
+      backgroundImage: 'radial-gradient(50.04% 28.4% at 6.4% -3.32%, #231308 0%, #10070F 100%)',
+      backgroundPosition: 'top left',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: '100% 2000px'
+    }
   },
 });
