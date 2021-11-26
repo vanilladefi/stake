@@ -261,7 +261,7 @@ const Footer = () => {
           </Stack>
         </Flex>
       </Container>
-      <Flex css={{ borderTop: "1px solid", borderTopColor: "extraMuted" }}>
+      <Flex css={{ borderTop: "1px solid $extraMuted" }}>
         <Container>
           <Flex css={{ py: "$2", alignItems: "center", flexWrap: "wrap" }}>
             <Flex
