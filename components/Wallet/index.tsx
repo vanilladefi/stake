@@ -6,6 +6,7 @@ import { providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { ref, state, useSnapshot } from '../../state';
 import Box from "../Box";
+import Loader from "../Loader";
 
 
 const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
@@ -67,12 +68,12 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       <Box
         css={buttonStyles}
       >
-        {data?.vnlBalance || '0'} VNL
+        {data ? (`${data?.vnlBalance} VNL`) : <Loader />}
       </Box>
       <Box
         css={buttonStyles}
       >
-        {data?.ethBalance || '0'} ETH
+        {data ? (`${data?.ethBalance} ETH`) : <Loader />}
       </Box></>
     ) : (<Box css={buttonStyles} onClick={() => connect()}>
       Connect
