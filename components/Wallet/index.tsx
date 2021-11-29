@@ -1,25 +1,23 @@
 import type * as Stitches from "@stitches/react";
 import * as sdk from '@vanilladefi/sdk';
 import { isAddress } from "@vanilladefi/sdk";
-import { PrerenderProps } from "@vanilladefi/sdk/lib/types/content";
 import { VanillaVersion } from "@vanilladefi/sdk/lib/types/general";
 import { providers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { persistedKeys, ref, state, useSnapshot } from '../../state';
 import Box from "../Box";
 import Loader from "../Loader";
 
 const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  const [data, setData] = useState<PrerenderProps>()
-  const { modal, walletAddress } = useSnapshot(state)
+  const { modal, walletAddress, balances } = useSnapshot(state)
 
   const disconnect = useCallback(
     async () => {
       modal?.clearCachedProvider()
       state.signer = null
       state.walletAddress = null
+      state.balances = {}
       localStorage.removeItem(persistedKeys.walletAddress)
-      setData(undefined)
     },
     [modal]
   )
@@ -35,9 +33,10 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       const getData = async () => {
         if (walletAddress && isAddress(walletAddress)) {
           const walletBalances = await sdk.getBasicWalletDetails(VanillaVersion.V1_1, walletAddress)
-          walletBalances.vnlBalance = Number(walletBalances.vnlBalance).toFixed(3)
-          walletBalances.ethBalance = Number(walletBalances.ethBalance).toFixed(3)
-          setData(walletBalances)
+          if (walletBalances.vnlBalance && walletBalances.ethBalance) {
+            state.balances[sdk.vnl.address] = Number(walletBalances.vnlBalance).toFixed(3)
+            state.balances["0"] = Number(walletBalances.ethBalance).toFixed(3)
+          }
         }
       }
       getData()
@@ -71,12 +70,12 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       <Box
         css={buttonStyles}
       >
-        {data ? (`${data?.vnlBalance} VNL`) : <Loader />}
+        {balances[sdk.vnl.address] ? (`${balances[sdk.vnl.address]} VNL`) : <Loader />}
       </Box>
       <Box
         css={buttonStyles}
       >
-        {data ? (`${data?.ethBalance} MATIC`) : <Loader />}
+        {balances['0'] ? (`${balances['0']} MATIC`) : <Loader />}
       </Box></>
     ) : (<Box css={buttonStyles} onClick={() => connect()}>
       Connect
