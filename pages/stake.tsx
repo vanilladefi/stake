@@ -42,7 +42,7 @@ const Predict = () => {
     () => [
       {
         Header: "Token",
-        accessor: (row) => {
+        accessor: (row): string => {
           const name = tokens.find(
             (token) => token.id === row.id.split("/")[0]
           )?.name;
@@ -52,7 +52,7 @@ const Predict = () => {
         width: "20%",
         minWidth: "320px",
         align: "left",
-        Cell: ({ value, row }) => {
+        Cell: ({ value, row }: { value: string; row: Row<ColumnType> }) => {
           return (
             <Flex css={{ alignItems: "center" }}>
               <Box
