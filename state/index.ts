@@ -9,6 +9,8 @@ type State = {
   balances: {[key:string]: string},
   walletAddress: string | null,
   modal: Web3Modal | null,
+  walletOpen: boolean,
+  staked: string | null,
 }
 
 export const initialState: State = {
@@ -17,6 +19,8 @@ export const initialState: State = {
   balances: {},
   walletAddress: null,
   modal: null,
+  walletOpen: false,
+  staked: '3000.00',
 }
 
 const persistedKeys = {

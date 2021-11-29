@@ -4,23 +4,12 @@ import { isAddress } from "@vanilladefi/sdk";
 import { VanillaVersion } from "@vanilladefi/sdk/lib/types/general";
 import { providers } from "ethers";
 import { useCallback, useEffect } from "react";
-import { persistedKeys, ref, state, useSnapshot } from '../../state';
+import { ref, state, useSnapshot } from '../../state';
 import Box from "../Box";
 import Loader from "../Loader";
 
 const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  const { modal, walletAddress, balances } = useSnapshot(state)
-
-  const disconnect = useCallback(
-    async () => {
-      modal?.clearCachedProvider()
-      state.signer = null
-      state.walletAddress = null
-      state.balances = {}
-      localStorage.removeItem(persistedKeys.walletAddress)
-    },
-    [modal]
-  )
+  const { modal, walletAddress, balances, walletOpen } = useSnapshot(state)
   
   const connect = useCallback(async () => {
     const provider = await modal?.connect()
@@ -65,7 +54,11 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   }
 
   return (
-    <Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => disconnect()}>{
+    <Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => {
+      if (walletAddress) {
+        state.walletOpen = !walletOpen
+      }
+    }}>{
       walletAddress ? (<>
       <Box
         css={buttonStyles}

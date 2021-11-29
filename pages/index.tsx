@@ -12,8 +12,10 @@ import Flex from "../components/Flex";
 import Heading from "../components/Heading";
 import Link from "../components/Link";
 import Text from "../components/Text";
+import ActiveWallet from "../components/Wallet/ActiveWallet";
 import WalletModal from "../components/Wallet/WalletModal";
 import { styled } from "../stitches.config";
+
 
 const StyledDiamond = styled(Diamond, {
   position: "absolute",
@@ -130,6 +132,7 @@ const Home: NextPage = () => {
   return (
     <>
     <WalletModal />
+    <ActiveWallet />
       <Container>
         <Box as="main" css={{ position: "relative" }}>
           <StyledDiamond />
