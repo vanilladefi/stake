@@ -42,7 +42,12 @@ const Predict = () => {
     () => [
       {
         Header: "Token",
-        accessor: "id",
+        accessor: (row) => {
+          const name = tokens.find(
+            (token) => token.id === row.id.split("/")[0]
+          )?.name;
+          return name;
+        },
         id: "tokenIcon",
         width: "20%",
         minWidth: "320px",
@@ -73,9 +78,7 @@ const Predict = () => {
                   />
                 ) : null}
               </Box>
-              <Box css={{ ml: "10px" }}>
-                {tokens.find((token) => token.id === value.split("/")[0])?.name}
-              </Box>
+              <Box css={{ ml: "10px" }}>{value}</Box>
             </Flex>
           );
         },
