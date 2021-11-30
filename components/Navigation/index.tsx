@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import Box from "../Box";
 import Container from "../Container";
-import {
-  ArrowSquareOut,
-  DotsThreeVertical,
-  Moon,
-  Sun,
-  X,
-} from "phosphor-react";
+import { ArrowUpRight, DotsThreeVertical, Moon, Sun, X } from "phosphor-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
@@ -15,7 +9,6 @@ import { useTheme } from "next-themes";
 import NavLink from "../NavLink";
 import Wallet from "../Wallet";
 import Stack from "../Stack";
-import Flex from "../Flex";
 
 const ThemeChanger = () => {
   const { theme, setTheme } = useTheme();
@@ -49,6 +42,7 @@ const ThemeChanger = () => {
 };
 
 const DesktopNavigation = () => {
+  const { theme } = useTheme();
   return (
     <Box
       as="nav"
@@ -65,22 +59,22 @@ const DesktopNavigation = () => {
         }}
       >
         <Link href="/" passHref>
-          <Box
-            as="a"
-            css={{
-              display: "flex",
-              width: "27px",
-              height: "37px",
-              position: "relative",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              src="/vanilla-logo-only.svg"
-              alt="Vanilla logo"
-              layout="fill"
-            />
+          <Box as="a" css={{ display: "block", marginTop: "5px", mr: "$4" }}>
+            {theme === "dark" ? (
+              <Image
+                alt="Vanilla Logo"
+                src="/vanilla-logo.svg"
+                height="33px"
+                width="130px"
+              />
+            ) : (
+              <Image
+                alt="Vanilla Logo"
+                src="/vanilla-logo-dark.svg"
+                height="33px"
+                width="130px"
+              />
+            )}
           </Box>
         </Link>
 
@@ -93,22 +87,25 @@ const DesktopNavigation = () => {
             flexShrink: 0,
           }}
         >
-          <NavLink css={{ py: "$8" }} href="/predict">
-            Predict
+          <NavLink css={{ py: "$8" }} href="/">
+            Home
           </NavLink>
-          <NavLink css={{ py: "$8" }} href="/subscribe">
-            Subscribe
+          <NavLink css={{ py: "$8" }} href="/stake">
+            stake
           </NavLink>
-          <NavLink css={{ py: "$8" }} href="/community">
-            Community
-          </NavLink>
-          <NavLink css={{ py: "$8" }} href="/trade">
-            Trade{" "}
-            <ArrowSquareOut
+          <NavLink css={{ py: "$8" }} href="/invest">
+            Invest
+            <ArrowUpRight
               weight="bold"
               style={{ marginBottom: "3px", marginLeft: "5px" }}
               size="15px"
             />
+          </NavLink>
+          <NavLink css={{ py: "$8" }} href="/faq">
+            FAQ
+          </NavLink>
+          <NavLink css={{ py: "$8" }} href="/community">
+            Community
           </NavLink>
           <ThemeChanger />
         </Stack>
@@ -120,6 +117,7 @@ const DesktopNavigation = () => {
 
 const MobileNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { theme } = useTheme();
   return (
     <Box
       as="nav"
@@ -140,22 +138,22 @@ const MobileNavigation = () => {
         }}
       >
         <Link href="/" passHref>
-          <Box
-            as="a"
-            css={{
-              display: "flex",
-              width: "22px",
-              height: "32px",
-              position: "relative",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              src="/vanilla-logo-only.svg"
-              alt="Vanilla logo"
-              layout="fill"
-            />
+          <Box as="a" css={{ display: "block", marginTop: "5px", mr: "$4" }}>
+            {theme === "dark" ? (
+              <Image
+                alt="Vanilla Logo"
+                src="/vanilla-logo.svg"
+                height="25px"
+                width="91px"
+              />
+            ) : (
+              <Image
+                alt="Vanilla Logo"
+                src="/vanilla-logo-dark.svg"
+                height="25px"
+                width="91px"
+              />
+            )}
           </Box>
         </Link>
 
@@ -169,11 +167,16 @@ const MobileNavigation = () => {
             mx: "$5",
           }}
         >
-          <NavLink css={{ py: "$4" }} href="/predict">
-            Predict
+          <NavLink css={{ py: "$4" }} href="/stake">
+            Stake
           </NavLink>
-          <NavLink css={{ py: "$4" }} href="/subscribe">
-            Subscribe
+          <NavLink css={{ py: "$4" }} href="/invest">
+            Invest
+            <ArrowUpRight
+              weight="bold"
+              style={{ marginBottom: "3px", marginLeft: "5px" }}
+              size="15px"
+            />
           </NavLink>
         </Stack>
         <Box
@@ -220,31 +223,11 @@ const MobileNavigation = () => {
               mb: "$2",
             }}
           >
+            <NavLink css={{ py: "$5", alignItems: "center" }} href="/faq">
+              FAQ
+            </NavLink>
             <NavLink css={{ py: "$5", alignItems: "center" }} href="/community">
               Community
-            </NavLink>
-            <NavLink
-              css={{
-                py: "$5",
-                alignItems: "center",
-              }}
-              href="/faq"
-            >
-              Faq
-            </NavLink>
-            <NavLink
-              css={{
-                py: "$5",
-                alignItems: "center",
-              }}
-              href="/trade"
-            >
-              Trade{" "}
-              <ArrowSquareOut
-                weight="bold"
-                style={{ marginBottom: "3px", marginLeft: "5px" }}
-                size="15px"
-              />
             </NavLink>
             <ThemeChanger />
           </Stack>
