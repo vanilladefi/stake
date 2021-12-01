@@ -349,8 +349,6 @@ export type _Block_ = {
   hash?: Maybe<Scalars['Bytes']>;
   /** The block number */
   number: Scalars['Int'];
-  /** The minimum block number */
-  number_gte: Scalars['Int'];
 };
 
 /** The type for the top-level _meta field */
@@ -1196,17 +1194,6 @@ export default {
           },
           {
             "name": "number",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "number_gte",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
