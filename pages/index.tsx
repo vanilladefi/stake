@@ -36,6 +36,13 @@ const StyledDiamond = styled(Diamond, {
     },
 })
 
+const StyledArrow = styled(ArrowRight, {
+    width: '40px',
+    height: '40px',
+    padding: '5px',
+    boxSizing: 'border-box',
+})
+
 const ArrowLink = ({ text = '', href = '#' }: { text?: string; href?: string }) => (
     <Link
         css={{
@@ -45,18 +52,18 @@ const ArrowLink = ({ text = '', href = '#' }: { text?: string; href?: string }) 
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            mb: '$5',
+            mb: '$1',
         }}
         as="a"
         href={href}
     >
-        <ArrowRight />
+        <StyledArrow />
         <Text
             css={{
                 color: '$primary',
                 fontSize: '$xl',
                 pb: '5px',
-                ml: '$4',
+                ml: '$5',
                 '@md': {
                     ml: '$6',
                     fontSize: '$xxl',
@@ -82,11 +89,11 @@ const SectionHeading = ({
         css={{
             padding: '0',
             margin: '0',
-            marginBottom: topSegment ? '$1' : '$5',
+            marginBottom: topSegment ? 0 : '$5',
             color: muted ? '$muted' : undefined,
             // '@initial': {
             fontSize: '$2xl',
-            lineHeight: '1.25',
+            lineHeight: '1.1',
             // },
             '@md': {
                 fontSize: '$2xl',
@@ -98,16 +105,25 @@ const SectionHeading = ({
 )
 
 const SectionDescription = ({ text = '', muted = false }: { text?: string; muted?: boolean }) => (
-    <Text as="div" css={{ fontSize: '$xl', color: muted ? '$muted' : '$text2' }}>
+    <Text
+        as="div"
+        css={{
+            fontSize: '$xl',
+            color: muted ? '$muted' : '$textSecondary',
+            '@md': {
+                fontSize: '$xxl',
+            },
+        }}
+    >
         {text}
     </Text>
 )
 
 const Container = styled(_Container, { pl: '$5' })
 
-const StyledOne = styled(One, { color: '$text2' })
-const StyledTwo = styled(Two, { color: '$text2' })
-const StyledThree = styled(Three, { color: '$text2' })
+const StyledOne = styled(One, { color: '$textSecondary' })
+const StyledTwo = styled(Two, { color: '$textSecondary' })
+const StyledThree = styled(Three, { color: '$textSecondary' })
 
 const StyledJuiceFlow = styled(JuiceFlow, { width: '100%', minWidth: 'auto', maxWidth: '400px' })
 
@@ -156,11 +172,8 @@ const Home: NextPage = () => {
                         },
                     }}
                 >
-                    <Text
-                        as="div"
+                    <Flex
                         css={{
-                            fontSize: '$xxl',
-                            color: '$muted',
                             flexDirection: 'column',
                             width: '100%',
                             '@md': {
@@ -168,14 +181,18 @@ const Home: NextPage = () => {
                             },
                         }}
                     >
-                        Vanilla is an on-chain investment pool managed by the best investors.
-                    </Text>
+                        <SectionDescription
+                            muted
+                            text=" Vanilla is an on-chain investment pool managed by the best investors."
+                        />
+                    </Flex>
                     <Flex
                         css={{
                             flexDirection: 'column',
                             alignItems: 'start',
                             width: '100%',
                             mt: '$6',
+                            mb: '$5',
                             '@md': {
                                 width: '50%',
                                 ml: '$10',
@@ -188,7 +205,7 @@ const Home: NextPage = () => {
                     </Flex>
                 </Flex>
             </Container>
-            <Flex css={{ py: '$20', width: '100%', borderTop: '1px solid $extraMuted' }}>
+            <Flex css={{ py: '$10', width: '100%', borderTop: '1px solid $extraMuted' }}>
                 <Container>
                     <Flex
                         css={{
@@ -238,7 +255,7 @@ const Home: NextPage = () => {
                 css={{
                     width: '100%',
                     borderTop: '1px solid $extraMuted',
-                    backgroundColor: '$background2',
+                    backgroundColor: '$backgroundSecondary',
                 }}
             >
                 <Container>
@@ -248,7 +265,7 @@ const Home: NextPage = () => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             width: '100%',
-                            my: "$2",
+                            // my: '$2',
                             '@md': {
                                 flexDirection: 'row',
                             },
@@ -285,7 +302,7 @@ const Home: NextPage = () => {
                                 <StyledThree css={{ mr: '$5' }} />
                                 <SectionDescription text="VanillaDAO channels a share of returns back to Juicers." />
                             </Flex>
-                            <Box css={{ mt: '$5' }}>
+                            <Box css={{ mt: '$0.5' }}>
                                 <ArrowLink text="Read the FAQ" />
                             </Box>
                         </Flex>
@@ -294,7 +311,10 @@ const Home: NextPage = () => {
                                 flexDirection: 'column',
                                 alignItems: 'center',
                                 width: '100%',
+                                mb: '$10',
+                                mt: '$4',
                                 '@md': {
+                                    my: '$10',
                                     width: '50%',
                                     pl: '$10',
                                 },
@@ -330,14 +350,47 @@ const Home: NextPage = () => {
                             },
                         }}
                     >
-                        <Flex css={{ flexDirection: 'row', my: '$10', alignItems: 'center' }}>
-                            <JuicingIcon css={{ m: '$5' }} />
-                            <Box css={{ ml: '$10' }}>
+                        <Flex
+                            css={{
+                                flexDirection: 'row-reverse',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                mt: '$10',
+                                '@md': {
+                                    flexDirection: 'row',
+                                    justifyContent: 'start',
+                                    my: '$10',
+                                },
+                            }}
+                        >
+                            <Box
+                                css={{
+                                    // display: 'none',
+                                    mr: '$10',
+                                    '@md': {
+                                        mr: 0,
+                                        display: 'static',
+                                    },
+                                }}
+                            >
+                                {' '}
+                                <JuicingIcon />
+                            </Box>
+                            <Box css={{ '@md': { ml: '$10' } }}>
                                 <SectionHeading text="STAKE" muted topSegment />
                                 <SectionHeading text="TO EARN" />
                             </Box>
                         </Flex>
-                        <SectionDescription text="Create an investment portfolio by staking $JUICE. Earn rewards." />
+                        <Box
+                            css={{
+                                mt: '$10',
+                                '@md': {
+                                    mt: 0,
+                                },
+                            }}
+                        >
+                            <SectionDescription text="Create an investment portfolio by staking $JUICE. Earn rewards." />
+                        </Box>
                         <Flex css={{ flexDirection: 'column', my: '$10' }}>
                             <ArrowLink text="Read more" />
                             <ArrowLink text="Start staking" />
@@ -362,7 +415,7 @@ const Home: NextPage = () => {
                             </Box>
                         </Flex>
                         <SectionDescription text="Invest in a portfolio that continuously adjusts itself to the changing circumstances." />
-                        <Flex css={{ flexDirection: 'column', my: '$10' }}>
+                        <Flex css={{ flexDirection: 'column', my: '$5' }}>
                             <ArrowLink text="Read more" />
                             <ArrowLink text="Invest in pool" />
                         </Flex>
@@ -372,17 +425,17 @@ const Home: NextPage = () => {
 
             <Flex
                 css={{
-                    py: '$20',
+                    py: '$10',
                     width: '100%',
                     borderTop: '1px solid $extraMuted',
-                    backgroundColor: '$background2',
+                    backgroundColor: '$backgroundSecondary',
                 }}
             >
                 <Container>
                     <Flex
                         css={{
                             flexDirection: 'column',
-                            "@md": {
+                            '@md': {
                                 flexDirection: 'row',
                             },
                         }}
@@ -399,7 +452,7 @@ const Home: NextPage = () => {
                             }}
                         >
                             <CommunityIcon css={{ width: '200px', mx: '$5' }} />
-                            <Flex css={{ flexDirection: 'column', ml: '$3' }}>
+                            <Flex css={{ flexDirection: 'column', ml: '$10' }}>
                                 <SectionHeading text="JOIN" muted topSegment />
                                 <SectionHeading text="THE COMMUNITY" />
                                 <SectionDescription text="$VNL holders direct the development through VanillaDAO" />
