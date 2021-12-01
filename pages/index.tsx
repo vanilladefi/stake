@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import Image from "next/image";
 import Container from "../components/Container";
 import Heading from "../components/Heading";
 import Flex from "../components/Flex";
@@ -43,13 +42,7 @@ const StyledArrow = styled(ArrowRight, {
   boxSizing: "border-box",
 });
 
-const ArrowLink = ({
-  text = "",
-  href = "#",
-}: {
-  text?: string;
-  href?: string;
-}) => (
+const ArrowLink = ({ text = "", href = "#" }: { text?: string; href?: string }) => (
   <Link
     css={{
       textDecoration: "underline",
@@ -110,13 +103,7 @@ const SectionHeading = ({
   </Heading>
 );
 
-const SectionDescription = ({
-  text = "",
-  muted = false,
-}: {
-  text?: string;
-  muted?: boolean;
-}) => (
+const SectionDescription = ({ text = "", muted = false }: { text?: string; muted?: boolean }) => (
   <Text
     as="div"
     css={{
@@ -206,7 +193,7 @@ const Home: NextPage = () => {
               alignItems: "start",
               width: "100%",
               mt: "$6",
-              mb: "$5",
+              mb: "$10",
               "@md": {
                 width: "50%",
                 ml: "$10",
@@ -219,9 +206,7 @@ const Home: NextPage = () => {
           </Flex>
         </Flex>
       </Container>
-      <Flex
-        css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}
-      >
+      <Flex css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}>
         <Container>
           <Flex
             css={{
@@ -274,9 +259,6 @@ const Home: NextPage = () => {
           borderBottom: "1px solid $extraMuted",
           backgroundColor: "$backgroundSecondary",
           py: "$10",
-          "@md": {
-            py: "$14",
-          },
         }}
       >
         <Container>
@@ -315,19 +297,23 @@ const Home: NextPage = () => {
                 <StyledOne css={{ mr: "$5" }} />
                 <SectionDescription text="Juicers create investment portfolios." />
               </Flex>
-              <Flex
-                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
-              >
+              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
                 <StyledTwo css={{ mr: "$5" }} />
                 <SectionDescription text="Vanilla Pool invests in line with the best performing Juicers." />
               </Flex>
-              <Flex
-                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
-              >
+              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
                 <StyledThree css={{ mr: "$5" }} />
                 <SectionDescription text="VanillaDAO channels a share of returns back to Juicers." />
               </Flex>
-              <Box css={{ mt: "$5" }}>
+              <Box
+                css={{
+                  mt: "$5",
+                  mb: "$5",
+                  "@md": {
+                    mb: 0,
+                  },
+                }}
+              >
                 <ArrowLink text="Read the FAQ" />
               </Box>
             </Flex>
