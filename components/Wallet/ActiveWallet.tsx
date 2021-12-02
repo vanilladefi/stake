@@ -2,13 +2,14 @@ import type * as Stitches from "@stitches/react";
 import * as sdk from '@vanilladefi/sdk';
 import Link from "next/link";
 import {
-  ArrowCircleUpRight
+  ArrowCircleUpRight, Check, Copy
 } from "phosphor-react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { persistedKeys, state, useSnapshot } from '../../state';
 import Box from "../Box";
 import Button from "../Button";
 import Heading from "../Heading";
+import Input from "../Input";
 import Loader from "../Loader";
 import Text from "../Text";
 import Curtain from "./Curtain";
@@ -30,8 +31,8 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
           }}
         >
           {children}
-          <Box>
-            <ArrowCircleUpRight size={"24px"} style={{ marginLeft: "$space$5" }} />
+          <Box css={{ marginLeft: "$space$1", height: '24px' }}>
+            <ArrowCircleUpRight size={"24px"} />
           </Box>
         </Text>
       ) : (
@@ -43,6 +44,8 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
 
 const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({css}) => {
   const { modal, walletOpen, walletAddress, balances, staked } = useSnapshot(state)
+
+  const [copied, setCopied] = useState(false)
 
   const disconnect = useCallback(
     async () => {
@@ -78,7 +81,17 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({css}) => {
     return walletAddress ? `${walletAddress?.substring(0, 6)}…${walletAddress?.substring(walletAddress.length - 4)}` : ''
   }, [walletAddress])
 
-  return walletOpen ? <Box css={{ display: 'flex', position: 'absolute', top: '0', left: '0', width: '100vw', height: '100vh', justifyContent: 'center', alignItems: 'center',  ...css }}>
+  const copyToClipboard = useCallback((text) => {
+      navigator.clipboard.writeText(text).then(() => {
+        setCopied(true)
+        setTimeout(() => setCopied(false), 3000)
+      }, () => {
+        setCopied(false)
+      });
+    }
+  , [])
+
+  return walletOpen ? <Box css={{ display: 'flex', position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh', justifyContent: 'center', alignItems: 'center', zIndex: '41',  ...css }}>
     <Curtain />
     <Box css={{ display: 'flex', position: 'relative', background: '$background', flexDirection: 'column', zIndex: '43', border: '$extraMuted 1px solid' }}>
       <Box as='section' css={{ px: '$space$4', py: '$space$5', width: '$md', borderBottom: '1px $extraMuted solid'}}>
@@ -117,6 +130,30 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({css}) => {
           </Box>
           
         </Box>
+
+        <Box css={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', mb: '$space$1' }}>
+          {copied ? (
+            <Text css={{ color: "$green",
+              textDecoration: "none", display: 'flex', alignItems: 'center', cursor: 'pointer'
+            }} onClick={() => copyToClipboard(walletAddress)}>
+              <Box css={{ marginRight: "$space$1", height: '24px' }}>
+                <Check size={"24px"} style={{ color: "$primary" }} />
+              </Box> Copied to clipboard
+            </Text>
+          ) : (
+            <Text css={{ color: "$primary",
+              textDecoration: "none", display: 'flex', alignItems: 'center', cursor: 'pointer',
+              "&:hover": {
+                color: "$text",
+              }, }} onClick={() => copyToClipboard(walletAddress)}>
+              <Box css={{ marginRight: "$space$1", height: '24px' }}>
+                <Copy size={"24px"} style={{ color: "$primary" }} />
+              </Box> Copy address
+            </Text>
+          )}
+
+          <TradeLink href={`https://etherscan.io/address/${walletAddress}`}>View on Etherscan</TradeLink>
+        </Box>
       </Box>
 
       <Box as='section' css={{ px: '$space$4', py: '$space$5', width: '$md', borderBottom: '1px $extraMuted solid'}}>
@@ -125,9 +162,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({css}) => {
           <Text css={{color: '$muted', fontSize: '$sm' }}>{staked} JUICE</Text>
         </Box>
 
+        <Box css={{ display: 'flex', flexDirection: 'column', mb: '$space$5' }}>
+          <Input size="xl" variant='bordered'></Input>
+          <Box css={{ display: 'flex', flexDirection: 'row' }}><Button variant='bordered' css={{display: 'flex', flex: '1 0'}}>Withdraw</Button><Button variant='bordered' css={{display: 'flex', flex: '1 0'}}>Add</Button></Box>
+        </Box>
         <Button variant="primary" css={{width: '100%', position: 'relative', boxSizing: 'border-box' }}
         onClick={() => state.walletOpen = false}>Close</Button>
       </Box>
+
 
     </Box>
   </Box> : <></>

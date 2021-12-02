@@ -5,6 +5,8 @@ import { Provider } from "urql";
 import Box from "../components/Box";
 import Footer from "../components/Footer";
 import Navigation from "../components/Navigation";
+import ActiveWallet from "../components/Wallet/ActiveWallet";
+import WalletModal from "../components/Wallet/WalletModal";
 import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
 import client from "../urql";
@@ -54,6 +56,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         >
           <Box>
+            <WalletModal />
+            <ActiveWallet />
             <Navigation />
             <Component {...pageProps} />
             <Footer />
