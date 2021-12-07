@@ -42,7 +42,13 @@ const StyledArrow = styled(ArrowRight, {
   boxSizing: "border-box",
 });
 
-const ArrowLink = ({ text = "", href = "#" }: { text?: string; href?: string }) => (
+const ArrowLink = ({
+  text = "",
+  href = "#",
+}: {
+  text?: string;
+  href?: string;
+}) => (
   <Link
     css={{
       textDecoration: "underline",
@@ -103,7 +109,13 @@ const SectionHeading = ({
   </Heading>
 );
 
-const SectionDescription = ({ text = "", muted = false }: { text?: string; muted?: boolean }) => (
+const SectionDescription = ({
+  text = "",
+  muted = false,
+}: {
+  text?: string;
+  muted?: boolean;
+}) => (
   <Text
     as="div"
     css={{
@@ -206,7 +218,9 @@ const Home: NextPage = () => {
           </Flex>
         </Flex>
       </Container>
-      <Flex css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}>
+      <Flex
+        css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}
+      >
         <Container>
           <Flex
             css={{
@@ -297,11 +311,15 @@ const Home: NextPage = () => {
                 <StyledOne css={{ mr: "$5" }} />
                 <SectionDescription text="Juicers create investment portfolios." />
               </Flex>
-              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
+              <Flex
+                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
+              >
                 <StyledTwo css={{ mr: "$5" }} />
                 <SectionDescription text="Vanilla Pool invests in line with the best performing Juicers." />
               </Flex>
-              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
+              <Flex
+                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
+              >
                 <StyledThree css={{ mr: "$5" }} />
                 <SectionDescription text="VanillaDAO channels a share of returns back to Juicers." />
               </Flex>

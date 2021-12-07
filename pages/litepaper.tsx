@@ -13,6 +13,8 @@ import Button from "../components/Button";
 import ThemeHeading from "../components/Heading";
 import Container from "../components/Container";
 
+import { VanillaOverview } from "../assets";
+
 import Stack from "../components/Stack";
 
 const Heading = styled(ThemeHeading, {
@@ -168,7 +170,20 @@ const Faq = () => {
             contribute their capital to the Vanilla Investment Pool to be
             managed by Juicenet.
           </Paragraph>{" "}
-          <p>SIMPLE GRAPH 1 HERE</p>
+          <Box
+            css={{
+              maxWidth: "80%",
+              margin: "0 auto",
+              py: "$12",
+            }}
+          >
+            <VanillaOverview />
+            <Paragraph
+              css={{ textAlign: "center", mt: "$10", color: "$muted" }}
+            >
+              Image 1: Vanilla in a nutshell
+            </Paragraph>
+          </Box>
           <Paragraph>
             Vanilla uses a dual token system to achieve the desired incentives.
             Juicenet users stake JUICE to take long and short positions, where
