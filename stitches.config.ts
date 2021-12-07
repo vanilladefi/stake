@@ -17,6 +17,7 @@ export const {
     colors: {
       black: '#10070F',
       text: '#10070F',
+      textSecondary: "#311d15",
       textA: transparentize(0.1, '#10070F'),
       background: '#F1EBD4',
       backgroundA: transparentize(0.1, '#F1EBD4'),
@@ -25,7 +26,8 @@ export const {
       muted: '#4F3428',
       extraMuted: '#DDCDB9',
       green: "#A1F161",
-      red: "#FD5247"
+      red: "#FD5247",
+      backgroundSecondary: "#ddd5bf",
     },
     fonts: {
       body: 'PolySans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
@@ -38,6 +40,7 @@ export const {
       md: "1rem",
       lg: "1.125rem",
       xl: "1.25rem",
+      "xxl": "1.35rem",
       "2xl": "1.5rem",
       "3xl": "1.875rem",
       "4xl": "2.25rem",
@@ -268,12 +271,14 @@ export const darkTheme = createTheme('dark', {
   colors: {
     text: '#F1EBD4',
     textA: transparentize(0.1, '#F1EBD4'),
+    textSecondary: '#ddcdb9',
     background: '#10070F',
     backgroundA: transparentize(0.1, '#10070F'),
     primary: '#E5B754',
     secondary: '#30c',
     muted: '#AF9E88',
     extraMuted: '#776464',
+    backgroundSecondary: '#1c1217'
   },
 });
 
