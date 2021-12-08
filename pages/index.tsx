@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import dynamic from "next/dynamic";
 import {
   ArrowRight,
   CommunityIcon,
@@ -12,10 +13,10 @@ import Flex from "../components/Flex";
 import Heading from "../components/Heading";
 import Link from "../components/Link";
 import Text from "../components/Text";
-import ActiveWallet from "../components/Wallet/ActiveWallet";
-import WalletModal from "../components/Wallet/WalletModal";
 import { styled } from "../stitches.config";
 
+const ActiveWallet = dynamic(() => import("../components/Wallet/ActiveWallet"), { ssr: false });
+const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), { ssr: false });
 
 const StyledDiamond = styled(Diamond, {
   position: "absolute",
@@ -144,7 +145,7 @@ const Home: NextPage = () => {
               textAlign: "center",
               maxWidth: "$5xl",
               position: "relative",
-              zIndex: 10,
+              zIndex: 2,
               "@initial": {
                 maxWidth: "100%",
                 fontSize: "$6xl",

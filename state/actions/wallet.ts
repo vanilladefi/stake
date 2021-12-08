@@ -33,7 +33,9 @@ export const connectWallet = async () => {
 }
 
 export const getCachedProvider = () => {
-  if (state.modal?.cachedProvider) {
-    connectWallet()
-  }
+  subscribeKey(state, 'modal', (modal) => {
+    if (modal?.cachedProvider) {
+      connectWallet()
+    }
+  })
 }
