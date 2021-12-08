@@ -11,7 +11,10 @@ export const persistWalletAddress = () => {
   // Persist walletAddress
   subscribeKey(state, 'walletAddress', (address) => {
     address !== walletAddress && localStorage.setItem(persistedKeys.walletAddress, JSON.stringify(address))
-    getMaticAndVnlBalance()
+    if (address && isAddress(address)) {
+      getMaticAndVnlBalance()
+      state.truncatedWalletAddress = `${state.walletAddress?.substring(0, 6)}…${state.walletAddress?.substring(state.walletAddress.length - 4)}`
+    }
   })
 }
 
@@ -32,10 +35,34 @@ export const connectWallet = async () => {
   state.walletAddress = await state.signer?.getAddress()
 }
 
-export const getCachedProvider = () => {
+export const disconnect = () => {
+  state.modal?.clearCachedProvider()
+  state.signer = null
+  state.walletAddress = null
+  state.balances = {}
+  state.walletOpen = false
+  localStorage.removeItem(persistedKeys.walletAddress)
+}
+
+export const connectToCachedProvider = () => {
   subscribeKey(state, 'modal', (modal) => {
     if (modal?.cachedProvider) {
       connectWallet()
+      let name = null
+      switch (state.modal?.cachedProvider) {
+        case 'injected': {
+          name = 'Metamask'
+          break
+        }
+        case 'walletconnect': {
+          name = 'WalletConnect'
+          break
+        }
+        default: {
+          name = null
+        }
+      }
+      state.providerName = name
     }
   })
 }

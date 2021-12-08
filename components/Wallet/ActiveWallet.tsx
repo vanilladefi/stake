@@ -5,7 +5,8 @@ import {
   ArrowCircleUpRight, Check, Copy
 } from "phosphor-react";
 import { useCallback, useState } from "react";
-import { persistedKeys, state, useSnapshot } from '../../state';
+import { state, useSnapshot } from '../../state';
+import { disconnect } from "../../state/actions/wallet";
 import Box from "../Box";
 import Button from "../Button";
 import Heading from "../Heading";
@@ -43,43 +44,9 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
 };
 
 const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({css}) => {
-  const { modal, walletOpen, walletAddress, balances, staked } = useSnapshot(state)
+  const { providerName, walletOpen, walletAddress, truncatedWalletAddress, balances, staked } = useSnapshot(state)
 
   const [copied, setCopied] = useState(false)
-
-  const disconnect = useCallback(
-    async () => {
-      modal?.clearCachedProvider()
-      state.signer = null
-      state.walletAddress = null
-      state.balances = {}
-      state.walletOpen = false
-      localStorage.removeItem(persistedKeys.walletAddress)
-    },
-    [modal]
-  )
-
-  const getCachedProviderName = useCallback(() => {
-    let name = ''
-    switch (modal?.cachedProvider) {
-      case 'injected': {
-        name = 'Metamask'
-        break
-      }
-      case 'walletconnect': {
-        name = 'WalletConnect'
-        break
-      }
-      default: {
-        name = ''
-      }
-    }
-    return name
-  }, [modal?.cachedProvider])
-
-  const getTruncatedAddress = useCallback(() => {
-    return walletAddress ? `${walletAddress?.substring(0, 6)}…${walletAddress?.substring(walletAddress.length - 4)}` : ''
-  }, [walletAddress])
 
   const copyToClipboard = useCallback((text) => {
       navigator.clipboard.writeText(text).then(() => {
@@ -97,12 +64,12 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({css}) => {
       <Box as='section' css={{ px: '$space$4', py: '$space$5', width: '$md', borderBottom: '1px $extraMuted solid'}}>
         <Box css={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', mb: '$space$5' }}>
           <Heading>WALLET</Heading>
-          <Text css={{color: '$muted', fontSize: '$sm' }}>Connected with {getCachedProviderName()}</Text>
+          <Text css={{color: '$muted', fontSize: '$sm' }}>Connected with {providerName}</Text>
         </Box>
 
         <Box css={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', mb: '$space$5', pb: '$space$5', borderBottom: '1px $extraMuted solid' }}>
-          <Text css={{ fontFamily: '$monospace', fontSize: '$xl' }}>{getTruncatedAddress()}</Text>
-          <Button variant="primary" size="sm" css={{borderRadius: '999px', border: '0', fontSize: '$sm', fontWeight: 'lighter' }} onClick={disconnect}>Disconnect</Button>
+          <Text css={{ fontFamily: '$monospace', fontSize: '$xl' }}>{truncatedWalletAddress}</Text>
+          <Button variant="primary" size="sm" css={{borderRadius: '999px', border: '0', fontSize: '$sm', fontWeight: 'lighter' }} onClick={() => disconnect()}>Disconnect</Button>
         </Box>
 
         <Box css={{ display: 'flex', flexDirection: 'column', mb: '$space$5', pb: '$space$5', borderBottom: '1px $extraMuted solid' }}>

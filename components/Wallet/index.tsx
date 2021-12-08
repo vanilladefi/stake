@@ -1,12 +1,12 @@
 import type * as Stitches from "@stitches/react";
 import * as sdk from '@vanilladefi/sdk';
 import { state, useSnapshot } from '../../state';
-import { connectWallet, getCachedProvider } from "../../state/actions/wallet";
+import { connectToCachedProvider, connectWallet } from "../../state/actions/wallet";
 import Box from "../Box";
 import Loader from "../Loader";
 
 const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  getCachedProvider()
+  connectToCachedProvider()
   
   const { walletAddress, balances, walletOpen } = useSnapshot(state)
 
