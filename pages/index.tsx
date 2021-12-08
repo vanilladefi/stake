@@ -1,23 +1,22 @@
 import type { NextPage } from "next";
-import Container from "../components/Container";
-import Heading from "../components/Heading";
-import Flex from "../components/Flex";
-import Box from "../components/Box";
-import Link from "../components/Link";
-import Text from "../components/Text";
-import { styled } from "../stitches.config";
+import dynamic from "next/dynamic";
 import {
   ArrowRight,
   CommunityIcon,
-  Diamond,
-  JuiceSignalIcon,
-  JuicingIcon,
-  JuiceFlow,
-  Three,
-  Two,
-  One,
-  Divider as _Divider,
+  Diamond, Divider as _Divider, JuiceFlow, JuiceSignalIcon,
+  JuicingIcon, One, Three,
+  Two
 } from "../assets";
+import Box from "../components/Box";
+import Container from "../components/Container";
+import Flex from "../components/Flex";
+import Heading from "../components/Heading";
+import Link from "../components/Link";
+import Text from "../components/Text";
+import { styled } from "../stitches.config";
+
+const ActiveWallet = dynamic(() => import("../components/Wallet/ActiveWallet"), { ssr: false });
+const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), { ssr: false });
 
 const StyledDiamond = styled(Diamond, {
   position: "absolute",
@@ -133,6 +132,8 @@ const Divider = styled(_Divider, { my: "$8", width: "100%" });
 const Home: NextPage = () => {
   return (
     <>
+    <WalletModal />
+    <ActiveWallet />
       <Container>
         <Box as="main" css={{ position: "relative" }}>
           <StyledDiamond />
@@ -144,7 +145,7 @@ const Home: NextPage = () => {
               textAlign: "center",
               maxWidth: "$5xl",
               position: "relative",
-              zIndex: 10,
+              zIndex: 2,
               "@initial": {
                 maxWidth: "100%",
                 fontSize: "$6xl",
@@ -206,6 +207,7 @@ const Home: NextPage = () => {
           </Flex>
         </Flex>
       </Container>
+      
       <Flex css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}>
         <Container>
           <Flex

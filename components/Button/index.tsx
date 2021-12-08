@@ -32,6 +32,11 @@ const StyledButton = styled(
           backgroundColor: "$primary",
           boxShadow: "0px 0px 0px 1px $colors$primary",
         },
+        bordered: {
+          color: "$primary",
+          backgroundColor: "$background",
+          boxShadow: "0px 0px 0px 1px $colors$extraMuted",
+        },
       },
       size: {
         sm: {
