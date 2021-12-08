@@ -13,7 +13,7 @@ import Button from "../components/Button";
 import ThemeHeading from "../components/Heading";
 import Container from "../components/Container";
 
-import { VanillaOverview } from "../assets";
+import { DetailedVanillaOverview, VanillaOverview } from "../assets";
 
 import Stack from "../components/Stack";
 
@@ -22,6 +22,7 @@ const Heading = styled(ThemeHeading, {
   textTransform: "none",
   my: "$6",
   lineHeight: "$body",
+  fontSize: "$2xl",
 });
 
 const LinkIcon = styled(LinkIconP, {
@@ -75,7 +76,6 @@ const Faq = () => {
             pt: "$16",
             pb: "$8",
             my: 0,
-
             "@initial": {
               fontSize: "$3xl",
             },
@@ -198,11 +198,11 @@ const Faq = () => {
           </Paragraph>
         </Box>
         <Box>
-          <Heading as="h2" id="1-1-history">
+          <Heading as="h3" id="1-1-history">
             <ThemeLink href="#1-1-history">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            History Of Decentralized Asset Management
+            1.1 History Of Decentralized Asset Management
           </Heading>
           <Paragraph>
             In 2016,{" "}
@@ -244,92 +244,249 @@ const Faq = () => {
           </Paragraph>
           <Paragraph>
             Finally, there has been a lot of progress in automating and
-            yield-optimizing lending activities. Projects such as Yearn Finance
-            and CREAM allow investors to passively invest in “yield farming”
-            strategies that programmatically allocate capital to wherever the
-            highest yields are to be found. These services help optimize
-            existing portfolios, but they don’t assist in portfolio construction
-            or provide solutions for asset management.
+            yield-optimizing lending activities. Projects such as{" "}
+            <ExtLink href="https://yearn.finance/">Yearn Finance</ExtLink>
+            and <ExtLink href="https://cream.finance/">CREAM</ExtLink> allow
+            investors to passively invest in “yield farming” strategies that
+            programmatically allocate capital to wherever the highest yields are
+            to be found. These services help optimize existing portfolios, but
+            they don’t assist in portfolio construction or provide solutions for
+            asset management.
           </Paragraph>
           <Paragraph>
             A largely unexplored area is a decentralized asset manager for
             liquid tokens, which could automatically construct and manage a
             dynamic portfolio of assets. While there are already assets, which
-            resemble index funds, such as DeFi Pulse Index, they are not
-            automated and use static techniques for determining portfolio
-            weights, such as weighting by market cap. We imagine a dynamic
-            system where portfolio weights are automatically determined using as
-            much information and nuance as is available in the market, which, if
-            successful, should yield considerably higher returns while
+            resemble index funds, such as{" "}
+            <ExtLink href="https://www.indexcoop.com/dpi">
+              DeFi Pulse Index
+            </ExtLink>
+            , they are not automated and use static techniques for determining
+            portfolio weights, such as weighting by market cap. We imagine a
+            dynamic system where portfolio weights are automatically determined
+            using as much information and nuance as is available in the market,
+            which, if successful, should yield considerably higher returns while
             maintaining a similar risk profile to static techniques.
           </Paragraph>
         </Box>
         <Box>
-          <Heading as="h2" id="what-is-profitmining">
-            <ThemeLink href="what-is-profitmining">
+          <Heading as="h2" id="2-vanilla-decentralized-asset-manager">
+            <ThemeLink href="#2-vanilla-decentralized-asset-manager">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            What is #ProfitMining?
+            2. Vanilla - A Decentralized Asset Manager
           </Heading>
-          <Text>
-            Profit mining is a novel token distribution mechanism, where you
-            &ldquo;mine&rdquo; VNL tokens by making a profit calculated in ETH.
-            The more profit you make and the longer you&quot;ve held your
-            positions before selling, the more VNL you mine. Mining difficulty
-            also increases over time, making early mining more lucrative. You
-            can see which tokens are eligible for profit mining on the Trade
-            page.
-          </Text>
+          <Paragraph>
+            The Vanilla decentralized asset manager is composed of three
+            distinct systems:
+            <ol>
+              <li>
+                Juicenet, where users take synthetic long and short positions on
+                tokens, which aggregate to portfolio weights.
+              </li>
+              <li>
+                Vanilla Investment Pool, a{" "}
+                <ExtLink href="https://balancer.fi/">Balancer Pool</ExtLink>{" "}
+                that manages LP assets using the portfolio weights from
+                Juicenet.
+              </li>
+              <li>
+                VanillaDAO, which governs and develops the Vanilla system,
+                provides fail-safes, and incentivizes ecosystem participants.
+              </li>
+            </ol>
+          </Paragraph>
+          <DetailedVanillaOverview />
         </Box>
         <Box>
-          <Heading as="h2" id="how-do-i-trade-tokens-using-vanilla">
-            <ThemeLink href="#how-do-i-trade-tokens-using-vanilla">
+          <Heading as="h3" id="2-1-juicenet">
+            <ThemeLink href="#2-1-juicenet">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            How do I trade tokens using Vanilla?
+            2.1. Juicenet
           </Heading>
-          <Text>
-            Simply go to the trade page, choose a token and execute the purchase
-            with ETH using{" "}
-            <ThemeLink href="https://metamask.io/">Metamask</ThemeLink> or
-            <ThemeLink href="https://walletconnect.org/">
-              WalletConnect
-            </ThemeLink>
-            . The Vanilla contracts will execute the purchase on{" "}
-            <ThemeLink href="https://uniswap.org">Uniswap</ThemeLink> and the
-            tokens will be stored in the Vanilla smart contract. You can sell
-            the tokens at any time to claim profit mining rewards and once sold,
-            the ETH, including any profit you&quot;ve made, will be returned to
-            your wallet along with the VNL tokens you&quot;ve mined.
-          </Text>
+          <Paragraph>
+            Vanilla Juicenet is a synthetic marketplace, which functions a bit
+            like a prediction market. Juicenet users (aka “juicers) take
+            synthetic long and short positions on tokens using JUICE. These
+            positions are then aggregated to form a token-weighted portfolio.
+            The Vanilla Investment Pool uses this portfolio as target weights
+            and rebalances the pool continuously as the aggregate portfolio
+            weights change in Juicenet.
+          </Paragraph>
+          <Paragraph>
+            The system rewards users whose synthetic positions are profitable by
+            minting JUICE and punishes those that make a loss by burning JUICE.
+            By doing this, the system slowly provides users who consistently
+            make profitable synthetic trades with more influence over the
+            weights of the Vanilla Investment Pool.
+          </Paragraph>
         </Box>
         <Box>
-          <Heading
-            as="h2"
-            id="can-i-move-tokens-ive-purchased-through-vanilla?"
-          >
-            <ThemeLink href="#can-i-move-tokens-ive-purchased-through-vanilla?">
+          <Heading as="h4" id="2-1-1-synthetic-long-short">
+            <ThemeLink href="#2-1-1-synthetic-long-short">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            Can I move tokens I&apos;ve purchased through Vanilla?
+            Juicers take synthetic long and short positions in JUICE
           </Heading>
-          <Text>
-            Not right now. We will be adding this capability in the future, but
-            it makes calculating profit mining rewards more difficult so we have
-            left it out of scope for now.
-          </Text>
+          <Paragraph>
+            Juicers take synthetic long and short positions on tokens with JUICE
+            - similar to traders who buy and sell in the market. A position is
+            opened by staking JUICE, and it is closed by unstaking. Like
+            investing in real tokens, profit and loss - measured in USDC - are
+            calculated continuously for all open positions based on the price
+            movement of the underlying token. Upon withdrawal, JUICE is
+            minted/burned according to profit/loss made.
+          </Paragraph>
+          For a position on a token <TeX math="x" />
+          opened at a time <TeX math="t_{open}" />, the return at a time{" "}
+          <TeX math="t_{close}" />
+          is calculated as:
+          <ol>
+            <li>
+              Value: <TeX math="Value_{x,t} =  Oracle_{t}(x, USD) * Q_{t})" />{" "}
+              where <TeX math="Q_{t}" /> is the size of the position
+            </li>
+            <li>
+              Return:
+              <TeX math="Return_{x,t_{open},t_{close}} = Value_{x,t_{close}}-Value_{x, t_{open}}" />{" "}
+              if the position is long, or
+              <br />
+              <TeX math="Return_{x,t_{open},t_{close}} = max((Value_{x,t_{open}}-Value_{x, t_{close}}),-Value_{x,t_{open}})" />
+              if short
+            </li>
+          </ol>
+          <Paragraph>
+            For example, a juicer might stake LONG UNI with 100 JUICE. When the
+            price of UNI subsequently increases 50%, the user's stake is now
+            worth 150 JUICE.
+          </Paragraph>
+          <Paragraph>
+            For short positions, return is calculated as an inverse: Let's
+            assume the juicer has staked SHORT UNI with 100 JUICE. If the price
+            of UNI increases 50%, the juicer’s stake is worth 50 JUICE. If the
+            price increases 100%, the juicer has lost the entire stake. In
+            traditional markets, short positions can theoretically have an
+            unlimited downside if the trader keeps adding collateral. In
+            Juicenet, juicers cannot add collateral, and thus the maximum that a
+            short position can lose is 100% of the initial JUICE stake.
+          </Paragraph>
         </Box>
         <Box>
-          <Heading as="h2" id="does-vanilla-include-a-native-token">
-            <ThemeLink href="#does-vanilla-include-a-native-token">
+          <Heading as="h2" id="2-1-2-token-weighted-portfolio">
+            <ThemeLink href="#2-1-2-token-weighted-portfolio">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            Does Vanilla include a native token?
+            2.1.2. Juicers’ aggregate positions form a token-weighted portfolio
           </Heading>
-          <Text>
-            Yes. VNL is the native asset of the Vanilla ecosystem. VNL is
-            created by profit mining and is used for governance of the protocol.
-          </Text>
+          <Paragraph>
+            The purpose of Juicenet is to generate target portfolio weights for
+            the Vanilla Investment Pool. The weights are generated by
+            aggregating the individual token-weighted positions in the following
+            way:
+          </Paragraph>
+          <Paragraph>
+            Juicenet has <TeX math="n" /> juicers and <TeX math="m" /> tokens.
+            For a token <TeX math="x" />, summing across all juicers, we define:
+          </Paragraph>
+          <Paragraph>
+            <ol start="3">
+              <li>
+                Long positions:{" "}
+                <TeX>{String.raw` L_{x } =  \sum_{j  = 1}^{n}L_{x, j}\ `}</TeX>,
+                where <TeX math="j" /> refers to the <TeX math="j-th" /> juicer
+              </li>
+              <li>
+                Short positions:{" "}
+                <TeX>{String.raw` S_{x } =  \sum_{j  = 1}^{n}S_{x, j}\ `}</TeX>
+              </li>
+              <li>
+                Volume staked: <TeX>{String.raw` V_{x} = L_{x}+S_{x}\ `}</TeX>
+              </li>
+              <li>
+                Net sentiment <TeX>{String.raw` N_{x} = L_{x}-S_{x}\ `}</TeX>
+              </li>
+            </ol>
+          </Paragraph>
+          <Paragraph>
+            Therefore, when summing across all tokens in Juicenet, we get:
+          </Paragraph>
+          <Paragraph>
+            <ol start="7">
+              <li>
+                Total volume staked:{" "}
+                <TeX>{String.raw` V =  \sum_{k  = 1}^{m}V_{k}\ `}</TeX>
+              </li>
+              <li>
+                Total net sentiment:{" "}
+                <TeX>{String.raw` N =  \sum_{k  = 1}^{m}N_{k}\ `}</TeX>
+              </li>
+            </ol>
+          </Paragraph>
+          <Paragraph>
+            As short positions are not yet available for most assets, the
+            Vanilla Investment Pool cannot replicate the Juicenet portfolio 1:1.
+            Thus we need to convert the Juicenet portfolio into the Pool’s
+            portfolio in a way that makes tradeoffs between how accurately the
+            Pool’s portfolio reflects token-specific net sentiments (= how
+            bullish or bearish Juicers are towards a token on average) versus
+            the total net sentiment (= how bullish or bearish they are towards
+            the market). In this conversion, the loss of some information
+            (alpha) is unavoidable.{" "}
+          </Paragraph>
+          <Paragraph>
+            Since crypto-markets are very volatile, the initial configuration of
+            the Vanilla Investment Pool will track the market first and
+            individual tokens second. This will be accomplished by the following
+            three rules:{" "}
+          </Paragraph>
+          <Paragraph>
+            <em>Rule 1:</em> The total % invested in longs equals the market
+            exposure of the Juicenet portfolio if the exposure is positive. If
+            the market exposure is negative or zero, the weight for longs is
+            zero.
+          </Paragraph>
+          <Paragraph>
+            <ol start="9">
+              <li>
+                Weight for longs (%):{" "}
+                <TeX>{String.raw` W_{LONGS} = max(\frac{N}{V}, 0) `}</TeX>
+              </li>
+            </ol>
+          </Paragraph>
+          <Paragraph>
+            Here, market exposure refers to the percentage of the portfolio that
+            is exposed to market volatility. For example, assuming that
+            portfolio of assets move hand in hand with the market (equal betas),
+            if 75% of Juicenet stakes are in longs, and 25% are in shorts, the
+            market exposure is 50% (=75%-25%), and thus e.g. a 20% drop in the
+            market, will decrease the portfolio value by only 10% (=50%*20%).
+            Similarly, if 25% of stakes are in longs, and 75% are in shorts, the
+            market exposure is -50%, and thus e.g. a 20% drop in the market,
+            will increase the portfolio value by 10%.
+          </Paragraph>
+
+          <Paragraph>
+            <em>Rule 2:</em> The total % invested in stablecoins (USDC) equals
+            what’s left after allocating to longs.
+          </Paragraph>
+          <Paragraph>
+            <ol start="10">
+              <li>
+                Weight for stablecoins:{" "}
+                <TeX>{String.raw` W_{STABLES} = 1-W_{LONGS} `}</TeX>
+              </li>
+            </ol>
+          </Paragraph>
+          <Paragraph>
+            Rule 3: Allocation to longs is distributed between net long tokens
+            according to their volume-weighted net sentiment. Here, volume
+            weights are used to measure confidence: we have more confidence in
+            the net sentiment of a larger volume token (e.g.{" "}
+            <TeX math="L_{x} =  950, S_{x} = 900 , N_{x } =  50" />) than in
+            that of a smaller volume token (e.g.{" "}
+            <TeX math="L_{x} =  50, S_{x} =  0, N_{x } = 50" />)
+          </Paragraph>
         </Box>
         <Box>
           <Heading as="h2" id="was-there-an-ico-or-premine">
