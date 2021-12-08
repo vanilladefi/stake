@@ -1,26 +1,16 @@
 import type * as Stitches from "@stitches/react";
-import { isAddress } from "@vanilladefi/sdk";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import Web3Modal, { IProviderOptions } from "web3modal";
-import { persistedKeys, ref, state, subscribeKey, useSnapshot } from "../../state";
+import { ref, state } from "../../state";
+import { persistWalletAddress } from "../../state/actions/wallet";
 import { darkTheme, theme } from "../../stitches.config";
 
 const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  const { signer } = useSnapshot(state)
+  persistWalletAddress()
+  
   const { resolvedTheme } = useTheme()
-
-  useEffect(() => {
-    const walletAddress = localStorage.getItem(persistedKeys.walletAddress)
-    if (walletAddress && isAddress(walletAddress)) {
-      state.walletAddress = walletAddress
-    }
-    // Persist walletAddress
-    subscribeKey(state, 'walletAddress', (address) => {
-      address !== walletAddress && localStorage.setItem(persistedKeys.walletAddress, JSON.stringify(address))
-    })
-  }, [])
 
   useEffect(() => {
     const web3ModalOptions: IProviderOptions = {
@@ -58,15 +48,6 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       state.modal = ref(modal)
     }
   }, [resolvedTheme])
-
-  useEffect(() => {
-    const getAddress = async () => {
-      const address = await signer?.getAddress()
-      state.walletAddress = address || null
-    }
-
-    signer && getAddress()
-  }, [signer])
 
   return <></>
 }
