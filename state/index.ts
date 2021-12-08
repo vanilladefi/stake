@@ -1,7 +1,8 @@
-import { getDefaultProvider, providers, Signer } from 'ethers';
+import { providers, Signer } from 'ethers';
 import { proxy, ref, snapshot, subscribe, useSnapshot } from 'valtio';
 import { subscribeKey } from 'valtio/utils';
 import Web3Modal from "web3modal";
+import { defaultProvider } from '../lib/config';
 
 type State = {
   provider: providers.JsonRpcProvider | providers.Web3Provider | providers.WebSocketProvider | providers.Provider | providers.BaseProvider | null,
@@ -16,7 +17,7 @@ type State = {
 }
 
 export const initialState: State = {
-  provider: getDefaultProvider(),
+  provider: defaultProvider,
   providerName: null,
   signer: null,
   balances: {},
