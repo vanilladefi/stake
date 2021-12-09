@@ -1,14 +1,23 @@
-import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
 import { Provider } from "urql";
 import Head from "next/head";
+import dynamic from "next/dynamic";
+import type { AppProps } from "next/app";
 
-import { darkTheme } from "../stitches.config";
 import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import Box from "../components/Box";
+import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
 import client, { ssrCache } from "../urql";
+
+const ActiveWallet = dynamic(
+  () => import("../components/Wallet/ActiveWallet"),
+  { ssr: false }
+);
+const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
+  ssr: false,
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   if (pageProps.urqlState) {
@@ -58,6 +67,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         >
           <Box>
+            <WalletModal />
+            <ActiveWallet />
             <Navigation />
             <Component {...pageProps} />
             <Footer />
