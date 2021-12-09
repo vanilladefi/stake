@@ -28,7 +28,7 @@ export const {
       green: "#A1F161",
       red: "#FD5247",
       backgroundSecondary: "#FDFBF5",
-      link: "#E5B754",
+      link: "#986d10",
     },
     fonts: {
       body: 'PolySans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',

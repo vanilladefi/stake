@@ -6,6 +6,7 @@ import type * as Stitches from "@stitches/react";
 
 import Box from "../components/Box";
 import Text from "../components/Text";
+import Flex from "../components/Flex";
 import Paragraph from "../components/Paragraph";
 import Link from "../components/Link";
 
@@ -78,6 +79,20 @@ const OrderedList = styled("ol", {
 const ListItem = styled("li", {
   lineHeight: "$3",
   my: "$5",
+});
+
+const ListItemFlex = styled("li", {
+  lineHeight: "$3",
+  my: "$10",
+});
+
+const FormulaText = styled("div", {
+  width: "30%",
+  pr: "$4",
+});
+
+const Formula = styled("div", {
+  width: "70%",
 });
 
 const ExtLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
@@ -392,19 +407,35 @@ const Faq = () => {
           <TeX math="t_{close}" />
           is calculated as:
           <OrderedList>
-            <ListItem>
-              Value: <TeX math="Value_{x,t} =  Oracle_{t}(x, USD) * Q_{t})" />{" "}
-              where <TeX math="Q_{t}" /> is the size of the position
-            </ListItem>
-            <ListItem>
-              Return:{" "}
-              <TeX math="Return_{x,t_{open},t_{close}} = Value_{x,t_{close}}-Value_{x, t_{open}}" />{" "}
-              <br />
-              if the position is long, or
-              <br />
-              <TeX math="Return_{x,t_{open},t_{close}} = max((Value_{x,t_{open}}-Value_{x, t_{close}}),-Value_{x,t_{open}})" />
-              if short
-            </ListItem>
+            <ListItemFlex>
+              <Flex>
+                <FormulaText>Value:</FormulaText>
+                <Formula>
+                  <TeX math="Value_{x,t} =  Oracle_{t}(x, USD) * Q_{t})" />{" "}
+                  <br />
+                  <br />
+                  where <TeX math="Q_{t}" /> is the size of the position
+                </Formula>
+              </Flex>
+            </ListItemFlex>
+            <ListItemFlex>
+              <Flex>
+                <FormulaText>Return:</FormulaText>
+
+                <Formula>
+                  <TeX math="Return_{x,t_{open},t_{close}} = Value_{x,t_{close}}-Value_{x, t_{open}}" />{" "}
+                  <br />
+                  <br />
+                  if the position is long, or
+                  <br />
+                  <br />
+                  <TeX math="Return_{x,t_{open},t_{close}} = max((Value_{x,t_{open}}-Value_{x, t_{close}}),-Value_{x,t_{open}})" />
+                  <br />
+                  <br />
+                  if short
+                </Formula>
+              </Flex>
+            </ListItemFlex>
           </OrderedList>
           <Paragraph>
             For example, a juicer might stake LONG UNI with 100 JUICE. When the
@@ -441,21 +472,41 @@ const Faq = () => {
           </Paragraph>
           <Paragraph>
             <OrderedList start={3}>
-              <ListItem>
-                Long positions:{" "}
-                <TeX>{String.raw` L_{x } =  \sum_{j  = 1}^{n}L_{x, j}\ `}</TeX>,
-                where <TeX math="j" /> refers to the <TeX math="j-th" /> juicer
-              </ListItem>
-              <ListItem>
-                Short positions:{" "}
-                <TeX>{String.raw` S_{x } =  \sum_{j  = 1}^{n}S_{x, j}\ `}</TeX>
-              </ListItem>
-              <ListItem>
-                Volume staked: <TeX>{String.raw` V_{x} = L_{x}+S_{x}\ `}</TeX>
-              </ListItem>
-              <ListItem>
-                Net sentiment <TeX>{String.raw` N_{x} = L_{x}-S_{x}\ `}</TeX>
-              </ListItem>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Long positions:</FormulaText>
+                  <Formula>
+                    <TeX>{String.raw` L_{x } =  \sum_{j  = 1}^{n}L_{x, j}\ `}</TeX>
+                    , where <TeX math="j" /> refers to the <TeX math="j-th" />{" "}
+                    juicer
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Short positions:</FormulaText>
+
+                  <Formula>
+                    <TeX>{String.raw` S_{x } =  \sum_{j  = 1}^{n}S_{x, j}\ `}</TeX>
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Volume staked:</FormulaText>{" "}
+                  <Formula>
+                    <TeX>{String.raw` V_{x} = L_{x}+S_{x}\ `}</TeX>
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Net sentiment</FormulaText>{" "}
+                  <Formula>
+                    <TeX>{String.raw` N_{x} = L_{x}-S_{x}\ `}</TeX>
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
             </OrderedList>
           </Paragraph>
           <Paragraph>
@@ -463,14 +514,22 @@ const Faq = () => {
           </Paragraph>
           <Paragraph>
             <OrderedList start={7}>
-              <ListItem>
-                Total volume staked:{" "}
-                <TeX>{String.raw` V =  \sum_{k  = 1}^{m}V_{k}\ `}</TeX>
-              </ListItem>
-              <ListItem>
-                Total net sentiment:{" "}
-                <TeX>{String.raw` N =  \sum_{k  = 1}^{m}N_{k}\ `}</TeX>
-              </ListItem>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Total volume staked:</FormulaText>
+                  <Formula>
+                    <TeX>{String.raw` V =  \sum_{k  = 1}^{m}V_{k}\ `}</TeX>
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Total net sentiment:</FormulaText>
+                  <Formula>
+                    <TeX>{String.raw` N =  \sum_{k  = 1}^{m}N_{k}\ `}</TeX>
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
             </OrderedList>
           </Paragraph>
           <Paragraph>
@@ -498,10 +557,14 @@ const Faq = () => {
           </Paragraph>
           <Paragraph>
             <OrderedList start={9}>
-              <ListItem>
-                Weight for longs (%):{" "}
-                <TeX>{String.raw` W_{LONGS} = max(\frac{N}{V}, 0) `}</TeX>
-              </ListItem>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Weight for longs (%):</FormulaText>
+                  <Formula>
+                    <TeX>{String.raw` W_{LONGS} = max(\frac{N}{V}, 0) `}</TeX>
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
             </OrderedList>
           </Paragraph>
           <Paragraph>
@@ -522,10 +585,14 @@ const Faq = () => {
           </Paragraph>
           <Paragraph>
             <OrderedList start={10}>
-              <ListItem>
-                Weight for stablecoins:{" "}
-                <TeX>{String.raw` W_{STABLES} = 1-W_{LONGS} `}</TeX>
-              </ListItem>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Weight for stablecoins:</FormulaText>
+                  <Formula>
+                    <TeX>{String.raw` W_{STABLES} = 1-W_{LONGS} `}</TeX>
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
             </OrderedList>
           </Paragraph>
           <Paragraph>
@@ -539,19 +606,30 @@ const Faq = () => {
           </Paragraph>
           <Paragraph>
             <OrderedList start={11}>
-              <ListItem>
-                Net sentiment, weighted:{" "}
-                <TeX>{String.raw` N_{x, weighted} = N_{x} * \frac{V_{x}}{V} `}</TeX>
-              </ListItem>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Net sentiment, weighted: </FormulaText>
+                  <Formula>
+                    <TeX>{String.raw` N_{x, weighted} = N_{x} * \frac{V_{x}}{V} `}</TeX>
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
             </OrderedList>
           </Paragraph>
           <Paragraph>Therefore, we get:</Paragraph>
           <Paragraph>
             <OrderedList start={12}>
-              <ListItem>
-                Net sentiment, weighted:{" "}
-                <TeX>{String.raw` W_{x} = \frac{max(N_{x, weighted} , 0)}{\sum_{k = 1}^{m}max(N_{k, weighted}, 0)} * W_{LONGS} , W_{LONGS})>0 `}</TeX>
-              </ListItem>
+              <ListItemFlex>
+                <Flex>
+                  <FormulaText>Net sentiment, weighted:</FormulaText>
+                  <Formula>
+                    <TeX>{String.raw` W_{x} = \frac{max(N_{x, weighted} , 0)}{\sum_{k = 1}^{m}max(N_{k, weighted}, 0)} * W_{longs},`}</TeX>
+                    <br />
+                    <br />
+                    when <TeX math="W_{longs} > 0" />
+                  </Formula>
+                </Flex>
+              </ListItemFlex>
             </OrderedList>
           </Paragraph>
           <Paragraph>
@@ -749,14 +827,21 @@ const Faq = () => {
             The value of VNL is a function of three features: the value of
             VanillaDAO governance, its assets under management, and its future
             fee streams from the Vanilla Investment Pool. The current supply of
-            VNL is ~13 million tokens. It is distributed between different
-            stakeholders in the following way:
+            VNL is ~
+            <ExtLink href="https://etherscan.io/token/0xbf900809f4c73e5a3476eb183d8b06a27e61f8e5#tokenAnalytics">
+              13 million
+            </ExtLink>{" "}
+            tokens. It is distributed between different stakeholders in the
+            following way:
             <ul>
               <ListItem>
                 11 410 594 (87.8 %) - Community via profit-mining
               </ListItem>
               <ListItem>
-                1 585 859 (12.2 %) - VanillaDAO treasury via community minting
+                <ExtLink href="https://etherscan.io/address/0xa135f339B5acd1f4eCB1C6eEd69a31482f878545">
+                  1 585 859
+                </ExtLink>{" "}
+                (12.2 %) - VanillaDAO treasury via community minting
               </ListItem>
             </ul>
           </Paragraph>
@@ -855,31 +940,47 @@ const Faq = () => {
           <TableWrapper>
             <Table>
               <Row>
-                <Col>Attack</Col>
-                <Col>Juicers</Col>
-                <Col>VIP LPs</Col>
-                <Col>VanillaDAO</Col>
+                <Col>
+                  <strong>Attack</strong>
+                </Col>
+                <Col>
+                  <strong>Juicers</strong>
+                </Col>
+                <Col>
+                  <strong>VIP LPs</strong>
+                </Col>
+                <Col>
+                  <strong>VanillaDAO</strong>
+                </Col>
               </Row>
               <Row>
-                <Col>Front-running Juicenet </Col>
+                <Col>
+                  <strong>Front-running Juicenet</strong>
+                </Col>
                 <Col>No impact</Col>
                 <Col>Low impact</Col>
                 <Col>No impact</Col>
               </Row>
               <Row>
-                <Col>Oracle Delay Abuse </Col>
+                <Col>
+                  <strong>Oracle Delay Abuse</strong>
+                </Col>
                 <Col>Unfair JUICE minting</Col>
                 <Col>No impact</Col>
                 <Col>No impact</Col>
               </Row>
               <Row>
-                <Col>Price Manipulation</Col>
+                <Col>
+                  <strong>Price Manipulation</strong>
+                </Col>
                 <Col>No impact</Col>
                 <Col>Low impact</Col>
                 <Col>Low impact</Col>
               </Row>
               <Row>
-                <Col>Leeching</Col>
+                <Col>
+                  <strong>Leeching</strong>
+                </Col>
                 <Col>Low impact</Col>
                 <Col>No impact</Col>
                 <Col>Less fees</Col>
