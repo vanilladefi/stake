@@ -53,8 +53,7 @@ const TextColorFilledRectangle = styled("rect", {
 export const Diamond = (props: any) => (
   <svg
     viewBox="0 0 280 397"
-    width="280px"
-    height="397px"
+    width="100%"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
@@ -99,8 +98,7 @@ export const ArrowRight = (props: any) => (
 
 export const CommunityIcon = (props: any) => (
   <svg
-    width="100"
-    height="100"
+    width="100%"
     viewBox="0 0 120 120"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -127,8 +125,7 @@ export const CommunityIcon = (props: any) => (
 
 export const JuicingIcon = (props: any) => (
   <svg
-    width="84"
-    height="109"
+    width="100%"
     viewBox="0 0 84 109"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -150,8 +147,7 @@ export const JuicingIcon = (props: any) => (
 
 export const JuiceSignalIcon = (props: any) => (
   <svg
-    width="88"
-    height="119"
+    width="100%"
     viewBox="0 0 88 119"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -175,8 +171,7 @@ export const JuiceSignalIcon = (props: any) => (
 
 export const JuiceFlow = (props: any) => (
   <svg
-    width="501"
-    height="320"
+    width="100%"
     viewBox="0 0 501 401"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

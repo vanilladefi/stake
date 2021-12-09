@@ -15,11 +15,11 @@ export const {
 } = createStitches({
   theme: {
     colors: {
-      black: "#10070F",
-      text: "#10070F",
+      black: "#311E15",
+      text: "#311E15",
       textSecondary: "#311d15",
       textA: transparentize(0.1, "#10070F"),
-      background: "#F1EBD4",
+      background: "#F8F5EC",
       backgroundA: transparentize(0.1, "#F1EBD4"),
       primary: "#E5B754",
       secondary: "#30c",
@@ -27,7 +27,7 @@ export const {
       extraMuted: "#DDCDB9",
       green: "#A1F161",
       red: "#FD5247",
-      backgroundSecondary: "#ddd5bf",
+      backgroundSecondary: "#FDFBF5",
       link: "#E5B754",
     },
     fonts: {
@@ -334,10 +334,11 @@ export const darkTheme = createTheme("dark", {
 });
 
 export const globalStyles = globalCss({
-  // body: { backgroundColor: '$background', color: '$text', fontFamily: 'Helvetica' },
   "html, body": {
     backgroundColor: "$background",
     color: "$text",
+    margin: 0,
+    padding: 0,
     fontFamily: "$body",
     fontSize: "$md",
     "-webkit-font-smoothing": "antialiased",
