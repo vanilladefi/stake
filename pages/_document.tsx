@@ -1,22 +1,22 @@
 import Document, {
-  DocumentContext,
-  Html,
-  Head,
-  Main,
-  NextScript,
+  DocumentContext, Head, Html, Main,
+  NextScript
 } from "next/document";
-import { globalStyles, getCssText } from "../stitches.config";
+import { getCssText, globalStyles } from "../stitches.config";
+
+
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
     const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
-  }
 
+    return initialProps;
+  }
   render() {
     globalStyles();
     return (
       <Html>
         <Head>
+          <link rel="icon" href="/favicon.ico" />
           <style
             id="stitches"
             dangerouslySetInnerHTML={{ __html: getCssText() }}
