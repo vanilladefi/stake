@@ -85,6 +85,14 @@ export const Input = styled("input", {
           fontSize: "$3",
         },
       },
+      xl: {
+        height: "$14",
+        fontSize: "$2xl",
+        lineHeight: "$sizes$9",
+        "&:-webkit-autofill::first-line": {
+          fontSize: "$3",
+        },
+      },
     },
     variant: {
       ghost: {
@@ -98,6 +106,25 @@ export const Input = styled("input", {
         "&:focus": {
           backgroundColor: "$loContrast",
           boxShadow: `0 0 0 1px $colors$mauve10`,
+        },
+        "&:disabled": {
+          backgroundColor: "transparent",
+        },
+        "&:read-only": {
+          backgroundColor: "transparent",
+        },
+      },
+      bordered: {
+        boxShadow: "0 0 0 1px $colors$extraMuted",
+        backgroundColor: "transparent",
+        "@hover": {
+          "&:hover": {
+            boxShadow: "inset 0 0 0 1px $colors$mauve7",
+          },
+        },
+        "&:focus": {
+          backgroundColor: "$loContrast",
+          boxShadow: `0 0 0 1px $colors$extraMuted`,
         },
         "&:disabled": {
           backgroundColor: "transparent",

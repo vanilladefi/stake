@@ -1,14 +1,17 @@
-import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
+import type { AppProps } from "next/app";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-
-import { darkTheme } from "../stitches.config";
-import Navigation from "../components/Navigation";
-import Footer from "../components/Footer";
-import Box from "../components/Box";
 import { Provider } from "urql";
+import Box from "../components/Box";
+import Footer from "../components/Footer";
+import Navigation from "../components/Navigation";
+import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
 import client from "../urql";
+
+const ActiveWallet = dynamic(() => import("../components/Wallet/ActiveWallet"), { ssr: false });
+const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), { ssr: false });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -55,6 +58,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         >
           <Box>
+            <WalletModal />
+            <ActiveWallet />
             <Navigation />
             <Component {...pageProps} />
             <Footer />

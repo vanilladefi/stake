@@ -74,3 +74,13 @@ svg {
   font-style: italic;
   font-display: swap;
 } */
+
+/* Web3Modal fixes */
+.web3modal-modal-card {
+  border-radius: 0 !important;
+}
+.web3modal-modal-lightbox {
+  background-color: rgba(9, 3, 1, 0.87) !important;
+  backdrop-filter: blur(24px) !important;
+  -moz-backdrop-filter: blur(24px) !important;
+}
