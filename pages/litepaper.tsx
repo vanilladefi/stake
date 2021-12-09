@@ -33,6 +33,40 @@ const ThemeLink = styled(Link, {
   color: "$link",
 });
 
+const TableWrapper = styled("div", {
+  width: "100%",
+});
+
+const Table = styled("table", {
+  fontSize: "$xs",
+  my: "$10",
+  borderCollapse: "collapse",
+  width: "100%",
+});
+
+const Row = styled("tr", {
+  minWidth: "0",
+});
+
+const OrderedList = styled("ol", {
+  my: "$8",
+});
+
+const ListItem = styled("li", {
+  lineHeight: "$3",
+  my: "$5",
+});
+
+const SRow = styled("tr", {
+  minWidth: "0",
+  background: "$backgroundSecondary",
+});
+
+const Col = styled("td", {
+  border: "1px solid $text",
+  p: "$1 $2",
+});
+
 const ExtLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
   href,
   children,
@@ -104,7 +138,6 @@ const Faq = () => {
       </Box>
       <Stack
         css={{
-          flexDirection: "column",
           mb: "$5",
           [`> ${Box}`]: {
             borderBottom: "1px solid $muted",
@@ -279,22 +312,22 @@ const Faq = () => {
           <Paragraph>
             The Vanilla decentralized asset manager is composed of three
             distinct systems:
-            <ol>
-              <li>
+            <OrderedList>
+              <ListItem>
                 Juicenet, where users take synthetic long and short positions on
                 tokens, which aggregate to portfolio weights.
-              </li>
-              <li>
+              </ListItem>
+              <ListItem>
                 Vanilla Investment Pool, a{" "}
                 <ExtLink href="https://balancer.fi/">Balancer Pool</ExtLink>{" "}
                 that manages LP assets using the portfolio weights from
                 Juicenet.
-              </li>
-              <li>
+              </ListItem>
+              <ListItem>
                 VanillaDAO, which governs and develops the Vanilla system,
                 provides fail-safes, and incentivizes ecosystem participants.
-              </li>
-            </ol>
+              </ListItem>
+            </OrderedList>
           </Paragraph>
           <DetailedVanillaOverview />
         </Box>
@@ -342,20 +375,21 @@ const Faq = () => {
           opened at a time <TeX math="t_{open}" />, the return at a time{" "}
           <TeX math="t_{close}" />
           is calculated as:
-          <ol>
-            <li>
+          <OrderedList>
+            <ListItem>
               Value: <TeX math="Value_{x,t} =  Oracle_{t}(x, USD) * Q_{t})" />{" "}
               where <TeX math="Q_{t}" /> is the size of the position
-            </li>
-            <li>
-              Return:
+            </ListItem>
+            <ListItem>
+              Return:{" "}
               <TeX math="Return_{x,t_{open},t_{close}} = Value_{x,t_{close}}-Value_{x, t_{open}}" />{" "}
+              <br />
               if the position is long, or
               <br />
               <TeX math="Return_{x,t_{open},t_{close}} = max((Value_{x,t_{open}}-Value_{x, t_{close}}),-Value_{x,t_{open}})" />
               if short
-            </li>
-          </ol>
+            </ListItem>
+          </OrderedList>
           <Paragraph>
             For example, a juicer might stake LONG UNI with 100 JUICE. When the
             price of UNI subsequently increases 50%, the user's stake is now
@@ -390,38 +424,38 @@ const Faq = () => {
             For a token <TeX math="x" />, summing across all juicers, we define:
           </Paragraph>
           <Paragraph>
-            <ol start="3">
-              <li>
+            <OrderedList start={3}>
+              <ListItem>
                 Long positions:{" "}
                 <TeX>{String.raw` L_{x } =  \sum_{j  = 1}^{n}L_{x, j}\ `}</TeX>,
                 where <TeX math="j" /> refers to the <TeX math="j-th" /> juicer
-              </li>
-              <li>
+              </ListItem>
+              <ListItem>
                 Short positions:{" "}
                 <TeX>{String.raw` S_{x } =  \sum_{j  = 1}^{n}S_{x, j}\ `}</TeX>
-              </li>
-              <li>
+              </ListItem>
+              <ListItem>
                 Volume staked: <TeX>{String.raw` V_{x} = L_{x}+S_{x}\ `}</TeX>
-              </li>
-              <li>
+              </ListItem>
+              <ListItem>
                 Net sentiment <TeX>{String.raw` N_{x} = L_{x}-S_{x}\ `}</TeX>
-              </li>
-            </ol>
+              </ListItem>
+            </OrderedList>
           </Paragraph>
           <Paragraph>
             Therefore, when summing across all tokens in Juicenet, we get:
           </Paragraph>
           <Paragraph>
-            <ol start="7">
-              <li>
+            <OrderedList start={7}>
+              <ListItem>
                 Total volume staked:{" "}
                 <TeX>{String.raw` V =  \sum_{k  = 1}^{m}V_{k}\ `}</TeX>
-              </li>
-              <li>
+              </ListItem>
+              <ListItem>
                 Total net sentiment:{" "}
                 <TeX>{String.raw` N =  \sum_{k  = 1}^{m}N_{k}\ `}</TeX>
-              </li>
-            </ol>
+              </ListItem>
+            </OrderedList>
           </Paragraph>
           <Paragraph>
             As short positions are not yet available for most assets, the
@@ -447,12 +481,12 @@ const Faq = () => {
             zero.
           </Paragraph>
           <Paragraph>
-            <ol start="9">
-              <li>
+            <OrderedList start={9}>
+              <ListItem>
                 Weight for longs (%):{" "}
                 <TeX>{String.raw` W_{LONGS} = max(\frac{N}{V}, 0) `}</TeX>
-              </li>
-            </ol>
+              </ListItem>
+            </OrderedList>
           </Paragraph>
           <Paragraph>
             Here, market exposure refers to the percentage of the portfolio that
@@ -471,391 +505,666 @@ const Faq = () => {
             what’s left after allocating to longs.
           </Paragraph>
           <Paragraph>
-            <ol start="10">
-              <li>
+            <OrderedList start={10}>
+              <ListItem>
                 Weight for stablecoins:{" "}
                 <TeX>{String.raw` W_{STABLES} = 1-W_{LONGS} `}</TeX>
-              </li>
-            </ol>
+              </ListItem>
+            </OrderedList>
           </Paragraph>
           <Paragraph>
-            Rule 3: Allocation to longs is distributed between net long tokens
-            according to their volume-weighted net sentiment. Here, volume
-            weights are used to measure confidence: we have more confidence in
-            the net sentiment of a larger volume token (e.g.{" "}
+            <em>Rule 3:</em> Allocation to longs is distributed between net long
+            tokens according to their volume-weighted net sentiment. Here,
+            volume weights are used to measure confidence: we have more
+            confidence in the net sentiment of a larger volume token (e.g.{" "}
             <TeX math="L_{x} =  950, S_{x} = 900 , N_{x } =  50" />) than in
             that of a smaller volume token (e.g.{" "}
             <TeX math="L_{x} =  50, S_{x} =  0, N_{x } = 50" />)
           </Paragraph>
+          <Paragraph>
+            <OrderedList start={11}>
+              <ListItem>
+                Net sentiment, weighted:{" "}
+                <TeX>{String.raw` N_{x, weighted} = N_{x} * \frac{V_{x}}{V} `}</TeX>
+              </ListItem>
+            </OrderedList>
+          </Paragraph>
+          <Paragraph>Therefore, we get:</Paragraph>
+          <Paragraph>
+            <OrderedList start={12}>
+              <ListItem>
+                Net sentiment, weighted:{" "}
+                <TeX
+                  block
+                >{String.raw` W_{x} = \frac{max(N_{x, weighted} , 0)}{\sum_{k = 1}^{m}max(N_{k, weighted}, 0)} * W_{LONGS} , W_{LONGS})>0 `}</TeX>
+              </ListItem>
+            </OrderedList>
+          </Paragraph>
+          <Paragraph>
+            These aggregate weights are then passed on to the Vanilla Investment
+            Pool as target weights of the portfolio.
+          </Paragraph>
+          <Paragraph>
+            <em>
+              Table 1: Illustrative portfolio weights at time t created by the
+              Juicenet for the Vanilla Investment Pool
+            </em>
+          </Paragraph>
+          <Table>
+            <Row>
+              <Col colSpan={3}>Input from Juicenet</Col>
+              <Col colSpan={5}></Col>
+              <Col colSpan={2}>Output to Vanilla Pool</Col>
+            </Row>
+            <Row>
+              <Col>Token</Col>
+              <Col>
+                Total longs <br />(<TeX math="L_{x}" />)
+              </Col>
+              <Col>
+                Total shorts <br />(<TeX math="S_{x}" />)
+              </Col>
+              <Col>
+                Total Volume <br />(<TeX math="V_{x}" />)
+              </Col>
+              <Col>
+                Volume-weight <br />
+                (%)
+              </Col>
+              <Col>
+                Net sentiment <br />(<TeX math="N_{x}" />)
+              </Col>
+              <Col colSpan={2}>
+                Net sentiment (if&gt;0), weighted <br />(
+                <TeX math="L_{x, weighted}" />)
+              </Col>
+              <Col>
+                Portfolio weights <br />(<TeX math="W_{x}" />)
+              </Col>
+              <Col>Token</Col>
+            </Row>
+            <SRow>
+              <Col>UNI</Col>
+              <Col>100</Col>
+              <Col>50</Col>
+              <Col>150</Col>
+              <Col>67%</Col>
+              <Col>50</Col>
+              <Col>33.3</Col>
+              <Col>75%</Col>
+              <Col>25%</Col>
+              <Col>UNI</Col>
+            </SRow>
+            <SRow>
+              <Col>SUSHI</Col>
+              <Col>50</Col>
+              <Col>0</Col>
+              <Col>50</Col>
+              <Col>22%</Col>
+              <Col>50</Col>
+              <Col>11.1</Col>
+              <Col>25%</Col>
+              <Col>8.3%</Col>
+              <Col>SUSHI</Col>
+            </SRow>
+            <SRow>
+              <Col>ETH</Col>
+              <Col>0</Col>
+              <Col>25</Col>
+              <Col>25</Col>
+              <Col>11%</Col>
+              <Col>-25</Col>
+              <Col>-</Col>
+              <Col></Col>
+              <Col>0.0%</Col>
+              <Col>ETH</Col>
+            </SRow>
+            <SRow>
+              <Col>TOTAL</Col>
+              <Col>150</Col>
+              <Col>75</Col>
+              <Col>225*</Col>
+              <Col>100%</Col>
+              <Col>75*</Col>
+              <Col>44.4</Col>
+              <Col>100%</Col>
+              <Col>33.3%</Col>
+              <Col>LONGS</Col>
+            </SRow>
+            <Row>
+              <Col colSpan={8}>
+                *Market exposure: N/V = 75/225 = 33.3%. Thus, 33.3% to longs,
+                the rest to stables:
+              </Col>
+              <Col>+66.7%</Col>
+              <Col>STABLES</Col>
+            </Row>
+          </Table>
         </Box>
         <Box>
-          <Heading as="h2" id="was-there-an-ico-or-premine">
-            <ThemeLink href="#was-there-an-ico-or-premine">
+          <Heading as="h2" id="2-2-vanilla-investment-pool">
+            <ThemeLink href="#2-2-vanilla-investment-pool">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            Was there an ICO or premine?
+            2.2 Vanilla Investment Pool
           </Heading>
-          <Text>
-            No. The entire initial supply of VNL was created via profit mining
-            by the community. Later the community collectively decided to fund
-            the VanillaDAO alongside the Vanilla v1.1 launch by minting an
-            amount equal to 15% of total supply to the Vanilla Treasury.
-          </Text>
+          <Paragraph>
+            The Vanilla Investment Pool is a Balancer Managed Pool controlled by
+            Juicenet. Anyone can contribute their capital to the pool to be
+            managed by the Vanilla system. In exchange, they get LP tokens of
+            the pool, which they can trade freely on DEXs and other venues.
+          </Paragraph>
+          <Paragraph>
+            Balancer Pools work with internal portfolio weight targets. When the
+            target weight of an asset increases, the pool offers a higher price
+            to buy that asset. If the target weight of an asset goes down, it
+            offers to sell the asset at a lower price. By doing this, the pool
+            creates an incentive for arbitrageurs to balance the portfolio.
+            Balancer also allows pools to specify a time period over which the
+            pool slowly raises or lowers prices to achieve the desired weights.
+          </Paragraph>
+          <Paragraph>
+            The Vanilla Investment Pool continuously updates its target weights
+            according to the aggregate weights in Juicenet and specifies a
+            gradual rebalancing period (e.g. two weeks) for achieving the
+            weights. This rebalancing period resets every time new target
+            weights are submitted, leading to a dynamic where the Vanilla
+            Investment Pool is continuously “catching up” to Juicenet. By
+            specifying a rebalancing period to achieve the target weights, the
+            Vanilla Investment Pool avoids making dramatic short-term moves
+            while still reacting to changes in Juicenet’s aggregate weights
+            promptly. This mechanism also makes the system considerably harder
+            to manipulate or front-run as any aspiring front-runner is subject
+            to the whims of the market while simultaneously competing with other
+            arbitrageurs to try to extract value from the system.
+          </Paragraph>
+          <Paragraph>
+            In the initial configuration, the Pool will hold a maximum of 50
+            tokens in its portfolio, comprised of tokens with the largest volume
+            (<TeX math="V_{x}" />) in Juicenet.
+          </Paragraph>
         </Box>
         <Box>
-          <Heading as="h2" id="who-created-vanilla">
-            <ThemeLink href="#who-created-vanilla">
+          <Heading as="h3" id="2-3-vanilladao">
+            <ThemeLink href="#2-3-vanilladao">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            Who created Vanilla?
+            2.3. VanillaDAO
           </Heading>
-          <Text>
-            Vanilla was developed by{" "}
-            <ThemeLink href="https://equilibrium.co/">Equilibrium</ThemeLink>{" "}
-            and the initial smart contracts were deployed by an anonymous
-            community member to the Ethereum blockchain.
-          </Text>
+          <Paragraph>
+            The VanillaDAO is the governing entity of the Vanilla system. It is
+            controlled by VNL holders and has the following functions:
+            <OrderedList>
+              <ListItem>
+                Financing and coordinating the ongoing development of the
+                Vanilla protocol.
+              </ListItem>
+              <ListItem>
+                Managing the treasury, which receives fees from the Vanilla
+                Investment Pool and deploys capital to incentivize Juicers and
+                other ecosystem participants.
+              </ListItem>
+              <ListItem>
+                Provides fail-safes for the Vanilla system, such as stopping the
+                Vanilla Investment Pool from updating target weights in an
+                emergency.
+              </ListItem>
+            </OrderedList>
+          </Paragraph>
         </Box>
         <Box>
-          <Heading as="h2" id="is-vanilla-secure">
-            <ThemeLink href="#is-vanilla-secure">
+          <Heading as="h2" id="3-tokenomics">
+            3. Tokenomics
+          </Heading>
+          <Heading as="h3" id="3-1-tokenomics-of-vnl">
+            <ThemeLink href="#3-1-tokenomics-of-vnl">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            Is Vanilla secure?
+            3.1. Tokenomics of VNL
           </Heading>
-          <Text>
-            The Vanilla system has been security audited extensively by{" "}
-            <ThemeLink href="https://peckshield.com/en">Peckshield</ThemeLink>{" "}
-            and{" "}
-            <ThemeLink href="https://leastauthority.com/">
-              Least Authority
-            </ThemeLink>{" "}
-            and there is an active bug bounty, but it is still experimental beta
-            software as with most things built on Ethereum. We take the safety
-            of your funds extremely seriously, but perfect security doesn&apos;t
-            exist so tread carefully.
-          </Text>
-        </Box>
-        <Box>
-          <Heading as="h2" id="is-vanilla-decentralized">
-            <ThemeLink href="#is-vanilla-decentralized">
-              <LinkIcon size="20px" />
-            </ThemeLink>{" "}
-            Is Vanilla decentralized?
-          </Heading>
-          <Text>
-            Yes. Most of Vanilla&apos;s contract logic is non-upgradable and
-            thus can&apos;t be changed by anyone. The only exception to this is
-            the dynamic safelist which is controlled by the VanillaDAO.
-          </Text>
-        </Box>
-        <Box>
-          <Heading as="h2" id="what-is-the-vanilladao">
-            <ThemeLink href="#what-is-the-vanilladao">
-              <LinkIcon size="20px" />
-            </ThemeLink>{" "}
-            What is the VanillaDAO?
-          </Heading>
-          <Text>
-            The VanillaDAO is a community controlled 4-out-of-7 ethereum
-            multi-sig wallet, which hosts the VanillaDAO treasury and is used
-            for deploying some parts of the Vanilla protocol. Equilibrium
-            controls 3 of the 7 signers and the remaining 4 signers are the
-            largest VNL holders from the community who volunteered.
-          </Text>
-        </Box>
-        <Box>
-          <Heading as="h2" id="can-i-profit-mine-with-any-erc-20">
-            <ThemeLink href="#can-i-profit-mine-with-any-erc-20">
-              <LinkIcon size="20px" />
-            </ThemeLink>{" "}
-            Can I profit-mine with any ERC-20?
-          </Heading>
-          <Text>
-            No. Vanilla incorporates a dynamic <em>safe-list</em> of tokens,
-            which is controlled by the VanillaDAO and defines the ERC-20 tokens
-            that are eligible for profit mining rewards. The safelist allows the
-            community to ensure that only legitimate tokens with enough
-            liquidity can be traded through Vanilla Trade.
-          </Text>
-        </Box>
-        <Box>
-          <Heading
-            as="h2"
-            id="how-are-profit-mining-rewards-calculated-for-trading"
-          >
-            <ThemeLink href="#how-are-profit-mining-rewards-calculated-for-trading">
-              <LinkIcon size="20px" />
-            </ThemeLink>{" "}
-            How are profit mining rewards calculated for trading?
-          </Heading>
-          <Text>
-            To calculate mining rewards in trade <TeX math="i" /> which sells
-            tokens, Vanilla uses the following algorithm:
-            <TeX math="R_{i}=P_{i}*H_{i}" block />
-            where
+          <Paragraph>
+            Vanilla’s VNL token is the governance token of the Vanilla system.
+            The value of VNL is a function of three features: the value of
+            VanillaDAO governance, its assets under management, and its future
+            fee streams from the Vanilla Investment Pool. The current supply of
+            VNL is ~13 million tokens. It is distributed between different
+            stakeholders in the following way:
             <ul>
-              <li>
-                <TeX math="R_{i}" /> is the amount of VNL reward the trader
-                gets.
-              </li>
-              <li>
-                <TeX math="P_{i}" /> is the amount of rewardable Ether profit
-                made in the trade.
-              </li>
-              <li>
-                <TeX math="H_{i}" /> is the{" "}
-                <em>Holding/Trading Ratio (Squared)</em>
-              </li>
+              <ListItem>
+                11 410 594 (87.8 %) - Community via profit-mining
+              </ListItem>
+              <ListItem>
+                1 585 859 (12.2 %) - VanillaDAO treasury via community minting
+              </ListItem>
             </ul>
-          </Text>
-        </Box>
-        <Box>
-          <Heading as="h2" id="how-is-rewardable-profit-calculated">
-            <ThemeLink href="#how-is-rewardable-profit-calculated">
-              <LinkIcon size="20px" />
-            </ThemeLink>{" "}
-            How is rewardable profit calculated?
-          </Heading>
-          <Text>
-            Absolute profit is determined by the positive difference of how much
-            WETH the trader used to buy tokens and how much WETH the trader got
-            back when selling those tokens. For example, buying 1000 USDC with 1
-            WETH, and selling them all for 2 WETH would equal 1 WETH profit. To
-            calculate the profit of the trade, the Vanilla contract must keep
-            track of the purchase price. However, if the trader buys 1000 USDC
-            for 1 WETH, then 1000 USDC for 0.5 WETH, and finally sells 1500 USDC
-            for 1.5 WETH, what is the profit? Unfortunately, the traditionally
-            used pricing conventions{" "}
-            <ThemeLink href="https://en.wikipedia.org/wiki/FIFO_and_LIFO_accounting">
-              FIFO and LIFO
-            </ThemeLink>{" "}
-            are impractical to implement in smart contracts due to the gas costs
-            of keeping track of all purchases. Instead, Vanilla uses a
-            <em>Weighted Average Exchange Rate</em> to maintain the average
-            purchase price for all token inventory in a fair and gas efficient
-            way. Weighted Average Exchange Rate after `i` trades is calculated
-            using two variables, (
-            <TeX math="E_{i}" />) which represents the adjusted sum of WETHs
-            used in trading and (
-            <TeX math="T_{i}" />) which represents the trader&quot;s token
-            balance. When buying <TeX math="Q_{token}" /> tokens with{" "}
-            <TeX math="Q_{eth}" />, Vanilla updates the variables as:
-            <TeX
-              math="\begin{aligned}
-T_{i} &= T_{i-1} + Q_{token} \\
-E_{i} &= E_{i-1} + Q_{eth}
-\end{aligned}"
-              block
-            />
-            When selling <TeX math="Q_{token}" /> tokens for{" "}
-            <TeX math="Q_{eth}" />, Vanilla calculates the absolute profit as:
-            <TeX
-              math="P_{i}^{abs}=max(Q_{eth}-\frac{Q_{token}*E_{i-1}}{T_{i-1}},0)"
-              block
-            />
-            and updates the variables for the next trade as
-            <TeX
-              math="\begin{aligned}
-T_{i}&=T_{i-1}-Q_{token} \\
-E_{i}&=\frac{E_{i-1}*T_{i}}{T_{i-1}}
-\end{aligned}"
-              block
-            />
-            For reference, the quote for the average purchase price is
-            calculated simply as a ratio of the two variables:
-            <TeX math="{price}_{i}^{avg}=\frac{T_{i}}{E_{i}}" />
-            Finally, the rewardable Ether profit is calculated as the positive
-            difference of average purchase price and the rewardable price.{" "}
-            <TeX math="{P}_{i}= max(P_{i}^{R} - {price}_{i}^{avg}, 0)" />
-          </Text>
-        </Box>
-        <Box>
-          <Heading as="h2" id="            {">
-            <ThemeLink href="#            {">
-              <LinkIcon size="20px" />
-            </ThemeLink>{" "}
-            What is &quot;observation cardinality&quot; and why it matters in
-            profit mining?
-          </Heading>
-          <Text>
-            Price manipulation is one of the biggest risks for VNL value. If a
-            malicious trader can manipulate the token&apos;s ETH price in
-            Uniswap at will, then they can easily rig the VNL supply. Price
-            oracles are commonly used to mitigate this. Uniswap v3 introduced
-            robust price oracles which enable the pool to store variable amount
-            of price observations on-chain. Integrating smart contracts can then
-            use the observations to calculate a{" "}
-            <ThemeLink href="https://docs.uniswap.org/protocol/concepts/V3-overview/oracle#deriving-price-from-a-tick">
-              time-weighted average price
-            </ThemeLink>
-            (TWAP) across a time interval. Larger the time interval, the
-            costlier it becomes to manipulate the average price. The
-            <em>observation cardinality</em> is the maximum number of the price
-            observations in the Uniswap pool.{" "}
-            <ThemeLink href="https://docs.uniswap.org/protocol/reference/core/UniswapV3Pool#increaseobservationcardinalitynext">
-              Growing it
-            </ThemeLink>
-            requires someone to pay the fees and it&apos;s not incentivized in
-            any way, which is probably why many pools still have the initial
-            cardinality 1. When the cardinality is 1, it effectively means the
-            pool doesn&apos;t keep enough price observation history to calculate
-            any robust price average. Vanilla uses the pool oracle in profit
-            mining calculations to compute a TWAP across a 5-minute interval,
-            which is the <em>rewardable price</em> <TeX math="P_{i}^{R}" />. If
-            the pool doesn&apos;t have enough observations to compute the full
-            5-minute TWAP, then the rewardable price is weighted proportionally
-            based on longest available TWAP interval ({" "}
-            <TeX math="P_{i}^{pool}" /> across <TeX math="t" /> seconds):
-            <TeX
-              math="\begin{aligned}
-P_{i}^{R}&=\frac{P_{i}^{pool} * t + {price}_{i}^{avg} * (300-t)}{300}
-\end{aligned}"
-              block
-            />
-            If the price observation history is not available at all (i.e.
-            observation cardinality = 1), then the rewardable price will equal
-            to the average purchasing price, meaning there&apos;s no rewardable
-            profit and VNL will not be rewarded. This is also why the
-            cardinality warning is displayed in the trading UI.
-          </Text>
-        </Box>
-        <Box>
-          <Heading
-            as="h2"
-            id="what-is-the-holding-trading-ratio-squared-and-why-does-vanilla-use-it"
-          >
-            <ThemeLink href="#what-is-the-holding-trading-ratio-squared-and-why-does-vanilla-use-it">
-              <LinkIcon size="20px" />
-            </ThemeLink>{" "}
-            What is the Holding/Trading Ratio (Squared) and why does Vanilla use
-            it?
-          </Heading>
-          <Text>
-            For each token you trade, Vanilla maintains the{" "}
-            <em>Weighted Average Purchase Block</em> (WAPB) or{" "}
-            <TeX math="B_{i}^{w}" />. The WAPB after $i$ trades is calculated by
-            using two variables, <TeX math="A_{i}" /> which represents the
-            token-volume weighted sum of block numbers of the purchases and{" "}
-            <TeX math="T_{i}" />, which represents the trader&apos;s token
-            balance, used already in Weighted Average Exchange Rate-
-            calculations. When buying <TeX math="Q_{token}" /> tokens in a block
-            number <TeX math="B_{i}" />, Vanilla updates the{" "}
-            <TeX math="A_{i}" /> as:
-            <TeX math="A_{i}=A_{i-1}+Q_{token}*B_{i}" block />
-            When selling <TeX math="Q_{token}" /> tokens, Vanilla updates the{" "}
-            <TeX math="A_{i}" block /> proportionally to token balance change
-            as:
-            <TeX
-              math="\begin{aligned}
-T_{i} &= T_{i-1}-Q_{token} \\
-A_{i} &= \frac{A_{i-1}*T_i}{T_{i-1}}
-\end{aligned}"
-              block
-            />
-            The Weighted Average Purchase Block is then calculated as a ratio of
-            these two variables:
-            <TeX math="B_{i}^{w} = \frac{A_{i}}{T_{i}}" block />
-            Knowing this average block, The Holding/Trading Ratio (Squared) is
-            calculated as:
-            <TeX
-              math="H_i=(\frac{B_{sell}-B_{i}^{w}}{B_{sell}-B_{epoch}})^2"
-              block
-            />
-            where - <TeX math="B_{sell}" /> is the block number, when a
-            sell-transaction happens. - <TeX math="B_{epoch}" /> is the
-            immutable <em>epoch block</em> 12134736, in which the Vanilla
-            contracts were{" "}
-            <ThemeLink href="https://etherscan.io/tx/0x55d97be881ae9313cf78ebe1c28b15e6269b5938cc78fa3734c3769587cf6e7e">
-              deployed to the mainnet
-            </ThemeLink>
-            . The Holding/Trading Ratio (Squared) component can be interpreted
-            as a ratio of two times: - Nominator{" "}
-            <TeX math="B_{sell}-B_{i}^{w}" /> is the <em>holding time</em>, the
-            number of blocks the token has been held before selling. Keeping the
-            trade open longer will yield higher rewards. If the duration is
-            zero, i.e. the trade is closed in the same block it was initiated,
-            the profit will be zero. This ensures that no flash loan attacks can
-            be carried out. - Denominator <TeX math="B_{sell}-B_{epoch}" /> is
-            the <em>total trading time</em>, the number of blocks the Vanilla
-            system itself has been operational. The total trading time will
-            always increase. In other words, the Holding/Trading Ratio (Squared)
-            is just a ratio of times: The time the trade has been open compared
-            to the time the system has been open. The times are measured in
-            Ethereum blocks.
-          </Text>
-        </Box>
-        <Box>
-          <Heading
-            as="h2"
-            id="simple-heuristics-to-illustrate-the-core-mechanisms"
-          >
-            <ThemeLink href="#simple-heuristics-to-illustrate-the-core-mechanisms">
-              <LinkIcon size="20px" />
-            </ThemeLink>{" "}
-            Simple heuristics to illustrate the core mechanisms
-          </Heading>
-          <Text css={{ mb: "$3" }}>
-            The following charts and tables depict simple heuristics of the
-            incentive mechanisms. In all heuristics we vary one input in the VNL
-            reward formula while keeping the other inputs unchanged and plot the
-            amount of VNL in each case. The first case observes the VNL
-            attribution as a function of profits. We keep the Holding/Trading
-            Ratios constant and inspect what happens to the attributed VNL. As
-            we increase the sell price of the trade, while keeping the WAER
-            constant, our profits increase. As profits increase 5-fold from 2
-            ETH to 10 ETH or 10-fold from 2 ETH to 20 ETH, there is a linear
-            relationship with the increase associated with the VNL reward.
-          </Text>
+          </Paragraph>
+
           <Box
-            css={{
-              position: "relative",
-              width: "100%",
-              height: "400px",
-              my: "$5",
-            }}
+            css={{ border: "1px solid $text", pb: "$2", px: "$6", mt: "$8" }}
           >
-            <Image
-              src="/images/faq/VNL_vs_profit.jpg"
-              alt="VNL vs profit"
-              layout="fill"
-              objectFit="scale-down"
-            />
+            <Paragraph>
+              VNL has had no pre-mine. All VNL in circulation has been created
+              via profit-mining except for those minted for the DAO by the
+              community.
+            </Paragraph>
+            <Paragraph>
+              Profit mining is the mechanism used in Vanilla v1, by which the
+              VNL governance token is created and distributed to miners
+              according to their investment performance. Users trade tokens via
+              the Vanilla interface and mint VNL when their trades make a
+              profit.
+            </Paragraph>
+            <Paragraph>
+              Profit mining will continue until the community decides to phase
+              it out, and thus the supply is likely to continue growing.
+              However, as with most mining mechanisms, profit mining becomes
+              more challenging over time, and thus the increase in the supply
+              will be less and less significant.
+            </Paragraph>
           </Box>
-          <Text css={{ mb: "$3" }}>
-            The second case observes the VNL attribution when we keep profits
-            constant, but vary the Holding/Trading Ratio (Squared). The ratio is
-            determined by how early the trader is participating in the Vanilla
-            system and how long they are keeping their positions before closing
-            them. The following chart depicts a case in which we vary the sell
-            block number and keep the weighted average block constant.
-          </Text>
+        </Box>
+        <Box>
+          <Heading as="h3" id="is-vanilla-decentralized">
+            <ThemeLink href="#3-2-tokenomics-of-juice">
+              <LinkIcon size="20px" />
+            </ThemeLink>
+            3.2 Tokenomics of JUICE
+          </Heading>
+          <Paragraph>
+            Vanilla’s JUICE token is used to take synthetic long and short
+            positions in Juicenet and, by doing so, generate the aggregate
+            weights used by the Vanilla Investment Pool.{" "}
+          </Paragraph>{" "}
+          <Paragraph>
+            JUICE gets minted or burned based on the profitability of Juicenet
+            users: if juicers in aggregate make X% of profit, the supply
+            increases by the same X%. Similarly, if juicers in aggregate have a
+            negative return of Y%, the supply decreases by that same Y%. Due to
+            this dynamic, the supply of JUICE is expected to be highly volatile.
+            For example, when many people profit against the USD during bull
+            markets, the JUICE supply can increase rapidly. On the other hand,
+            during periods of low profitability, the JUICE supply could shrink.{" "}
+          </Paragraph>
+          <Paragraph>
+            Given that the greatest JUICE rewards are earned by users who
+            consistently make the most profit, we expect the supply to inflate
+            on average over time. Due to the expected inflationary nature of the
+            JUICE token, holding JUICE without participating in Juicenet is
+            likely a poor strategy. The VanillaDAO will periodically purchase
+            JUICE from the market and use the purchased tokens to provide
+            liquidity to incentivize users to participate in Juicenet. Since the
+            VanillaDAO will not sell JUICE, this action will increase the value
+            of JUICE and thus create an incentive to participate in Juicenet
+            while simultaneously increasing the token’s liquidity.
+          </Paragraph>
+          <Paragraph>
+            The community plans to airdrop JUICE to VNL holders 1:1 alongside
+            the launch of Vanilla v2. The VanillaDAO will not receive JUICE in
+            the airdrop.
+          </Paragraph>
+        </Box>
+        <Box>
+          <Heading as="h2" id="4-risks-mitigation">
+            <ThemeLink href="#4-risks-mitigation">
+              <LinkIcon size="20px" />
+            </ThemeLink>{" "}
+            4. Risks & Mitigation
+          </Heading>
+          <Paragraph>
+            The initial configuration of the Vanilla system will be entirely
+            on-chain, and the actions taken by participants are public.
+          </Paragraph>
+          <Paragraph>
+            This section breaks down foreseeable unhealthy situations that
+            result from the system’s public nature and presents strategies for
+            resolving them.
+          </Paragraph>
+          <Paragraph>
+            It’s worth noting that these situations may never occur, and the
+            mere existence of a viable and publicly known antidote may prevent
+            them from occurring.
+          </Paragraph>
+          <Paragraph>
+            <em>
+              Table 2: Summary of attacks and their impact on Vanilla
+              stakeholders
+            </em>
+          </Paragraph>
+          <Table>
+            <Row>
+              <Col>Attack</Col>
+              <Col>Juicers</Col>
+              <Col>VIP LPs</Col>
+              <Col>VanillaDAO</Col>
+            </Row>
+            <Row>
+              <Col>Front-running Juicenet </Col>
+              <Col>No impact</Col>
+              <Col>Low impact</Col>
+              <Col>No impact</Col>
+            </Row>
+            <Row>
+              <Col>Oracle Delay Abuse </Col>
+              <Col>Unfair JUICE minting</Col>
+              <Col>No impact</Col>
+              <Col>No impact</Col>
+            </Row>
+            <Row>
+              <Col>Price Manipulation</Col>
+              <Col>No impact</Col>
+              <Col>Low impact</Col>
+              <Col>Low impact</Col>
+            </Row>
+            <Row>
+              <Col>Leeching</Col>
+              <Col>Low impact</Col>
+              <Col>No impact</Col>
+              <Col>Less fees</Col>
+            </Row>
+          </Table>
+        </Box>
+        <Box>
+          <Heading as="h3" id="4-1-front-running-juicenet-txs">
+            <ThemeLink href="#4-1-front-running-juicenet-txs">
+              <LinkIcon size="20px" />
+            </ThemeLink>{" "}
+            4.1 Front-running Juicenet transactions
+          </Heading>
+
+          <Paragraph>
+            Front-running is a term generally used for a circumstance where some
+            entity acquires prior knowledge of a trade happening and can execute
+            the same trade faster than the original trader. This entity then
+            hopes to sell the asset they’ve purchased directly or indirectly to
+            the original trader at a profit.
+          </Paragraph>
+
+          <Paragraph>
+            Front-running an on-chain trade is relatively trivial in principle.
+            Every trade executed on a decentralized exchange like Uniswap
+            involves submitting an Ethereum transaction, which first appears in
+            the mempool before being confirmed. Anyone can watch the mempool and
+            thus gain prior knowledge of trades, which they can then front-run
+            by submitting the same trade but applying a higher gas fee to the
+            transaction, hoping that their transaction will be processed by
+            miners faster than the first one. Once the original trader’s
+            transaction has been confirmed, the front-runner immediately sells
+            the asset back to Uniswap at a profit. This is known as a sandwich
+            trade.
+          </Paragraph>
+          <Paragraph>
+            In Vanilla, a similar kind of front-running is also possible, albeit
+            not very effective. A front-runner could watch the mempool for
+            Juicenet transactions, which update the target weights of the
+            Vanilla Investment Pool, and quickly purchase those assets. However,
+            the Vanilla Investment Pool doesn’t immediately buy an asset from
+            the market, which would raise the price, but rather slowly begins to
+            increase the price at which it is willing to buy the asset over the
+            rebalancing period (e.g. two weeks) until it achieves its target
+            weight or the target weight is updated again. The front-runner,
+            then, cannot immediately sell the assets it has purchased for a
+            profit but needs to wait for the price to increase, during which
+            market volatility may render the trade worthless. Furthermore, the
+            target weights might update again at any moment in the opposite
+            direction, causing the same outcome for the front-runner. In fact, a
+            sufficiently large front-runner could even be the cause of a target
+            weight adjustment: the price increase might lead Juicers to close
+            positions in an asset before the Vanilla Investment Pool has
+            adjusted the price by any meaningful margin.
+          </Paragraph>
+
+          <Paragraph>
+            Finally, if a Juicenet transaction in the mempool would cause the
+            market to move, it would create an incentive for Juicers to begin
+            “front-running” their own Juicenet transactions. In essence, Juicers
+            would purchase an asset before submitting a Juicenet transaction,
+            knowing that prospective front-runners will push the price
+            immediately when the transaction is visible in the mempool. Once the
+            price was pushed up, the Juicer would sell the assets they’d
+            purchased at a profit. Given the slow reaction to target weight
+            changes, this situation would have a relatively negative impact on
+            the Vanilla Investment Pool. Yet, it would negatively impact the
+            prospective front-runner, who would consistently pay a premium for
+            assets only to see his assets drop in value moments after.
+          </Paragraph>
+        </Box>
+        <Box>
+          <Heading as="h3" id="4-2-frontrunning-juicenet-via-oracle">
+            <ThemeLink href="#4-2-frontrunning-juicenet-via-oracle">
+              <LinkIcon size="20px" />
+            </ThemeLink>{" "}
+            4.2 Front-running Juicenet via Oracle Delay Abuse
+          </Heading>
+          <Paragraph>
+            Oracle delay abuse refers to front-running the Chainlink oracles
+            Juicenet uses to calculate net profit. On-chain oracles update their
+            price with a slight delay relative to the off-chain market, creating
+            a window of opportunity for the prospective oracle front-runner. To
+            execute this, a Juicer would watch for a significant discrepancy
+            between the off-chain market price and the on-chain oracle price and
+            attempt to get a Juicenet position submitted before the oracle
+            updates, knowing the updated price will be higher, guaranteeing a
+            profit measured in JUICE terms.
+          </Paragraph>
+          <Paragraph>
+            Abusing the oracle in this way has no direct impact on the Vanilla
+            Investment Pool since the entire event happens in a very short
+            window of time. However, if left unchecked, it provides an avenue
+            for generating risk-free JUICE, which is unhealthy for the system.
+            The Vanilla system prevents this behavior with a simple mechanism:
+            fixed minimum profitability must be achieved before any JUICE is
+            minted. This means that a prospective abuser must find a dramatic
+            discrepancy between the on-chain price and the market price. This
+            situation could occur but is quite unlikely given the speed and
+            frequency of oracle price updates happening on Polygon.
+          </Paragraph>
+          <Paragraph>
+            We don’t anticipate oracle delay abuse to be a meaningful issue, but
+            if it were to become one, we could mandate a minimum holding time
+            for positions in Juicenet. This mechanism wouldn’t prevent oracle
+            abuse, but it would prevent the abuser from easily profiting from
+            it, given they would be at the mercy of the market for the duration
+            of minimum holding time.
+          </Paragraph>
+        </Box>
+        <Box>
+          <Heading as="h3" id="4-3-price-manipulation">
+            <ThemeLink href="#4-3-price-manipulation">
+              <LinkIcon size="20px" />
+            </ThemeLink>{" "}
+            4.3 Price Manipulation
+          </Heading>
+          <Paragraph>
+            In Vanilla, price manipulation refers to a situation where a Juicer
+            alters the target weight of a token to either purchase that token at
+            a discount or sell that token for a premium to the Vanilla
+            Investment Pool. Essentially the Juicer is attempting to manufacture
+            an artificial arbitrage opportunity, which it plans to exploit.
+          </Paragraph>
+          <Paragraph>
+            While price manipulation is possible, it is challenging to execute
+            successfully in practice. As with front-running, the difficulty
+            arises from the fact that the Vanilla Investment Pool doesn’t
+            immediately purchase or sell the assets into the market, but rather
+            slowly adjusts the spot price over the gradual rebalancing period
+            (e.g. two weeks) to eventually achieve the desired portfolio
+            weights.
+          </Paragraph>
+          <Paragraph>
+            For the Juicer to succeed in exploiting the arbitrage opportunity,
+            they must first wait for the price to adjust while competing with
+            all other arbitrageurs to capture the value of the arbitrage. During
+            this period, the Juicer is at the mercy of market volatility and
+            thus has no guarantee that the arbitrage will succeed.
+          </Paragraph>
+          <Paragraph>
+            In theory, the AUM of the Vanilla Investment Pool could become so
+            large that any trade initiated could move the market so dramatically
+            that all the volatility is in effect “swallowed up” during the
+            rebalancing period, ensuring a near-guaranteed profit for the
+            Juicer. However, given that the tokens available in Juicenet are
+            among the most liquid assets available and arbitrage opportunities
+            can be executed using any available liquidity pools, whether
+            centralized or decentralized, this scenario corresponds to a truly
+            staggering scale. If this scale was indeed achieved, some minor
+            adjustments would need to be made to ensure Juicenet positions don’t
+            become self-fulfilling prophecies. Either the minimum holding period
+            of Juicenet positions would need to be extended, or the minimum
+            profit at which JUICE is minted would need to be increased to
+            correspond to the immediate impact the Juicenet position has on the
+            market or both. Furthermore, Juicenet has an existing mechanism that
+            provides some defense against this sort of behavior: shorting. By
+            taking short positions on a token, Juicers can effectively nullify
+            the influence of a long position on any given token.
+          </Paragraph>
+          <Paragraph>
+            Even with these adjustments, it’s likely that this ability to move
+            markets would cause a bidding war for JUICE, but this would have
+            little to no impact on the Vanilla Investment Pool, given the
+            Juicenet system always rewards influence to better investors over
+            time. Let’s say a large treasury was buying JUICE to stake on their
+            own token. They could do this and cause the Vanilla Investment Pool
+            to purchase this token, but if the position were ultimately
+            unprofitable, they would lose the influence that allowed them to
+            take the position in the first place. Of course, they could combine
+            this with front-running their own Juice position and thus benefit
+            from the increase in market price, external to Juicenet. Still,
+            assuming a long enough minimum holding period in Juicenet, this
+            would quickly become prohibitively expensive unless the positions
+            they were taking in Juicenet ended up being profitable.
+          </Paragraph>
+        </Box>
+        <Box>
+          <Heading as="h3" id="4-4-leeching">
+            <ThemeLink href="#4-4-leeching">
+              <LinkIcon size="20px" />
+            </ThemeLink>{" "}
+            4.4 Leeching
+          </Heading>
+          <Paragraph>
+            Leeching refers to the act of extracting value from the Vanilla
+            system while providing nothing in return. In practice, this means
+            replicating the Vanilla Investment Pool portfolio outside of the
+            Vanilla system and thus avoiding paying fees to the VanillaDAO. This
+            setting is similar to front-running Juicenet as described in section
+            4.1, as in both cases, information about Juicenet trades is being
+            used outside of the Vanilla system.
+          </Paragraph>
+
+          <Paragraph>
+            However, leeching is not equivalent to front-running. A small-scale
+            leecher with a long-term investment horizon could benefit from
+            replicating the portfolio weights without resorting to any
+            short-term manipulation. For example, a leecher could simply
+            maintain a relatively equivalent portfolio of assets as the Vanilla
+            Investment Pool without interfering with the operations of the
+            Vanilla system. Nevertheless, it allows the leecher to benefit from
+            the market insight generated in Juicenet while avoiding paying fees
+            to the VanillaDAO.
+          </Paragraph>
+
+          <Paragraph>
+            A larger-scale leecher could set up a competing Balancer Managed
+            Pool and a keeper system, which watches for Juicenet events and then
+            submits equivalent target weight changes to this side pool. The
+            transaction costs, which in the Vanilla system are paid by the
+            Juicers, would need to be paid by the leacher in addition to the
+            costs of building out the keeper infrastructure. Thus it’s likely
+            that the pool would need to charge higher fees than the Vanilla
+            Investment Pool. Therefore, it seems unlikely that a competing
+            Balancer Pool would enjoy widespread popularity unless Vanilla
+            Investment Pool fees were too high, in which case the simple
+            solution would be to lower them to a sustainable level.
+          </Paragraph>
+
+          <Paragraph>
+            Furthermore, even if such a competing pool achieved a degree of
+            popularity, the existence of such a pool would effectively increase
+            the total amount of capital that Juicenet is managing. If the amount
+            of capital leeching were relatively modest, it would likely have
+            almost no effect on market pricing and thus also on the Vanilla
+            Investment Pool. It would, however, mean lower fees for the capital
+            managed by Vanilla.
+          </Paragraph>
+          <Paragraph>
+            Given that the amount of capital leeching in this scenario is
+            modest, the fees lost would not be significant. If the capital were
+            substantial, we would arrive at the same outcome as described in
+            section 4.1, where Juicers begin to front-run their own trades,
+            knowing that the simple act of submitting a transaction to Juicenet
+            positively impacts the price.
+          </Paragraph>
+        </Box>
+        <Box>
+          <Heading as="h3" id="4-5-ultimatum-measures">
+            <ThemeLink href="#4-5-ultimatum-measures">
+              <LinkIcon size="20px" />
+            </ThemeLink>{" "}
+            4.5 Ultimatum Measures
+          </Heading>
+          <Paragraph>
+            Suppose all the measures described above to mitigate manipulation,
+            abuse, and leeching in the system were to fail. In that case, the
+            Vanilla system has a fallback plan: hide the portfolio weights
+            generated by Juicenet and auction them to a small group of users,
+            who can then utilize them in whatever way they wish. In essence,
+            this means the portfolio weights would be used mainly off-chain,
+            likely in centralized exchanges.{" "}
+          </Paragraph>
+
           <Box
-            css={{
-              position: "relative",
-              width: "100%",
-              height: "400px",
-              my: "$5",
-            }}
+            css={{ border: "1px solid $text", pb: "$2", px: "$6", mt: "$8" }}
           >
-            <Image
-              src="/images/faq/VNL_vs_holding_ratio.jpg"
-              alt="VNL vs holding ratio"
-              layout="fill"
-              objectFit="scale-down"
-            />
+            <Paragraph>
+              Here we describe a simple example scheme for hiding portfolio
+              weights and auctioning them to a limited set of users
+              (subscribers). The method combines public-key cryptography with a
+              commit-reveal scheme to conceal the portfolio weights from the
+              public and share the weights with the subscribers. To achieve
+              this, Juicers publish encrypted weights on-chain, accompanied by a
+              JUICE stake, to create a verifiable track record of weight
+              changes. Once the Juicer wishes to withdraw their JUICE, they
+              reveal their private key, thus revealing their weight change
+              history. This allows the Vanilla system to compute the rewards or
+              penalties and settle the JUICE stake.
+            </Paragraph>
+            <Paragraph>
+              Each slot for receiving the portfolio weights in real-time is
+              auctioned periodically. Each user participating in the auction
+              submits the proposed payment for the period and shares their
+              public key. Once the subscribers have been identified, each Juicer
+              publishes their weight changes on-chain, encrypted with each of
+              the subscribers’ public keys.
+            </Paragraph>
+            <Paragraph>
+              This mechanism allows the effective hiding of the portfolio
+              weights from the public while allowing subscribers to receive
+              weights in real-time, which they can then use to manage a
+              portfolio.
+            </Paragraph>{" "}
           </Box>
-          <Text>
-            We can easily see that when the Holding/Trading Ratio (Squared)
-            increases from 25 % to almost 100 % (factor of 4) also the VNL
-            rewards increase accordingly. A trader can increase VNL rewards by:
-            - Making higher percentage returns on his trades or trading larger
-            ETH positions, i.e. making higher absolute ETH returns -{">"} Higher
-            profit component <TeX math="P_i" />- Opening trades early as
-            possible -{">"} Higher Holding/Trading Ratio (Squared){" "}
-            <TeX math="H_i" />- Holding the trades longer -{">"} Higher
-            Holding/Trading Ratio (Squared) <TeX math="H_i" />
-          </Text>
+
+          <Paragraph>
+            Hiding and auctioning the weights would be an unfortunate outcome as
+            it would outprice smaller investors from benefiting from the market
+            insight generated by Juicenet. Smaller inventors could still pool
+            their money and collectively purchase the Juicenet portfolio
+            weights. Still, it would be considerably more complicated than
+            simply contributing capital to the Vanilla Investment Pool.
+          </Paragraph>
+
+          <Paragraph>
+            We expect that the existence of a viable plan to hide the weights,
+            combined with the various unfavorable outcomes for bad behavior
+            described in the previous sections, will be enough to prevent such
+            behavior from happening altogether.
+          </Paragraph>
+
+          <Paragraph>
+            Furthermore, the emergence of private computing environments will
+            eventually allow us to implement a system that hides the portfolio
+            weights while allowing anyone to participate.
+          </Paragraph>
         </Box>
       </Stack>
     </Container>
