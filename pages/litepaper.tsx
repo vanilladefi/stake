@@ -392,11 +392,11 @@ const Faq = () => {
           </OrderedList>
           <Paragraph>
             For example, a juicer might stake LONG UNI with 100 JUICE. When the
-            price of UNI subsequently increases 50%, the user's stake is now
+            price of UNI subsequently increases 50%, the user’s stake is now
             worth 150 JUICE.
           </Paragraph>
           <Paragraph>
-            For short positions, return is calculated as an inverse: Let's
+            For short positions, return is calculated as an inverse: Let’s
             assume the juicer has staked SHORT UNI with 100 JUICE. If the price
             of UNI increases 50%, the juicer’s stake is worth 50 JUICE. If the
             price increases 100%, the juicer has lost the entire stake. In
