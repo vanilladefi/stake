@@ -48,6 +48,7 @@ export const Input = styled("input", {
   },
   "&::placeholder": {
     color: "$offWhite50",
+    opacity: 0.3,
   },
   "&:focus": {
     boxShadow: `0 1px 0 0px $colors$muted`,
