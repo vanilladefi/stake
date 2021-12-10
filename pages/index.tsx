@@ -3,9 +3,14 @@ import dynamic from "next/dynamic";
 import {
   ArrowRight,
   CommunityIcon,
-  Diamond, Divider as _Divider, JuiceFlow, JuiceSignalIcon,
-  JuicingIcon, One, Three,
-  Two
+  Diamond,
+  Divider as _Divider,
+  JuiceFlow,
+  JuiceSignalIcon,
+  JuicingIcon,
+  One,
+  Three,
+  Two,
 } from "../assets";
 import Box from "../components/Box";
 import Container from "../components/Container";
@@ -13,6 +18,7 @@ import Flex from "../components/Flex";
 import Heading from "../components/Heading";
 import Link from "../components/Link";
 import Text from "../components/Text";
+import EmailForm from "../components/EmailForm";
 import { styled } from "../stitches.config";
 
 const ActiveWallet = dynamic(() => import("../components/Wallet/ActiveWallet"), { ssr: false });
@@ -132,8 +138,8 @@ const Divider = styled(_Divider, { my: "$8", width: "100%" });
 const Home: NextPage = () => {
   return (
     <>
-    <WalletModal />
-    <ActiveWallet />
+      <WalletModal />
+      <ActiveWallet />
       <Container>
         <Box as="main" css={{ position: "relative" }}>
           <StyledDiamond />
@@ -207,7 +213,7 @@ const Home: NextPage = () => {
           </Flex>
         </Flex>
       </Container>
-      
+
       <Flex css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}>
         <Container>
           <Flex
@@ -242,12 +248,16 @@ const Home: NextPage = () => {
                 alignItems: "start",
                 justifyContent: "center",
                 width: "100%",
-                ml: "$10",
+                mt: '$5',
                 "@md": {
+                  mt: 0,
+                  ml: "$10",
+                  pl: "$5",
                   width: "50%",
                 },
               }}
             >
+              <EmailForm />
               {/* FORM_HERE */}
             </Flex>
           </Flex>

@@ -20,6 +20,9 @@ const StyledButton = styled(
     lineHeight: 1.1,
     cursor: "pointer",
     boxShadow: "0px 0px 0px 1px $$borderColor",
+    "&:disabled": {
+      opacity: 0.75, // maybe some better design
+    },
     variants: {
       variant: {
         default: {

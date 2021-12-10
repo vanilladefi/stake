@@ -10,6 +10,15 @@ svg {
   min-width: fit-content;
 }
 
+fieldset {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  margin-inline: 0;
+  padding-block: 0;
+  padding-inline: 0;
+}
+
 @font-face {
   font-family: "Moche";
   src: url("/fonts/Moche-Regular.eot");
