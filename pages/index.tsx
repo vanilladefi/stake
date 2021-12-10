@@ -3,9 +3,14 @@ import dynamic from "next/dynamic";
 import {
   ArrowRight,
   CommunityIcon,
-  Diamond, Divider as _Divider, JuiceFlow, JuiceSignalIcon,
-  JuicingIcon, One, Three,
-  Two
+  Diamond,
+  Divider as _Divider,
+  JuiceFlow,
+  JuiceSignalIcon,
+  JuicingIcon,
+  One,
+  Three,
+  Two,
 } from "../assets";
 import Box from "../components/Box";
 import Container from "../components/Container";
@@ -15,8 +20,13 @@ import Link from "../components/Link";
 import Text from "../components/Text";
 import { styled } from "../stitches.config";
 
-const ActiveWallet = dynamic(() => import("../components/Wallet/ActiveWallet"), { ssr: false });
-const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), { ssr: false });
+const ActiveWallet = dynamic(
+  () => import("../components/Wallet/ActiveWallet"),
+  { ssr: false }
+);
+const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
+  ssr: false,
+});
 
 const StyledDiamond = styled(Diamond, {
   position: "absolute",
@@ -41,7 +51,13 @@ const StyledArrow = styled(ArrowRight, {
   boxSizing: "border-box",
 });
 
-const ArrowLink = ({ text = "", href = "#" }: { text?: string; href?: string }) => (
+const ArrowLink = ({
+  text = "",
+  href = "#",
+}: {
+  text?: string;
+  href?: string;
+}) => (
   <Link
     css={{
       textDecoration: "underline",
@@ -102,7 +118,13 @@ const SectionHeading = ({
   </Heading>
 );
 
-const SectionDescription = ({ text = "", muted = false }: { text?: string; muted?: boolean }) => (
+const SectionDescription = ({
+  text = "",
+  muted = false,
+}: {
+  text?: string;
+  muted?: boolean;
+}) => (
   <Text
     as="div"
     css={{
@@ -127,13 +149,11 @@ const StyledJuiceFlow = styled(JuiceFlow, {
   maxWidth: "400px",
 });
 
-const Divider = styled(_Divider, { my: "$8", width: "100%" });
-
 const Home: NextPage = () => {
   return (
     <>
-    <WalletModal />
-    <ActiveWallet />
+      <WalletModal />
+      <ActiveWallet />
       <Container>
         <Box as="main" css={{ position: "relative" }}>
           <StyledDiamond />
@@ -207,8 +227,10 @@ const Home: NextPage = () => {
           </Flex>
         </Flex>
       </Container>
-      
-      <Flex css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}>
+
+      <Flex
+        css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}
+      >
         <Container>
           <Flex
             css={{
@@ -299,11 +321,15 @@ const Home: NextPage = () => {
                 <StyledOne css={{ mr: "$5" }} />
                 <SectionDescription text="Juicers create investment portfolios." />
               </Flex>
-              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
+              <Flex
+                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
+              >
                 <StyledTwo css={{ mr: "$5" }} />
                 <SectionDescription text="Vanilla Pool invests in line with the best performing Juicers." />
               </Flex>
-              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
+              <Flex
+                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
+              >
                 <StyledThree css={{ mr: "$5" }} />
                 <SectionDescription text="VanillaDAO channels a share of returns back to Juicers." />
               </Flex>
