@@ -6,7 +6,6 @@ import type * as Stitches from "@stitches/react";
 
 import Box from "../components/Box";
 import Text from "../components/Text";
-import Flex from "../components/Flex";
 import Paragraph from "../components/Paragraph";
 import Link from "../components/Link";
 
@@ -37,23 +36,13 @@ const TableWrapper = styled("div", {
   width: "100%",
   display: "block",
   overflowX: "auto",
-  my: "$8",
+  my: "$6",
 });
 
 const Table = styled("table", {
   borderCollapse: "collapse",
-  tableLayout: "fixed",
   width: "100%",
-  fontSize: "0.5rem",
-  "@sm": {
-    fontSize: "0.6rem",
-  },
-  "@md": {
-    fontSize: "$xs",
-  },
-  "@lg": {
-    fontSize: "$xs",
-  },
+  fontSize: "$xs",
 });
 
 const Row = styled("tr", {
@@ -67,9 +56,7 @@ const SRow = styled("tr", {
 
 const Col = styled("td", {
   border: "1px solid $text",
-  p: "$1 $2",
-  overflow: "hidden",
-  whiteSpace: "nowrap",
+  p: "$2",
 });
 
 const OrderedList = styled("ol", {
@@ -77,12 +64,12 @@ const OrderedList = styled("ol", {
 });
 
 const ListItem = styled("li", {
-  lineHeight: "$3",
+  lineHeight: "1.42",
   my: "$5",
 });
 
 const ListItemFlex = styled("li", {
-  lineHeight: "$3",
+  lineHeight: "1.42",
   my: "$10",
 });
 
@@ -667,7 +654,7 @@ const Faq = () => {
                   <Col colSpan={5}></Col>
                   <Col colSpan={2}>Output to Vanilla Pool</Col>
                 </Row>
-                <Row>
+                <Row css={{ position: "relative" }}>
                   <Col>Token</Col>
                   <Col>
                     Total <br />
