@@ -12,14 +12,6 @@ import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
 import client from "../urql";
 
-const ActiveWallet = dynamic(
-  () => import("../components/Wallet/ActiveWallet"),
-  { ssr: false }
-);
-const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
-  ssr: false,
-});
-
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const origin = useOrigin();
@@ -113,8 +105,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         >
           <Box>
-            <WalletModal />
-            <ActiveWallet />
             <Navigation />
             <Component {...pageProps} />
             <Footer />
