@@ -1,4 +1,4 @@
-import { ThemeProvider, useTheme } from "next-themes";
+import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -23,7 +23,6 @@ const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const origin = useOrigin();
-  const { theme } = useTheme();
   const shareImg = "/images/share-image.png";
   return (
     <>
