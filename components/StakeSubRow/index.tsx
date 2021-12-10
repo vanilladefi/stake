@@ -51,7 +51,7 @@ const StakeSubRow = ({ row }: { row: Row<ColumnType> }) => {
         <Input
           size="lg"
           type="number"
-          placeholder=""
+          placeholder="100"
           value={stakeAmount}
           onChange={(e) => setStakeAmount(e.target.value)}
           css={{ width: "200px", textAlign: "right", mx: "$3" }}
