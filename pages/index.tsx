@@ -57,6 +57,7 @@ const SRow = styled("tr", {
 const Col = styled("td", {
   border: "1px solid $text",
   p: "$2",
+  position: "relative",
 });
 
 const OrderedList = styled("ol", {

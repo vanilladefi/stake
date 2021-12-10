@@ -22,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta charSet="utf-8" />
 
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta name="format-detection" content="telephone=no" />
         <meta property="og:url" content={`${origin}${router.asPath}`} />
         <meta
           property="og:title"
