@@ -9,7 +9,8 @@ const Box = styled("div", {
         width: '100%'
       }
     }
-  }
+  },
+  minWidth: "0",
 });
 
 export default Box;

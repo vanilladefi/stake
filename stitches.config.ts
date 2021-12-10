@@ -1,7 +1,7 @@
 // stitches.config.ts
-import type Stitches from '@stitches/react';
-import { createStitches } from '@stitches/react';
-import { transparentize } from 'polished';
+import type Stitches from "@stitches/react";
+import { createStitches } from "@stitches/react";
+import { transparentize } from "polished";
 
 export const {
   styled,
@@ -15,32 +15,33 @@ export const {
 } = createStitches({
   theme: {
     colors: {
-      black: '#10070F',
-      text: '#10070F',
+      black: "#311E15",
+      text: "#311E15",
       textSecondary: "#311d15",
-      textA: transparentize(0.1, '#10070F'),
-      background: '#F1EBD4',
-      backgroundA: transparentize(0.1, '#F1EBD4'),
-      primary: '#E5B754',
-      secondary: '#30c',
-      muted: '#4F3428',
-      extraMuted: '#DDCDB9',
+      textA: transparentize(0.1, "#10070F"),
+      background: "#F8F5EC",
+      backgroundA: transparentize(0.1, "#F1EBD4"),
+      primary: "#E5B754",
+      secondary: "#30c",
+      muted: "#4F3428",
+      extraMuted: "#DDCDB9",
       green: "#A1F161",
       red: "#FD5247",
-      backgroundSecondary: "#ddd5bf",
+      backgroundSecondary: "#FDFBF5",
+      link: "#986d10",
     },
     fonts: {
       body: 'PolySans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
-      heading: 'Moche, sans-serif',
-      monospace: 'Menlo, monospace',
+      heading: "Moche, sans-serif",
+      monospace: "Menlo, monospace",
     },
     fontSizes: {
       xs: "0.75rem",
       sm: "0.875rem",
-      md: "1rem",
+      md: "1.05rem",
       lg: "1.125rem",
       xl: "1.25rem",
-      "xxl": "1.35rem",
+      xxl: "1.35rem",
       "2xl": "1.5rem",
       "3xl": "1.875rem",
       "4xl": "2.25rem",
@@ -49,7 +50,7 @@ export const {
       "7xl": "4.5rem",
       "8xl": "6rem",
       "9xl": "8rem",
-      default: '$md'
+      default: "$md",
     },
     space: {
       px: "1px",
@@ -85,15 +86,15 @@ export const {
       72: "18rem",
       80: "20rem",
       96: "24rem",
-      "widePlus": '2048px',
-      "wide": '1536px',
-      "layoutPlus": '1260px',
-      "layout": '1024px',
-      "copyUltra": '980px',
-      "copyPlus": '768px',
-      "copy": '680px',
-      "narrowPlus": '600px',
-      "narrow": '512px',
+      widePlus: "2048px",
+      wide: "1536px",
+      layoutPlus: "1260px",
+      layout: "1024px",
+      copyUltra: "980px",
+      copyPlus: "768px",
+      copy: "680px",
+      narrowPlus: "600px",
+      narrow: "512px",
       xs: "20rem",
       sm: "24rem",
       md: "28rem",
@@ -197,56 +198,106 @@ export const {
   },
   utils: {
     // Abbreviated margin properties
-    m: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'margin'>) => ({
+    m: (
+      value: Stitches.ScaleValue<"space"> | Stitches.PropertyValue<"margin">
+    ) => ({
       margin: value,
     }),
-    mt: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'marginTop'>) => ({
+    mt: (
+      value: Stitches.ScaleValue<"space"> | Stitches.PropertyValue<"marginTop">
+    ) => ({
       marginTop: value,
     }),
-    mr: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'marginRight'>) => ({
+    mr: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"marginRight">
+    ) => ({
       marginRight: value,
     }),
-    mb: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'marginBottom'>) => ({
+    mb: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"marginBottom">
+    ) => ({
       marginBottom: value,
     }),
-    ml: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'marginLeft'>) => ({
+    ml: (
+      value: Stitches.ScaleValue<"space"> | Stitches.PropertyValue<"marginLeft">
+    ) => ({
       marginLeft: value,
     }),
-    mx: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'marginLeft' | 'marginRight'>) => ({
+    mx: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"marginLeft" | "marginRight">
+    ) => ({
       marginLeft: value,
       marginRight: value,
     }),
-    my: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'marginTop' | 'marginBottom'>) => ({
+    my: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"marginTop" | "marginBottom">
+    ) => ({
       marginTop: value,
       marginBottom: value,
     }),
     // Abbreviated margin properties
-    p: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'padding'>) => ({
+    p: (
+      value: Stitches.ScaleValue<"space"> | Stitches.PropertyValue<"padding">
+    ) => ({
       padding: value,
     }),
-    pt: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'paddingTop'>) => ({
+    pt: (
+      value: Stitches.ScaleValue<"space"> | Stitches.PropertyValue<"paddingTop">
+    ) => ({
       paddingTop: value,
     }),
-    pr: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'paddingRight'>) => ({
+    pr: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"paddingRight">
+    ) => ({
       paddingRight: value,
     }),
-    pb: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'paddingBottom'>) => ({
+    pb: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"paddingBottom">
+    ) => ({
       paddingBottom: value,
     }),
-    pl: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'paddingLeft'>) => ({
+    pl: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"paddingLeft">
+    ) => ({
       paddingLeft: value,
     }),
-    px: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'paddingLeft' | 'paddingRight'>) => ({
+    px: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"paddingLeft" | "paddingRight">
+    ) => ({
       paddingLeft: value,
       paddingRight: value,
     }),
-    py: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'paddingTop' | 'paddingBottom'>) => ({
+    py: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"paddingTop" | "paddingBottom">
+    ) => ({
       paddingTop: value,
       paddingBottom: value,
     }),
 
     // A property for applying width/height together
-    size: (value: Stitches.ScaleValue<'space'> | Stitches.PropertyValue<'width' | 'height'>) => ({
+    size: (
+      value:
+        | Stitches.ScaleValue<"space">
+        | Stitches.PropertyValue<"width" | "height">
+    ) => ({
       width: value,
       height: value,
     }),
@@ -255,41 +306,42 @@ export const {
     // }),
 
     // A property to apply linear gradient
-    linearGradient: (value: Stitches.ScaleValue<'space'>) => ({
+    linearGradient: (value: Stitches.ScaleValue<"space">) => ({
       backgroundImage: `linear-gradient(${value})`,
     }),
 
     // An abbreviated property for border-radius
-    br: (value: Stitches.ScaleValue<'space'>) => ({
+    br: (value: Stitches.ScaleValue<"space">) => ({
       borderRadius: value,
     }),
   },
-
 });
 
-export const darkTheme = createTheme('dark', {
+export const darkTheme = createTheme("dark", {
   colors: {
-    text: '#F1EBD4',
-    textA: transparentize(0.1, '#F1EBD4'),
-    textSecondary: '#ddcdb9',
-    background: '#10070F',
-    backgroundA: transparentize(0.1, '#10070F'),
-    primary: '#E5B754',
-    secondary: '#30c',
-    muted: '#AF9E88',
-    extraMuted: '#776464',
-    backgroundSecondary: '#1c1217'
+    text: "#F1EBD4",
+    textA: transparentize(0.1, "#F1EBD4"),
+    textSecondary: "#ddcdb9",
+    background: "#10070F",
+    backgroundA: transparentize(0.1, "#10070F"),
+    primary: "#E5B754",
+    secondary: "#30c",
+    muted: "#AF9E88",
+    extraMuted: "#776464",
+    backgroundSecondary: "#1c1217",
+    link: "#E5B754",
   },
 });
 
 export const globalStyles = globalCss({
-  // body: { backgroundColor: '$background', color: '$text', fontFamily: 'Helvetica' },
-  'html, body': {
-    backgroundColor: '$background',
-    color: '$text',
-    fontFamily: '$body',
-    fontSize: '$md',
-    '-webkit-font-smoothing': 'antialiased',
-    '-moz-osx-font-smoothing': 'grayscale'
+  "html, body": {
+    backgroundColor: "$background",
+    color: "$text",
+    margin: 0,
+    padding: 0,
+    fontFamily: "$body",
+    fontSize: "$md",
+    "-webkit-font-smoothing": "antialiased",
+    "-moz-osx-font-smoothing": "grayscale",
   },
 });
