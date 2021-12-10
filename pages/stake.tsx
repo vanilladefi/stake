@@ -9,7 +9,6 @@ import Button from "../components/Button";
 import Container from "../components/Container";
 import Flex from "../components/Flex";
 import Heading from "../components/Heading";
-import Stack from "../components/Stack";
 import Table from "../components/Table";
 import Text from "../components/Text";
 
@@ -21,8 +20,13 @@ import {
 import tokens from "../tokensV2";
 import client, { ssrCache } from "../urql";
 import StakeSubRow, { ColumnType } from "../components/StakeSubRow";
-import { ArrowRight } from "phosphor-react";
 import TableFilter from "../components/TableFilter";
+import { JuicingIcon } from "../assets";
+import { ArrowLink } from ".";
+import Stack from "../components/Stack";
+import { connectWallet } from "../state/actions/wallet";
+import { useSnapshot } from "valtio";
+import { state } from "../state";
 
 const Predict = () => {
   const [{ fetching, data }, executeQuery] = useGetAssetPairsQuery();
@@ -163,6 +167,8 @@ const Predict = () => {
     []
   );
 
+  const snap = useSnapshot(state);
+
   const renderRowSubComponent = useCallback(
     ({ row }: { row: Row<ColumnType> }) => {
       return <StakeSubRow row={row} />;
@@ -216,44 +222,14 @@ const Predict = () => {
                   alignItems: "flex-start",
                 }}
               >
-                <Flex
-                  css={{
-                    color: "$primary",
-                    alignItems: "center",
-                    gap: "$3",
-                    fontSize: "$2xl",
-                    lineHeight: 1,
-                    fontWeight: 300,
-                    cursor: "pointer",
-                    borderColor: "$primary",
-                    "&:hover": {
-                      color: "$primaryDark",
-                      borderColor: "$primaryDark",
-                    },
-                  }}
-                >
-                  <ArrowRight />{" "}
-                  <Box as="span" css={{ borderBottom: "1px solid" }}>
-                    Connect wallet
-                  </Box>
-                </Flex>
-                <Flex
-                  css={{
-                    color: "$primary",
-                    alignItems: "center",
-                    gap: "$3",
-                    fontSize: "$2xl",
-                    fontWeight: 300,
-                    cursor: "pointer",
-                    "&:hover": {
-                      color: "$primaryDark",
-                    },
-                  }}
-                >
-                  <ArrowRight />{" "}
-                  <Box as="span" css={{ borderBottom: "1px solid" }}>
-                    Learn more
-                  </Box>
+                <Flex css={{ flexDirection: "column" }}>
+                  <ArrowLink text="Read more" />
+                  {!snap.walletAddress && (
+                    <ArrowLink
+                      onClick={() => connectWallet()}
+                      text="Connect Wallet"
+                    />
+                  )}
                 </Flex>
               </Stack>
             </Stack>
@@ -271,13 +247,7 @@ const Predict = () => {
                   height: "199px",
                 }}
               >
-                <Image
-                  src="/juicing.svg"
-                  alt="Juicing Icon"
-                  width="153px"
-                  height="199px"
-                  objectFit="contain"
-                />
+                <JuicingIcon />
               </Box>
             </Flex>
           </Stack>

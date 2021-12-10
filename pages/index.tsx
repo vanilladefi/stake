@@ -51,12 +51,14 @@ const StyledArrow = styled(ArrowRight, {
   boxSizing: "border-box",
 });
 
-const ArrowLink = ({
+export const ArrowLink = ({
   text = "",
   href = "#",
+  onClick,
 }: {
   text?: string;
   href?: string;
+  onClick?: () => void;
 }) => (
   <Link
     css={{
@@ -70,6 +72,7 @@ const ArrowLink = ({
     }}
     as="a"
     href={href}
+    onClick={onClick}
   >
     <StyledArrow />
     <Text
