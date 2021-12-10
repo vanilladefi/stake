@@ -33,13 +33,12 @@ const Predict = () => {
   const [filterValue, setFilterValue] = useState("");
   // refetch data every 60 seconds
   useEffect(() => {
-    if (!fetching) {
-      const id = setTimeout(
-        () => executeQuery({ requestPolicy: "network-only" }),
-        60000
-      );
-      return () => clearTimeout(id);
-    }
+    const id = setTimeout(() => {
+      if (!fetching) {
+        executeQuery({ requestPolicy: "network-only" });
+      }
+    }, 2000);
+    return () => clearTimeout(id);
   }, [fetching, executeQuery]);
 
   const columns: Column<ColumnType>[] = useMemo(
@@ -67,20 +66,19 @@ const Predict = () => {
             <Flex css={{ alignItems: "center" }}>
               <Box
                 css={{
-                  width: "24px",
-                  height: "24px",
-                  backgroundColor: "#ffffff",
-                  borderRadius: "5px",
+                  width: "28px",
+                  height: "28px",
+                  // backgroundColor: "#ffffff",
+                  // borderRadius: "5px",
                   position: "relative",
                   overflow: "hidden",
-                  padding: "3px",
                 }}
               >
                 {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
                   ?.imageUrl ? (
                   <Image
-                    width="18px"
-                    height="18px"
+                    width="28px"
+                    height="28px"
                     layout="fixed"
                     objectFit="cover"
                     src={`/token-assets/${row.original.id.split("/")[0]}.png`}
@@ -88,7 +86,7 @@ const Predict = () => {
                   />
                 ) : null}
               </Box>
-              <Box css={{ ml: "10px" }}>{value}</Box>
+              <Box css={{ ml: "15px" }}>{value}</Box>
             </Flex>
           );
         },
