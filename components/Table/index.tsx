@@ -55,7 +55,7 @@ const TableContainer = styled(Box, {
       padding: "0.5rem",
       borderBottom: "0px solid black",
       borderRight: "0px solid black",
-      py: "$5",
+      py: "$3",
       px: "$4",
       "&:last-child": {
         borderRight: 0,
