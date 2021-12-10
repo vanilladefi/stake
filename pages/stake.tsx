@@ -210,6 +210,7 @@ const Predict = () => {
                   fontWeight: 300,
                   fontSize: "$2xl",
                   color: "$offWhite85",
+                  maxWidth: "450px",
                 }}
               >
                 Create an investment portfolio by staking $JUICE. Earn rewards.
