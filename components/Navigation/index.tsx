@@ -23,6 +23,8 @@ const ThemeChanger = () => {
       }}
       css={{
         display: "flex",
+        width: "48px",
+        height: "48px",
         marginLeft: "auto",
         cursor: "pointer",
         alignItems: "center",
@@ -165,19 +167,8 @@ const MobileNavigation = () => {
             flexShrink: 0,
             mx: "$5",
           }}
-        >
-          <NavLink css={{ py: "$4" }} href="/stake">
-            Stake
-          </NavLink>
-          <NavLink css={{ py: "$4" }} href="/invest">
-            Invest
-            <ArrowUpRight
-              weight="bold"
-              style={{ marginBottom: "3px", marginLeft: "5px" }}
-              size="15px"
-            />
-          </NavLink>
-        </Stack>
+        ></Stack>
+        <ThemeChanger />
         <Box
           color="muted"
           css={{
@@ -222,13 +213,23 @@ const MobileNavigation = () => {
               mb: "$2",
             }}
           >
+            <NavLink css={{ py: "$4" }} href="/stake">
+              Stake
+            </NavLink>
+            <NavLink css={{ py: "$4" }} href="/invest">
+              Invest
+              <ArrowUpRight
+                weight="bold"
+                style={{ marginBottom: "3px", marginLeft: "5px" }}
+                size="15px"
+              />
+            </NavLink>
             <NavLink css={{ py: "$5", alignItems: "center" }} href="/faq">
               FAQ
             </NavLink>
             <NavLink css={{ py: "$5", alignItems: "center" }} href="/community">
               Community
             </NavLink>
-            <ThemeChanger />
           </Stack>
 
           <WalletButton css={{ marginLeft: "auto", pb: "$3", width: "100%" }} />

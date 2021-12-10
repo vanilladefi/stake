@@ -180,7 +180,7 @@ const Home: NextPage = () => {
               },
             }}
           >
-            The world&apos;s first decentralised asset manager.
+            Decentra&shy;lized Asset Manager for Web3
           </Heading>
         </Box>
 
@@ -405,6 +405,7 @@ const Home: NextPage = () => {
                   css={{
                     ml: "$10",
                     order: 1,
+                    maxWidth: "96px",
                     "@md": {
                       ml: 0,
                       mr: "$10",
@@ -455,6 +456,9 @@ const Home: NextPage = () => {
                   css={{
                     ml: "$10",
                     order: 1,
+                    width: "30%",
+                    maxWidth: "96px",
+                    textAlign: "center",
                     "@md": {
                       ml: 0,
                       mr: "$10",
@@ -517,6 +521,7 @@ const Home: NextPage = () => {
                 css={{
                   ml: "$10",
                   order: 1,
+                  maxWidth: "120px",
                   "@md": {
                     ml: 0,
                     mr: "$10",
