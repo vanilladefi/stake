@@ -106,14 +106,13 @@ const EmailForm: FC = () => {
                   px: "$3",
                   width: "100%",
                   mb: "$1",
+                  mr: '1px'
                 }}
                 placeholder="Email address"
               />
-              {isValid && (
-                <SendButton disabled={isLoading} type="submit" variant="primary">
-                  <StyledArrow />
-                </SendButton>
-              )}
+              <SendButton disabled={isLoading} muted={!isValid} type="submit" variant="primary">
+                <StyledArrow />
+              </SendButton>
             </Flex>
             <ErrorText>{error}</ErrorText>
           </form>

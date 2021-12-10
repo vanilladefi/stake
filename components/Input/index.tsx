@@ -19,6 +19,9 @@ export const Input = styled("input", {
   color: "$text",
   height: 35,
   WebkitTapHighlightColor: "rgba(0,0,0,0)",
+  "&::placeholder": {
+    color: "$extraMuted",
+  },
   "&[type=number]": {
     "-moz-appearance": "textfield",
     "-webkit-appearance": "none",
@@ -138,15 +141,13 @@ export const Input = styled("input", {
       invalid: {
         boxShadow: "inset 0 0 0 1px $colors$red7",
         "&:focus": {
-          boxShadow:
-            "inset 0px 0px 0px 1px $colors$red8, 0px 0px 0px 1px $colors$red8",
+          boxShadow: "inset 0px 0px 0px 1px $colors$red8, 0px 0px 0px 1px $colors$red8",
         },
       },
       valid: {
         boxShadow: "inset 0 0 0 1px $colors$green7",
         "&:focus": {
-          boxShadow:
-            "inset 0px 0px 0px 1px $colors$green8, 0px 0px 0px 1px $colors$green8",
+          boxShadow: "inset 0px 0px 0px 1px $colors$green8, 0px 0px 0px 1px $colors$green8",
         },
       },
     },
