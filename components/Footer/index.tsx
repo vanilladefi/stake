@@ -26,7 +26,7 @@ const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
           target="_blank"
           rel="noreferrer noopener"
           css={{
-            color: "$primary",
+            color: "$link",
             textDecoration: "none",
             "&:hover": {
               color: "$text",
