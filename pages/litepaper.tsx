@@ -86,13 +86,28 @@ const ListItemFlex = styled("li", {
   my: "$10",
 });
 
+const FlexWrap = styled("div", {
+  display: "block",
+  "@md": {
+    display: "flex",
+  },
+});
+
 const FormulaText = styled("div", {
-  width: "30%",
+  width: "100%",
   pr: "$4",
+  "@md": {
+    width: "30%",
+  },
 });
 
 const Formula = styled("div", {
-  width: "70%",
+  width: "100%",
+  my: "$6",
+  "@md": {
+    width: "70%",
+    my: "0",
+  },
 });
 
 const ExtLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
@@ -343,23 +358,23 @@ const Faq = () => {
           <Paragraph>
             The Vanilla decentralized asset manager is composed of three
             distinct systems:
-            <OrderedList>
-              <ListItem>
-                Juicenet, where users take synthetic long and short positions on
-                tokens, which aggregate to portfolio weights.
-              </ListItem>
-              <ListItem>
-                Vanilla Investment Pool, a{" "}
-                <ExtLink href="https://balancer.fi/">Balancer Pool</ExtLink>{" "}
-                that manages LP assets using the portfolio weights from
-                Juicenet.
-              </ListItem>
-              <ListItem>
-                VanillaDAO, which governs and develops the Vanilla system,
-                provides fail-safes, and incentivizes ecosystem participants.
-              </ListItem>
-            </OrderedList>
           </Paragraph>
+          <OrderedList>
+            <ListItem>
+              Juicenet, where users take synthetic long and short positions on
+              tokens, which aggregate to portfolio weights.
+            </ListItem>
+            <ListItem>
+              Vanilla Investment Pool, a{" "}
+              <ExtLink href="https://balancer.fi/">Balancer Pool</ExtLink> that
+              manages LP assets using the portfolio weights from Juicenet.
+            </ListItem>
+            <ListItem>
+              VanillaDAO, which governs and develops the Vanilla system,
+              provides fail-safes, and incentivizes ecosystem participants.
+            </ListItem>
+          </OrderedList>
+
           <DetailedVanillaOverview />
         </Box>
         <Box>
@@ -402,13 +417,15 @@ const Faq = () => {
             movement of the underlying token. Upon withdrawal, JUICE is
             minted/burned according to profit/loss made.
           </Paragraph>
-          For a position on a token <TeX math="x" />
-          opened at a time <TeX math="t_{open}" />, the return at a time{" "}
-          <TeX math="t_{close}" />
-          is calculated as:
+          <Paragraph>
+            For a position on a token <TeX math="x" />
+            opened at a time <TeX math="t_{open}" />, the return at a time{" "}
+            <TeX math="t_{close}" />
+            is calculated as:
+          </Paragraph>
           <OrderedList>
             <ListItemFlex>
-              <Flex>
+              <FlexWrap>
                 <FormulaText>Value:</FormulaText>
                 <Formula>
                   <TeX math="Value_{x,t} =  Oracle_{t}(x, USD) * Q_{t})" />{" "}
@@ -416,10 +433,10 @@ const Faq = () => {
                   <br />
                   where <TeX math="Q_{t}" /> is the size of the position
                 </Formula>
-              </Flex>
+              </FlexWrap>
             </ListItemFlex>
             <ListItemFlex>
-              <Flex>
+              <FlexWrap>
                 <FormulaText>Return:</FormulaText>
 
                 <Formula>
@@ -434,7 +451,7 @@ const Faq = () => {
                   <br />
                   if short
                 </Formula>
-              </Flex>
+              </FlexWrap>
             </ListItemFlex>
           </OrderedList>
           <Paragraph>
@@ -470,68 +487,68 @@ const Faq = () => {
             Juicenet has <TeX math="n" /> juicers and <TeX math="m" /> tokens.
             For a token <TeX math="x" />, summing across all juicers, we define:
           </Paragraph>
-          <Paragraph>
-            <OrderedList start={3}>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Long positions:</FormulaText>
-                  <Formula>
-                    <TeX>{String.raw` L_{x } =  \sum_{j  = 1}^{n}L_{x, j}\ `}</TeX>
-                    , where <TeX math="j" /> refers to the <TeX math="j-th" />{" "}
-                    juicer
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Short positions:</FormulaText>
 
-                  <Formula>
-                    <TeX>{String.raw` S_{x } =  \sum_{j  = 1}^{n}S_{x, j}\ `}</TeX>
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Volume staked:</FormulaText>{" "}
-                  <Formula>
-                    <TeX>{String.raw` V_{x} = L_{x}+S_{x}\ `}</TeX>
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Net sentiment</FormulaText>{" "}
-                  <Formula>
-                    <TeX>{String.raw` N_{x} = L_{x}-S_{x}\ `}</TeX>
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-            </OrderedList>
-          </Paragraph>
+          <OrderedList start={3}>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Long positions:</FormulaText>
+                <Formula>
+                  <TeX>{String.raw` L_{x } =  \sum_{j  = 1}^{n}L_{x, j}\ `}</TeX>
+                  , where <TeX math="j" /> refers to the <TeX math="j-th" />{" "}
+                  juicer
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Short positions:</FormulaText>
+
+                <Formula>
+                  <TeX>{String.raw` S_{x } =  \sum_{j  = 1}^{n}S_{x, j}\ `}</TeX>
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Volume staked:</FormulaText>{" "}
+                <Formula>
+                  <TeX>{String.raw` V_{x} = L_{x}+S_{x}\ `}</TeX>
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Net sentiment</FormulaText>{" "}
+                <Formula>
+                  <TeX>{String.raw` N_{x} = L_{x}-S_{x}\ `}</TeX>
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+          </OrderedList>
+
           <Paragraph>
             Therefore, when summing across all tokens in Juicenet, we get:
           </Paragraph>
-          <Paragraph>
-            <OrderedList start={7}>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Total volume staked:</FormulaText>
-                  <Formula>
-                    <TeX>{String.raw` V =  \sum_{k  = 1}^{m}V_{k}\ `}</TeX>
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Total net sentiment:</FormulaText>
-                  <Formula>
-                    <TeX>{String.raw` N =  \sum_{k  = 1}^{m}N_{k}\ `}</TeX>
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-            </OrderedList>
-          </Paragraph>
+
+          <OrderedList start={7}>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Total volume staked:</FormulaText>
+                <Formula>
+                  <TeX>{String.raw` V =  \sum_{k  = 1}^{m}V_{k}\ `}</TeX>
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Total net sentiment:</FormulaText>
+                <Formula>
+                  <TeX>{String.raw` N =  \sum_{k  = 1}^{m}N_{k}\ `}</TeX>
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+          </OrderedList>
+
           <Paragraph>
             As short positions are not yet available for most assets, the
             Vanilla Investment Pool cannot replicate the Juicenet portfolio 1:1.
@@ -541,13 +558,13 @@ const Faq = () => {
             bullish or bearish Juicers are towards a token on average) versus
             the total net sentiment (= how bullish or bearish they are towards
             the market). In this conversion, the loss of some information
-            (alpha) is unavoidable.{" "}
+            (alpha) is unavoidable.
           </Paragraph>
           <Paragraph>
             Since crypto-markets are very volatile, the initial configuration of
             the Vanilla Investment Pool will track the market first and
             individual tokens second. This will be accomplished by the following
-            three rules:{" "}
+            three rules:
           </Paragraph>
           <Paragraph>
             <em>Rule 1:</em> The total % invested in longs equals the market
@@ -555,18 +572,18 @@ const Faq = () => {
             the market exposure is negative or zero, the weight for longs is
             zero.
           </Paragraph>
-          <Paragraph>
-            <OrderedList start={9}>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Weight for longs (%):</FormulaText>
-                  <Formula>
-                    <TeX>{String.raw` W_{LONGS} = max(\frac{N}{V}, 0) `}</TeX>
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-            </OrderedList>
-          </Paragraph>
+
+          <OrderedList start={9}>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Weight for longs (%):</FormulaText>
+                <Formula>
+                  <TeX>{String.raw` W_{LONGS} = max(\frac{N}{V}, 0) `}</TeX>
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+          </OrderedList>
+
           <Paragraph>
             Here, market exposure refers to the percentage of the portfolio that
             is exposed to market volatility. For example, assuming that
@@ -583,18 +600,18 @@ const Faq = () => {
             <em>Rule 2:</em> The total % invested in stablecoins (USDC) equals
             what’s left after allocating to longs.
           </Paragraph>
-          <Paragraph>
-            <OrderedList start={10}>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Weight for stablecoins:</FormulaText>
-                  <Formula>
-                    <TeX>{String.raw` W_{STABLES} = 1-W_{LONGS} `}</TeX>
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-            </OrderedList>
-          </Paragraph>
+
+          <OrderedList start={10}>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Weight for stablecoins:</FormulaText>
+                <Formula>
+                  <TeX>{String.raw` W_{STABLES} = 1-W_{LONGS} `}</TeX>
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+          </OrderedList>
+
           <Paragraph>
             <em>Rule 3:</em> Allocation to longs is distributed between net long
             tokens according to their volume-weighted net sentiment. Here,
@@ -604,34 +621,34 @@ const Faq = () => {
             that of a smaller volume token (e.g.{" "}
             <TeX math="L_{x} =  50, S_{x} =  0, N_{x } = 50" />)
           </Paragraph>
-          <Paragraph>
-            <OrderedList start={11}>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Net sentiment, weighted: </FormulaText>
-                  <Formula>
-                    <TeX>{String.raw` N_{x, weighted} = N_{x} * \frac{V_{x}}{V} `}</TeX>
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-            </OrderedList>
-          </Paragraph>
+
+          <OrderedList start={11}>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Net sentiment, weighted: </FormulaText>
+                <Formula>
+                  <TeX>{String.raw` N_{x, weighted} = N_{x} * \frac{V_{x}}{V} `}</TeX>
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+          </OrderedList>
+
           <Paragraph>Therefore, we get:</Paragraph>
-          <Paragraph>
-            <OrderedList start={12}>
-              <ListItemFlex>
-                <Flex>
-                  <FormulaText>Net sentiment, weighted:</FormulaText>
-                  <Formula>
-                    <TeX>{String.raw` W_{x} = \frac{max(N_{x, weighted} , 0)}{\sum_{k = 1}^{m}max(N_{k, weighted}, 0)} * W_{longs},`}</TeX>
-                    <br />
-                    <br />
-                    when <TeX math="W_{longs} > 0" />
-                  </Formula>
-                </Flex>
-              </ListItemFlex>
-            </OrderedList>
-          </Paragraph>
+
+          <OrderedList start={12}>
+            <ListItemFlex>
+              <FlexWrap>
+                <FormulaText>Net sentiment, weighted:</FormulaText>
+                <Formula>
+                  <TeX>{String.raw` W_{x} = \frac{max(N_{x, weighted} , 0)}{\sum_{k = 1}^{m}max(N_{k, weighted}, 0)} * W_{longs},`}</TeX>
+                  <br />
+                  <br />
+                  when <TeX math="W_{longs} > 0" />
+                </Formula>
+              </FlexWrap>
+            </ListItemFlex>
+          </OrderedList>
+
           <Paragraph>
             These aggregate weights are then passed on to the Vanilla Investment
             Pool as target weights of the portfolio.
@@ -644,100 +661,104 @@ const Faq = () => {
           </Paragraph>
           <TableWrapper>
             <Table>
-              <Row>
-                <Col colSpan={3}>Input from Juicenet</Col>
-                <Col colSpan={5}></Col>
-                <Col colSpan={2}>Output to Vanilla Pool</Col>
-              </Row>
-              <Row>
-                <Col>Token</Col>
-                <Col>
-                  Total <br />
-                  longs <br />(<TeX math="L_{x}" />)
-                </Col>
-                <Col>
-                  Total <br />
-                  shorts <br />(<TeX math="S_{x}" />)
-                </Col>
-                <Col>
-                  Total <br />
-                  volume <br />(<TeX math="V_{x}" />)
-                </Col>
-                <Col>
-                  Volume-weight <br />
-                  (%)
-                </Col>
-                <Col>
-                  Net <br />
-                  sentiment <br />(<TeX math="N_{x}" />)
-                </Col>
-                <Col colSpan={2}>
-                  Net sentiment <br />
-                  (if&gt;0), weighted <br />(
-                  <TeX math="L_{x, weighted}" />)
-                </Col>
-                <Col>
-                  Portfolio <br />
-                  weights <br />(<TeX math="W_{x}" />)
-                </Col>
-                <Col>Token</Col>
-              </Row>
-              <SRow>
-                <Col>UNI</Col>
-                <Col>100</Col>
-                <Col>50</Col>
-                <Col>150</Col>
-                <Col>67%</Col>
-                <Col>50</Col>
-                <Col>33.3</Col>
-                <Col>75%</Col>
-                <Col>25%</Col>
-                <Col>UNI</Col>
-              </SRow>
-              <SRow>
-                <Col>SUSHI</Col>
-                <Col>50</Col>
-                <Col>0</Col>
-                <Col>50</Col>
-                <Col>22%</Col>
-                <Col>50</Col>
-                <Col>11.1</Col>
-                <Col>25%</Col>
-                <Col>8.3%</Col>
-                <Col>SUSHI</Col>
-              </SRow>
-              <SRow>
-                <Col>ETH</Col>
-                <Col>0</Col>
-                <Col>25</Col>
-                <Col>25</Col>
-                <Col>11%</Col>
-                <Col>-25</Col>
-                <Col>-</Col>
-                <Col></Col>
-                <Col>0.0%</Col>
-                <Col>ETH</Col>
-              </SRow>
-              <SRow>
-                <Col>TOTAL</Col>
-                <Col>150</Col>
-                <Col>75</Col>
-                <Col>225*</Col>
-                <Col>100%</Col>
-                <Col>75*</Col>
-                <Col>44.4</Col>
-                <Col>100%</Col>
-                <Col>33.3%</Col>
-                <Col>LONGS</Col>
-              </SRow>
-              <Row>
-                <Col colSpan={8}>
-                  *Market exposure: N/V = 75/225 = 33.3%. Thus, 33.3% to longs,
-                  the rest to stables:
-                </Col>
-                <Col>+66.7%</Col>
-                <Col>STABLES</Col>
-              </Row>
+              <thead>
+                <Row>
+                  <Col colSpan={3}>Input from Juicenet</Col>
+                  <Col colSpan={5}></Col>
+                  <Col colSpan={2}>Output to Vanilla Pool</Col>
+                </Row>
+                <Row>
+                  <Col>Token</Col>
+                  <Col>
+                    Total <br />
+                    longs <br />(<TeX math="L_{x}" />)
+                  </Col>
+                  <Col>
+                    Total <br />
+                    shorts <br />(<TeX math="S_{x}" />)
+                  </Col>
+                  <Col>
+                    Total <br />
+                    volume <br />(<TeX math="V_{x}" />)
+                  </Col>
+                  <Col>
+                    Volume-weight <br />
+                    (%)
+                  </Col>
+                  <Col>
+                    Net <br />
+                    sentiment <br />(<TeX math="N_{x}" />)
+                  </Col>
+                  <Col colSpan={2}>
+                    Net sentiment <br />
+                    (if&gt;0), weighted <br />(
+                    <TeX math="L_{x, weighted}" />)
+                  </Col>
+                  <Col>
+                    Portfolio <br />
+                    weights <br />(<TeX math="W_{x}" />)
+                  </Col>
+                  <Col>Token</Col>
+                </Row>
+              </thead>
+              <tbody>
+                <SRow>
+                  <Col>UNI</Col>
+                  <Col>100</Col>
+                  <Col>50</Col>
+                  <Col>150</Col>
+                  <Col>67%</Col>
+                  <Col>50</Col>
+                  <Col>33.3</Col>
+                  <Col>75%</Col>
+                  <Col>25%</Col>
+                  <Col>UNI</Col>
+                </SRow>
+                <SRow>
+                  <Col>SUSHI</Col>
+                  <Col>50</Col>
+                  <Col>0</Col>
+                  <Col>50</Col>
+                  <Col>22%</Col>
+                  <Col>50</Col>
+                  <Col>11.1</Col>
+                  <Col>25%</Col>
+                  <Col>8.3%</Col>
+                  <Col>SUSHI</Col>
+                </SRow>
+                <SRow>
+                  <Col>ETH</Col>
+                  <Col>0</Col>
+                  <Col>25</Col>
+                  <Col>25</Col>
+                  <Col>11%</Col>
+                  <Col>-25</Col>
+                  <Col>-</Col>
+                  <Col></Col>
+                  <Col>0.0%</Col>
+                  <Col>ETH</Col>
+                </SRow>
+                <SRow>
+                  <Col>TOTAL</Col>
+                  <Col>150</Col>
+                  <Col>75</Col>
+                  <Col>225*</Col>
+                  <Col>100%</Col>
+                  <Col>75*</Col>
+                  <Col>44.4</Col>
+                  <Col>100%</Col>
+                  <Col>33.3%</Col>
+                  <Col>LONGS</Col>
+                </SRow>
+                <Row>
+                  <Col colSpan={8}>
+                    *Market exposure: N/V = 75/225 = 33.3%. Thus, 33.3% to
+                    longs, the rest to stables:
+                  </Col>
+                  <Col>+66.7%</Col>
+                  <Col>STABLES</Col>
+                </Row>
+              </tbody>
             </Table>
           </TableWrapper>
         </Box>
@@ -794,23 +815,23 @@ const Faq = () => {
           <Paragraph>
             The VanillaDAO is the governing entity of the Vanilla system. It is
             controlled by VNL holders and has the following functions:
-            <OrderedList>
-              <ListItem>
-                Financing and coordinating the ongoing development of the
-                Vanilla protocol.
-              </ListItem>
-              <ListItem>
-                Managing the treasury, which receives fees from the Vanilla
-                Investment Pool and deploys capital to incentivize Juicers and
-                other ecosystem participants.
-              </ListItem>
-              <ListItem>
-                Provides fail-safes for the Vanilla system, such as stopping the
-                Vanilla Investment Pool from updating target weights in an
-                emergency.
-              </ListItem>
-            </OrderedList>
           </Paragraph>
+          <OrderedList>
+            <ListItem>
+              Financing and coordinating the ongoing development of the Vanilla
+              protocol.
+            </ListItem>
+            <ListItem>
+              Managing the treasury, which receives fees from the Vanilla
+              Investment Pool and deploys capital to incentivize Juicers and
+              other ecosystem participants.
+            </ListItem>
+            <ListItem>
+              Provides fail-safes for the Vanilla system, such as stopping the
+              Vanilla Investment Pool from updating target weights in an
+              emergency.
+            </ListItem>
+          </OrderedList>
         </Box>
         <Box>
           <Heading as="h2" id="3-tokenomics">
@@ -833,18 +854,18 @@ const Faq = () => {
             </ExtLink>{" "}
             tokens. It is distributed between different stakeholders in the
             following way:
-            <ul>
-              <ListItem>
-                11 410 594 (87.8 %) - Community via profit-mining
-              </ListItem>
-              <ListItem>
-                <ExtLink href="https://etherscan.io/address/0xa135f339B5acd1f4eCB1C6eEd69a31482f878545">
-                  1 585 859
-                </ExtLink>{" "}
-                (12.2 %) - VanillaDAO treasury via community minting
-              </ListItem>
-            </ul>
           </Paragraph>
+          <ul>
+            <ListItem>
+              11 410 594 (87.8 %) - Community via profit-mining
+            </ListItem>
+            <ListItem>
+              <ExtLink href="https://etherscan.io/address/0xa135f339B5acd1f4eCB1C6eEd69a31482f878545">
+                1 585 859
+              </ExtLink>{" "}
+              (12.2 %) - VanillaDAO treasury via community minting
+            </ListItem>
+          </ul>
 
           <Box
             css={{ border: "1px solid $text", pb: "$2", px: "$6", mt: "$8" }}
@@ -939,52 +960,56 @@ const Faq = () => {
           </Paragraph>
           <TableWrapper>
             <Table>
-              <Row>
-                <Col>
-                  <strong>Attack</strong>
-                </Col>
-                <Col>
-                  <strong>Juicers</strong>
-                </Col>
-                <Col>
-                  <strong>VIP LPs</strong>
-                </Col>
-                <Col>
-                  <strong>VanillaDAO</strong>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <strong>Front-running Juicenet</strong>
-                </Col>
-                <Col>No impact</Col>
-                <Col>Low impact</Col>
-                <Col>No impact</Col>
-              </Row>
-              <Row>
-                <Col>
-                  <strong>Oracle Delay Abuse</strong>
-                </Col>
-                <Col>Unfair JUICE minting</Col>
-                <Col>No impact</Col>
-                <Col>No impact</Col>
-              </Row>
-              <Row>
-                <Col>
-                  <strong>Price Manipulation</strong>
-                </Col>
-                <Col>No impact</Col>
-                <Col>Low impact</Col>
-                <Col>Low impact</Col>
-              </Row>
-              <Row>
-                <Col>
-                  <strong>Leeching</strong>
-                </Col>
-                <Col>Low impact</Col>
-                <Col>No impact</Col>
-                <Col>Less fees</Col>
-              </Row>
+              <thead>
+                <Row>
+                  <Col>
+                    <strong>Attack</strong>
+                  </Col>
+                  <Col>
+                    <strong>Juicers</strong>
+                  </Col>
+                  <Col>
+                    <strong>VIP LPs</strong>
+                  </Col>
+                  <Col>
+                    <strong>VanillaDAO</strong>
+                  </Col>
+                </Row>
+              </thead>
+              <tbody>
+                <Row>
+                  <Col>
+                    <strong>Front-running Juicenet</strong>
+                  </Col>
+                  <Col>No impact</Col>
+                  <Col>Low impact</Col>
+                  <Col>No impact</Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <strong>Oracle Delay Abuse</strong>
+                  </Col>
+                  <Col>Unfair JUICE minting</Col>
+                  <Col>No impact</Col>
+                  <Col>No impact</Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <strong>Price Manipulation</strong>
+                  </Col>
+                  <Col>No impact</Col>
+                  <Col>Low impact</Col>
+                  <Col>Low impact</Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <strong>Leeching</strong>
+                  </Col>
+                  <Col>Low impact</Col>
+                  <Col>No impact</Col>
+                  <Col>Less fees</Col>
+                </Row>
+              </tbody>
             </Table>
           </TableWrapper>
         </Box>
