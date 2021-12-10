@@ -1,9 +1,14 @@
 import type * as Stitches from "@stitches/react";
 import { useTheme } from "next-themes";
+
 import Link from "next/link";
 import {
   ArrowCircleUpRight,
-  DiscordLogo, GithubLogo, Notebook, TelegramLogo, TwitterLogo
+  DiscordLogo,
+  GithubLogo,
+  Notebook,
+  TelegramLogo,
+  TwitterLogo,
 } from "phosphor-react";
 import Box from "../Box";
 import Container from "../Container";
