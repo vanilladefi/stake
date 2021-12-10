@@ -5,9 +5,7 @@ import { ArrowUpRight, DotsThreeVertical, Moon, Sun, X } from "phosphor-react";
 import { useEffect, useState } from "react";
 import Box from "../Box";
 import Container from "../Container";
-import NavLink from "../NavLink";
 import Stack from "../Stack";
-import WalletButton from "../Wallet";
 
 const ThemeChanger = () => {
   const { theme, setTheme } = useTheme();
@@ -51,12 +49,14 @@ const DesktopNavigation = () => {
         display: "flex",
         color: "$text",
         borderBottom: "1px solid $extraMuted",
+        py: "$2",
       }}
     >
       <Container
         css={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
         <Link href="/" passHref>
@@ -81,36 +81,11 @@ const DesktopNavigation = () => {
 
         <Stack
           css={{
-            alignItems: "center",
             mx: "$5",
-            flex: 1,
-            gap: "$8",
-            flexShrink: 0,
           }}
         >
-          <NavLink css={{ py: "$8" }} href="/">
-            Home
-          </NavLink>
-          <NavLink css={{ py: "$8" }} href="/stake">
-            stake
-          </NavLink>
-          <NavLink css={{ py: "$8" }} href="/invest">
-            Invest
-            <ArrowUpRight
-              weight="bold"
-              style={{ marginBottom: "3px", marginLeft: "5px" }}
-              size="15px"
-            />
-          </NavLink>
-          <NavLink css={{ py: "$8" }} href="/faq">
-            FAQ
-          </NavLink>
-          <NavLink css={{ py: "$8" }} href="/community">
-            Community
-          </NavLink>
           <ThemeChanger />
         </Stack>
-        <WalletButton css={{ marginLeft: "auto" }} />
       </Container>
     </Box>
   );
@@ -169,72 +144,7 @@ const MobileNavigation = () => {
           }}
         ></Stack>
         <ThemeChanger />
-        <Box
-          color="muted"
-          css={{
-            color: "$muted",
-            cursor: "pointer",
-            ml: "auto",
-            display: "flex",
-          }}
-          onClick={() => setIsOpen((curr) => !curr)}
-        >
-          {isOpen ? <X size="30px" /> : <DotsThreeVertical size="30px" />}
-        </Box>
       </Container>
-      <Box
-        css={{
-          display: isOpen ? "flex" : "none",
-          position: "absolute",
-          flexDirection: "column",
-          top: "calc(100% + 1px)",
-          left: 0,
-          right: 0,
-          zIndex: 999,
-          backgroundColor: "$backgroundA",
-          borderBottom: "1px solid $extraMuted",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <Container
-          css={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Stack
-            css={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              display: "flex",
-              flex: 1,
-              flexShrink: 0,
-              mb: "$2",
-            }}
-          >
-            <NavLink css={{ py: "$4" }} href="/stake">
-              Stake
-            </NavLink>
-            <NavLink css={{ py: "$4" }} href="/invest">
-              Invest
-              <ArrowUpRight
-                weight="bold"
-                style={{ marginBottom: "3px", marginLeft: "5px" }}
-                size="15px"
-              />
-            </NavLink>
-            <NavLink css={{ py: "$5", alignItems: "center" }} href="/faq">
-              FAQ
-            </NavLink>
-            <NavLink css={{ py: "$5", alignItems: "center" }} href="/community">
-              Community
-            </NavLink>
-          </Stack>
-
-          <WalletButton css={{ marginLeft: "auto", pb: "$3", width: "100%" }} />
-        </Container>
-      </Box>
     </Box>
   );
 };
