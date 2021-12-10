@@ -10,9 +10,9 @@ const PrimaryColorFilledPath = styled("path", {
   fill: "$primary",
 });
 
-const PrimaryColorPath = styled("path", {
-  stroke: "$primary",
-});
+// const PrimaryColorPath = styled("path", {
+//   stroke: "$primary",
+// });
 
 const TextColorFilledPath = styled("path", {
   fill: "$text",
