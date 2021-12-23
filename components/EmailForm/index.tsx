@@ -22,9 +22,7 @@ const StyledArrow = styled(ArrowRight, {
 });
 
 const SendButton = styled(Button, {
-  padding: "0 !important",
-  height: "$12 !important",
-  width: "$12 !important",
+  padding: "0 $3 !important",
 });
 
 const EmailForm: FC = () => {
