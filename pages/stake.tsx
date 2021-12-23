@@ -66,19 +66,20 @@ const Predict = () => {
             <Flex css={{ alignItems: "center" }}>
               <Box
                 css={{
-                  width: "28px",
-                  height: "28px",
-                  // backgroundColor: "#ffffff",
-                  // borderRadius: "5px",
+                  width: "30px",
+                  height: "30px",
+                  backgroundColor: "rgba(255,255,255,1)",
+                  borderRadius: "5px",
                   position: "relative",
                   overflow: "hidden",
+                  p: "3px",
                 }}
               >
                 {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
                   ?.imageUrl ? (
                   <Image
-                    width="28px"
-                    height="28px"
+                    width="24px"
+                    height="24px"
                     layout="fixed"
                     objectFit="cover"
                     src={`/token-assets/${row.original.id.split("/")[0]}.png`}
