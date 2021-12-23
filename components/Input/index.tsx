@@ -21,9 +21,6 @@ export const Input = styled("input", {
   color: "$text",
   height: 35,
   WebkitTapHighlightColor: "rgba(0,0,0,0)",
-  "&::placeholder": {
-    color: "$extraMuted",
-  },
   "&[type=number]": {
     "-moz-appearance": "textfield",
     "-webkit-appearance": "none",
