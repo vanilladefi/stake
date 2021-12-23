@@ -14,6 +14,7 @@ import { ArrowDown, ArrowUp } from "phosphor-react";
 
 import Box from "../Box";
 import { styled } from "../../stitches.config";
+import Flex from "../Flex";
 
 /**
  * There's some boilter plate here
@@ -149,21 +150,31 @@ function Table<T extends object>({
                       minWidth: column.minWidth,
                       width: column.width,
                       textAlign: column.align || "center",
+                      justifyContent: column.align || "center",
                       cursor: column.canSort ? "pointer" : "unset",
+                      whiteSpace: "nowrap",
                     },
                   })}
                 >
-                  {/* Render the columns filter UI */}
-                  {column.render("Header")}
-                  {column.isSorted ? (
-                    column.isSortedDesc ? (
-                      <ArrowDown style={{ top: 20 }} />
+                  <Flex
+                    css={{
+                      alignItems: "center",
+                      justifyContent: column.align || "center",
+                      color: column.isSorted ? "$text" : "currentColor",
+                    }}
+                  >
+                    {/* Render the columns filter UI */}
+                    {column.render("Header")}
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <ArrowDown style={{ marginTop: "-3px" }} />
+                      ) : (
+                        <ArrowUp style={{ marginTop: "-3px" }} />
+                      )
                     ) : (
-                      <ArrowUp />
-                    )
-                  ) : (
-                    ""
-                  )}
+                      ""
+                    )}
+                  </Flex>
                 </th>
               ))}
             </tr>
