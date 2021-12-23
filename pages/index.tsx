@@ -18,12 +18,10 @@ import Flex from "../components/Flex";
 import Heading from "../components/Heading";
 import Link from "../components/Link";
 import Text from "../components/Text";
+import EmailForm from "../components/EmailForm";
 import { styled } from "../stitches.config";
 
-const ActiveWallet = dynamic(
-  () => import("../components/Wallet/ActiveWallet"),
-  { ssr: false }
-);
+const ActiveWallet = dynamic(() => import("../components/Wallet/ActiveWallet"), { ssr: false });
 const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
   ssr: false,
 });
@@ -121,13 +119,7 @@ const SectionHeading = ({
   </Heading>
 );
 
-const SectionDescription = ({
-  text = "",
-  muted = false,
-}: {
-  text?: string;
-  muted?: boolean;
-}) => (
+const SectionDescription = ({ text = "", muted = false }: { text?: string; muted?: boolean }) => (
   <Text
     as="div"
     css={{
@@ -231,9 +223,7 @@ const Home: NextPage = () => {
         </Flex>
       </Container>
 
-      <Flex
-        css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}
-      >
+      <Flex css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}>
         <Container>
           <Flex
             css={{
@@ -267,12 +257,16 @@ const Home: NextPage = () => {
                 alignItems: "start",
                 justifyContent: "center",
                 width: "100%",
-                ml: "$10",
+                mt: "$5",
                 "@md": {
+                  mt: 0,
+                  ml: "$10",
+                  pl: "$5",
                   width: "50%",
                 },
               }}
             >
+              <EmailForm />
               {/* FORM_HERE */}
             </Flex>
           </Flex>
@@ -324,15 +318,11 @@ const Home: NextPage = () => {
                 <StyledOne css={{ mr: "$5" }} />
                 <SectionDescription text="Juicers create investment portfolios." />
               </Flex>
-              <Flex
-                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
-              >
+              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
                 <StyledTwo css={{ mr: "$5" }} />
                 <SectionDescription text="Vanilla Pool invests in line with the best performing Juicers." />
               </Flex>
-              <Flex
-                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
-              >
+              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
                 <StyledThree css={{ mr: "$5" }} />
                 <SectionDescription text="VanillaDAO channels a share of returns back to Juicers." />
               </Flex>
