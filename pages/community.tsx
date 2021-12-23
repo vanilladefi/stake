@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import Container from "../components/Container";
 import Heading from "../components/Heading";
 import Box from "../components/Box";
-import { styled } from "../stitches.config";
 
 const Home: NextPage = () => {
   return (

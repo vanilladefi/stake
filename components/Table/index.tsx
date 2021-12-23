@@ -14,6 +14,7 @@ import { ArrowDown, ArrowUp } from "phosphor-react";
 
 import Box from "../Box";
 import { styled } from "../../stitches.config";
+import Flex from "../Flex";
 
 /**
  * There's some boilter plate here
@@ -55,7 +56,7 @@ const TableContainer = styled(Box, {
       padding: "0.5rem",
       borderBottom: "0px solid black",
       borderRight: "0px solid black",
-      py: "$5",
+      py: "$3",
       px: "$4",
       "&:last-child": {
         borderRight: 0,
@@ -90,7 +91,6 @@ function Table<T extends object>({
    */
   const ourGlobalFilterFunction = useCallback(
     (rows: Row<T>[], ids: IdType<T>[], query: string) => {
-      console.log("rows", rows);
       if (!filters || !filters.length || filters.length === 0) {
         return matchSorter(rows, query, {
           keys: Object.keys(rows?.[0].values).map((item) => `values.${item}`),
@@ -111,7 +111,6 @@ function Table<T extends object>({
     prepareRow,
     setGlobalFilter,
     visibleColumns,
-    state: { expanded },
   } = useTable<T>(
     {
       columns,
@@ -122,6 +121,7 @@ function Table<T extends object>({
       autoResetSortBy: false,
       // keep expanded state when data updates
       autoResetExpanded: false,
+      autoResetGlobalFilter: false,
     },
     useGlobalFilter,
     useSortBy,
@@ -150,20 +150,31 @@ function Table<T extends object>({
                       minWidth: column.minWidth,
                       width: column.width,
                       textAlign: column.align || "center",
+                      justifyContent: column.align || "center",
+                      cursor: column.canSort ? "pointer" : "unset",
+                      whiteSpace: "nowrap",
                     },
                   })}
                 >
-                  {/* Render the columns filter UI */}
-                  {column.render("Header")}
-                  {column.isSorted ? (
-                    column.isSortedDesc ? (
-                      <ArrowDown style={{ top: 20 }} />
+                  <Flex
+                    css={{
+                      alignItems: "center",
+                      justifyContent: column.align || "center",
+                      color: column.isSorted ? "$text" : "currentColor",
+                    }}
+                  >
+                    {/* Render the columns filter UI */}
+                    {column.render("Header")}
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <ArrowDown style={{ marginTop: "-3px" }} />
+                      ) : (
+                        <ArrowUp style={{ marginTop: "-3px" }} />
+                      )
                     ) : (
-                      <ArrowUp />
-                    )
-                  ) : (
-                    ""
-                  )}
+                      ""
+                    )}
+                  </Flex>
                 </th>
               ))}
             </tr>

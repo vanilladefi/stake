@@ -2,21 +2,69 @@ import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { Provider } from "urql";
-import Box from "../components/Box";
-import Footer from "../components/Footer";
+
 import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
+import Box from "../components/Box";
 import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
-import client from "../urql";
+import client, { ssrCache } from "../urql";
+import useOrigin from "../lib/hooks/useOrigin";
 
-const ActiveWallet = dynamic(() => import("../components/Wallet/ActiveWallet"), { ssr: false });
-const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), { ssr: false });
+const ActiveWallet = dynamic(
+  () => import("../components/Wallet/ActiveWallet"),
+  { ssr: false }
+);
+const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
+  ssr: false,
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
+  if (pageProps.urqlState) {
+    ssrCache.restoreData(pageProps.urqlState);
+  }
+  const router = useRouter();
+  const origin = useOrigin();
+  const shareImg = "/images/share-image.png";
   return (
     <>
       <Head>
+        <meta charSet="utf-8" />
+
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta property="og:url" content={`${origin}${router.asPath}`} />
+        <meta
+          property="og:title"
+          content="Vanilla — Decentralized asset manager for Web3"
+        />
+        <meta
+          name="twitter:title"
+          content="Vanilla — Decentralized asset manager for Web3"
+        />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@vanilladefi" />
+
+        <meta
+          name="description"
+          content="Vanilla is an on-chain investment pool managed by the best investors."
+        />
+        <meta
+          property="og:description"
+          content="Vanilla is an on-chain investment pool managed by the best investors."
+        />
+        <meta
+          name="twitter:description"
+          content="Vanilla is an on-chain investment pool managed by the best investors."
+        />
+
+        <meta property="og:image" content={`${origin}${shareImg}`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:image" content={`${origin}${shareImg}`} />
+
         <link
           rel="apple-touch-icon"
           sizes="180x180"
@@ -39,8 +87,19 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="apple-mobile-web-app-title" content="Vanilla" />
         <meta name="application-name" content="Vanilla" />
         <meta name="msapplication-TileColor" content="#000000" />
-        <meta name="theme-color" content="#000000" />
-        <title>Vanilla DeFi</title>
+
+        <meta
+          name="theme-color"
+          content="#10070F"
+          media="(prefers-color-scheme: dark)"
+        />
+        <meta
+          name="theme-color"
+          content="#F8F5EC"
+          media="(prefers-color-scheme: light)"
+        />
+
+        <title>Vanilla — Decentralized asset manager for Web3</title>
         <meta
           name="description"
           content="The world’s first decentralised asset manager"

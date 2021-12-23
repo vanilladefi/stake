@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
 import Image from "next/image";
+import { ethers } from "ethers";
+import { GetStaticProps } from "next";
+import { Column, Row } from "react-table";
+
 import Box from "../components/Box";
 import Button from "../components/Button";
 import Container from "../components/Container";
@@ -8,81 +12,74 @@ import Heading from "../components/Heading";
 import Table from "../components/Table";
 import Text from "../components/Text";
 
-import { Column, Row } from "react-table";
 import valueUSD from "../utils/valueUSD";
 import {
   GetAssetPairsDocument,
   useGetAssetPairsQuery,
 } from "../generated/graphql";
-import { ethers } from "ethers";
 import tokens from "../tokensV2";
-import Input from "../components/Input";
-import { rgba } from "polished";
-import { GetServerSideProps } from "next";
-import client, { ssr } from "../urql";
-
-type ColumnType = {
-  __typename?: "AssetPair";
-  id: string;
-  currentPrice: any;
-  decimals: number;
-  roundId: any;
-  hourRoundId: number;
-  timestamp: any;
-  hourlyHistory: Array<{
-    __typename?: "HourlyPriceHistory";
-    hourStamp: any;
-    id: string;
-    openingPrice: any;
-    closingPrice: any;
-    lowPrice: any;
-    highPrice: any;
-    timestamp: any;
-  }>;
-};
+import client, { ssrCache } from "../urql";
+import StakeSubRow, { ColumnType } from "../components/StakeSubRow";
+import TableFilter from "../components/TableFilter";
+import { JuicingIcon } from "../assets";
+import { ArrowLink } from ".";
+import Stack from "../components/Stack";
+import { connectWallet } from "../state/actions/wallet";
+import { useSnapshot } from "valtio";
+import { state } from "../state";
 
 const Predict = () => {
-  const [{ fetching, data }, executeQuery] = useGetAssetPairsQuery({});
-
+  const [{ fetching, data }, executeQuery] = useGetAssetPairsQuery();
+  const [filterValue, setFilterValue] = useState("");
   // refetch data every 60 seconds
   useEffect(() => {
-    if (!fetching) {
-      const id = setTimeout(
-        () => executeQuery({ requestPolicy: "network-only" }),
-        60000
-      );
-      return () => clearTimeout(id);
-    }
+    const id = setTimeout(() => {
+      if (!fetching) {
+        executeQuery({ requestPolicy: "network-only" });
+      }
+    }, 2000);
+    return () => clearTimeout(id);
   }, [fetching, executeQuery]);
 
   const columns: Column<ColumnType>[] = useMemo(
     () => [
       {
         Header: "Token",
-        accessor: "id",
+        accessor: (row): string | undefined => {
+          const name = tokens.find(
+            (token) => token.id === row.id.split("/")[0]
+          )?.name;
+          return name;
+        },
         id: "tokenIcon",
         width: "20%",
         minWidth: "320px",
         align: "left",
-        Cell: ({ value, row }) => {
+        Cell: ({
+          value,
+          row,
+        }: {
+          value: string | undefined;
+          row: Row<ColumnType>;
+        }) => {
           return (
             <Flex css={{ alignItems: "center" }}>
               <Box
                 css={{
-                  width: "24px",
-                  height: "24px",
-                  backgroundColor: "#ffffff",
+                  width: "30px",
+                  height: "30px",
+                  backgroundColor: "rgba(255,255,255,1)",
                   borderRadius: "5px",
                   position: "relative",
                   overflow: "hidden",
-                  padding: "3px",
+                  p: "3px",
                 }}
               >
                 {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
                   ?.imageUrl ? (
                   <Image
-                    width="18px"
-                    height="18px"
+                    width="24px"
+                    height="24px"
                     layout="fixed"
                     objectFit="cover"
                     src={`/token-assets/${row.original.id.split("/")[0]}.png`}
@@ -90,9 +87,7 @@ const Predict = () => {
                   />
                 ) : null}
               </Box>
-              <Box css={{ ml: "10px" }}>
-                {tokens.find((token) => token.id === value.split("/")[0])?.name}
-              </Box>
+              <Box css={{ ml: "15px" }}>{value}</Box>
             </Flex>
           );
         },
@@ -128,10 +123,7 @@ const Predict = () => {
           const oldPrice = value[0].closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
           const change = (newPrice - oldPrice) / oldPrice;
-          const lineData = value.map((i) => ({
-            x: Number(i.timestamp),
-            y: i.closingPrice,
-          }));
+
           return (
             <Box
               css={{
@@ -174,179 +166,138 @@ const Predict = () => {
     []
   );
 
+  const snap = useSnapshot(state);
+
   const renderRowSubComponent = useCallback(
     ({ row }: { row: Row<ColumnType> }) => {
-      return <SubRow row={row} />;
+      return <StakeSubRow row={row} />;
     },
     []
   );
 
   return (
-    <Container>
-      <Heading as="h1">Available Tokens</Heading>
-      {fetching && !data ? (
-        <p>loading</p>
-      ) : (
-        <Box css={{ overflowX: "scroll" }}>
-          <Table
-            columns={columns}
-            data={data?.assetPairs || []}
-            renderRowSubComponent={renderRowSubComponent}
-          />
-        </Box>
-      )}
-    </Container>
-  );
-};
-
-const SubRow = ({ row }: { row: Row<ColumnType> }) => {
-  const [stakeAmount, setStakeAmount] = useState("100");
-  const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
-  return (
-    <Flex
-      css={{
-        flex: 1,
-        boxShadow: "inset 0px 0px 0px 1px $colors$muted",
-      }}
-    >
+    <>
       <Flex
         css={{
-          p: "$3 $5",
-          borderRight: "1px solid $colors$muted",
-          alignItems: "center",
+          backgroundColor: "rgba(255, 201, 170, 0.02)",
+          py: "$16",
         }}
       >
-        <Text css={{ color: "$muted", fontSize: "$xl" }}>Stake</Text>
-        <Input
-          size="lg"
-          type="number"
-          value={stakeAmount}
-          onChange={(e) => setStakeAmount(e.target.value)}
-          css={{ width: "200px", textAlign: "right", mx: "$3" }}
-        />{" "}
-        <Image
-          alt="Vanilla drop icon"
-          width="20px"
-          height="20px"
-          src="/vanilla-drop.svg"
-        />
+        <Container>
+          <Stack
+            css={{
+              flexDirection: "column-reverse",
+              flex: 1,
+              "@md": {
+                flexDirection: "row",
+              },
+            }}
+          >
+            <Stack
+              css={{
+                width: "70%",
+                flexDirection: "column",
+                gap: "$8",
+              }}
+            >
+              <Heading css={{ fontSize: "$6xl", maxWidth: "300px" }}>
+                Start
+                <br /> Staking
+              </Heading>
+              <Text
+                css={{
+                  fontWeight: 300,
+                  fontSize: "$2xl",
+                  color: "$offWhite85",
+                  maxWidth: "450px",
+                }}
+              >
+                Create an investment portfolio by staking $JUICE. Earn rewards.
+              </Text>
+              <Stack
+                css={{
+                  flexDirection: "column",
+                  gap: "$3",
+                  mt: "$3",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Flex css={{ flexDirection: "column" }}>
+                  <ArrowLink text="Read more" />
+                  {!snap.walletAddress && (
+                    <ArrowLink
+                      onClick={() => connectWallet()}
+                      text="Connect Wallet"
+                    />
+                  )}
+                </Flex>
+              </Stack>
+            </Stack>
+            <Flex
+              css={{
+                width: "30%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Box
+                css={{
+                  position: "relative",
+                  width: "153px",
+                  height: "199px",
+                }}
+              >
+                <JuicingIcon />
+              </Box>
+            </Flex>
+          </Stack>
+        </Container>
       </Flex>
-      <Box css={{ p: "$5", borderRight: "1px solid $colors$muted" }}>
-        <Text css={{ color: "$muted", fontSize: "$xl", mr: "$5" }}>To</Text>
-        <Button
-          onClick={() => setStakePosition("long")}
-          outline
-          uppercase
-          size="sm"
-          css={{
-            width: "90px",
-          }}
-          active={stakePosition === "long"}
-        >
-          Long
-        </Button>
-        <Button
-          onClick={() => setStakePosition("short")}
-          outline
-          uppercase
-          size="sm"
-          css={{
-            width: "90px",
-          }}
-          active={stakePosition === "short"}
-        >
-          Short
-        </Button>
-      </Box>
-      <Flex
-        css={{
-          p: "$5",
-          alignItems: "center",
-          borderRight: "1px solid $colors$muted",
-          flex: 1,
-        }}
-      >
-        <Box
-          css={{
-            width: "24px",
-            height: "24px",
-            backgroundColor: "#ffffff",
-            borderRadius: "5px",
-            position: "relative",
-            overflow: "hidden",
-            padding: "3px",
-          }}
-        >
-          {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
-            ?.imageUrl ? (
-            <Image
-              width="18px"
-              height="18px"
-              layout="fixed"
-              objectFit="cover"
-              src={`/token-assets/${row.original.id.split("/")[0]}.png`}
-              alt="Token icon"
+      <TableFilter onChange={(value) => setFilterValue(value)} />
+      <Container css={{ py: "$5" }}>
+        <Heading as="h1">Available Stakes</Heading>
+        {!data ? (
+          <p>loading</p>
+        ) : (
+          <Box
+            css={{
+              overflowX: "auto",
+              "&::-webkit-scrollbar": {
+                height: 0,
+                background: "transparent",
+              },
+            }}
+          >
+            <Table
+              filter={filterValue}
+              columns={columns}
+              data={data?.assetPairs || []}
+              renderRowSubComponent={renderRowSubComponent}
             />
-          ) : null}
-        </Box>
-        <Box css={{ ml: "10px" }}>
-          {
-            tokens.find((token) => token.id === row.original.id.split("/")[0])
-              ?.name
-          }
-        </Box>
-      </Flex>
-      <Flex
-        css={{
-          width: "110px",
-          px: "$3",
-          borderRight: "1px solid $colors$muted",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          color: "$red",
-          "&:hover": {
-            backgroundColor: rgba(255, 255, 255, 0.1),
-            cursor: "pointer",
-          },
-        }}
-      >
-        Close position
-      </Flex>
-      <Flex
-        css={{
-          width: "110px",
-          px: "$3",
-          borderRight: "1px solid $colors$muted",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          "&:hover": {
-            backgroundColor: rgba(255, 255, 255, 0.1),
-            cursor: "pointer",
-          },
-        }}
-      >
-        Short
-      </Flex>
-    </Flex>
+          </Box>
+        )}
+      </Container>
+    </>
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   try {
-//     const res = await client.query(GetAssetPairsDocument).toPromise();
-//     return {
-//       props: {
-//         initialData: res.data,
-//       },
-//     };
-//   } catch (err) {
-//     console.log(err);
-//     return {
-//       props: {},
-//     };
-//   }
-// };
+export const getStaticProps: GetStaticProps = async (context) => {
+  try {
+    await client.query(GetAssetPairsDocument).toPromise();
+    return {
+      props: {
+        // urql uses this to rehydrate cache
+        urqlState: ssrCache.extractData(),
+      },
+      revalidate: 60,
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {},
+      revalidate: 60,
+    };
+  }
+};
 
 export default Predict;
