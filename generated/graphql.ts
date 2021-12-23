@@ -395,7 +395,7 @@ export const GetAssetPairsDocument = gql`
     roundId
     hourRoundId
     timestamp
-    hourlyHistory(first: 3, orderBy: hourStamp, orderDirection: asc) {
+    hourlyHistory(orderBy: hourStamp, orderDirection: asc) {
       hourStamp
       id
       openingPrice
