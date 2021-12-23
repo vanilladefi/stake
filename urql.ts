@@ -1,6 +1,6 @@
-import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange, Client } from 'urql';
+import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange } from 'urql';
 
-let client: Client;
+// let client: Client;
 
 // If we need subscriptions this is how to do it
 
@@ -27,12 +27,16 @@ let client: Client;
 //     url: 'https://api.thegraph.com/subgraphs/id/QmPF3iZqdKz4Nm7cSN9Rs8U2K8yJu8pKzuqRr8HtYWaF9u',
 //   })
 // }
-export const ssr = ssrExchange({ isClient: typeof window !== undefined });
+const isServerSide = typeof window === "undefined";
 
-client = createClient({
+export const ssrCache = ssrExchange({ isClient: !isServerSide });
+
+const client = createClient({
   url: 'https://api.thegraph.com/subgraphs/name/valstu/chainlink-polygon-price-feed',
-  exchanges: [dedupExchange, cacheExchange, ssr, fetchExchange]
+  exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange]
 });
+
+
 
 
 

@@ -2,15 +2,16 @@ import { ThemeProvider } from "next-themes";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import useOrigin from "../lib/hooks/useOrigin";
 import { useRouter } from "next/router";
 import { Provider } from "urql";
-import Box from "../components/Box";
-import Footer from "../components/Footer";
+
 import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
+import Box from "../components/Box";
 import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
-import client from "../urql";
+import client, { ssrCache } from "../urql";
+import useOrigin from "../lib/hooks/useOrigin";
 
 const ActiveWallet = dynamic(
   () => import("../components/Wallet/ActiveWallet"),
@@ -21,6 +22,9 @@ const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  if (pageProps.urqlState) {
+    ssrCache.restoreData(pageProps.urqlState);
+  }
   const router = useRouter();
   const origin = useOrigin();
   const shareImg = "/images/share-image.png";
