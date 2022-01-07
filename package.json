@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
@@ -40,6 +42,8 @@
     "@graphql-codegen/typescript-operations": "2.2.0",
     "@graphql-codegen/typescript-urql": "^3.4.0",
     "@graphql-codegen/urql-introspection": "2.1.0",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
     "@types/mailchimp__mailchimp_marketing": "^3.0.2",
     "@types/react": "17.0.30",
     "@types/react-table": "^7.7.7",
@@ -47,6 +51,7 @@
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "eslint-config-prettier": "^8.3.0",
+    "jest": "^27.4.7",
     "typescript": "4.4.4"
   }
 }

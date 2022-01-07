@@ -175,7 +175,7 @@ const Home: NextPage = () => {
               },
             }}
           >
-            Decentra&shy;lized Asset Manager for Web3
+            Decentralized Asset Manager for Web3
           </Heading>
         </Box>
 
