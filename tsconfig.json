@@ -24,8 +24,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    // "utils/test-utils.tsx",
-    "__tests__/"
+    "__tests__/",
+    "test-utils"
   ],
   "exclude": [
     "node_modules"
