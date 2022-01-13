@@ -1,3 +1,12 @@
+import { loadEnvConfig } from "@next/env";
+
+const setupEnv = async () => {
+  const projectDir = process.cwd();
+  loadEnvConfig(projectDir);
+};
+
+setupEnv()
+
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: jest.fn().mockImplementation((query) => ({

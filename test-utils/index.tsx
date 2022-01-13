@@ -4,7 +4,8 @@ import { render, RenderOptions } from "@testing-library/react";
 import { ThemeProvider } from "next-themes";
 import { darkTheme } from "../stitches.config";
 import "./mocks";
-// import { fetchingState } from "./mocks";
+import "@testing-library/jest-dom";
+// import { fetchingState } from "./urql-states";
 
 export const AllTheProviders: FC = ({ children }) => {
   return (
