@@ -34,6 +34,7 @@ export const {
       red: "#FD5247",
       backgroundSecondary: "#FDFBF5",
       link: "#986d10",
+      outline: "#000"
     },
     fonts: {
       body: 'PolySans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
@@ -335,6 +336,7 @@ export const darkTheme = createTheme("dark", {
     extraMuted: "#776464",
     backgroundSecondary: "#1c1217",
     link: "#E5B754",
+    outline: "#fff"
   },
 });
 

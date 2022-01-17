@@ -128,25 +128,24 @@ const StakeSubRow = ({ row }: { row: Row<ColumnType> }) => {
           }
         </Box>
       </Flex>
-      <Flex
+      <Button
+        ghost
+        variant="primary"
         css={{
           width: "140px",
-          color: "$primary",
-          px: "$3",
+          marginRight: '1px',
+          height: 'auto',
+          px: "0",
           fontSize: "18px",
           fontWeight: 300,
-          borderRight: "1px solid $colors$extraMuted",
-          alignItems: "center",
-          justifyContent: "center",
           textAlign: "center",
           "&:hover": {
             backgroundColor: "rgba(255, 255, 255, 0.1)",
-            cursor: "pointer",
           },
         }}
       >
         Make stake
-      </Flex>
+      </Button>
     </Flex>
   );
 };
