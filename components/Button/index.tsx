@@ -25,7 +25,8 @@ const StyledButton = styled(
       cursor: "auto",
     },
     "&:focus-visible": {
-      outline: "$text auto 1px",
+      outline: "$outline auto 1px",
+      outlineOffset: '1px'
     },
     variants: {
       muted: {

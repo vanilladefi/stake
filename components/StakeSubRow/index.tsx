@@ -133,6 +133,7 @@ const StakeSubRow = ({ row }: { row: Row<ColumnType> }) => {
         variant="primary"
         css={{
           width: "140px",
+          marginRight: '1px',
           height: 'auto',
           px: "0",
           fontSize: "18px",
