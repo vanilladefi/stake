@@ -1,5 +1,5 @@
-import { getBasicWalletDetails, isAddress, vnl } from "@vanilladefi/sdk"
-import { VanillaVersion } from "@vanilladefi/sdk/lib/types/general"
+import { getBasicWalletDetails, isAddress, vnl } from "@vanilladefi/trade-sdk"
+import { VanillaVersion } from "@vanilladefi/core-sdk"
 import { providers } from "ethers"
 import { persistedKeys, ref, state, subscribeKey } from ".."
 

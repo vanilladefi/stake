@@ -1,5 +1,5 @@
 import type * as Stitches from "@stitches/react";
-import * as sdk from '@vanilladefi/sdk';
+import * as tradeSdk from '@vanilladefi/trade-sdk';
 import { state, useSnapshot } from '../../state';
 import { connectToCachedProvider, connectWallet } from "../../state/actions/wallet";
 import Box from "../Box";
@@ -34,7 +34,7 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       <Box
         css={buttonStyles}
       >
-        {balances[sdk.vnl.address] ? (`${balances[sdk.vnl.address]} VNL`) : <Loader />}
+        {balances[tradeSdk.vnl.address] ? (`${balances[tradeSdk.vnl.address]} VNL`) : <Loader />}
       </Box>
       <Box
         css={buttonStyles}

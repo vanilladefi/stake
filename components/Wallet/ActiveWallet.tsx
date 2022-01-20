@@ -1,5 +1,5 @@
 import type * as Stitches from "@stitches/react";
-import * as sdk from '@vanilladefi/sdk';
+import * as tadeSdk from '@vanilladefi/trade-sdk';
 import Link from "next/link";
 import {
   ArrowCircleUpRight, Check, Copy
@@ -88,7 +88,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({css}) => {
           <Box css={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', mb: '$space$1' }}>
             {balances[0] ? (
                 <>
-                  <Text css={{ color: '$textA', fontSize: '$xl' }}>{balances[sdk.vnl.address]} VNL</Text>
+                  <Text css={{ color: '$textA', fontSize: '$xl' }}>{balances[tadeSdk.vnl.address]} VNL</Text>
                   <TradeLink href="">Buy VNL</TradeLink>
                 </>
               ) : (

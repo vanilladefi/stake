@@ -13,6 +13,8 @@ export type ColumnType = {
   __typename?: "AssetPair";
   id: string;
   currentPrice: any;
+  stakedAmount?: any;
+  sentiment?: "long" | "short";
   decimals: number;
   roundId: any;
   hourRoundId: number;
@@ -29,7 +31,13 @@ export type ColumnType = {
   }>;
 };
 
-const StakeSubRow = ({ row }: { row: Row<ColumnType> }) => {
+const StakeSubRow = ({
+  row,
+  type = "make",
+}: {
+  row: Row<ColumnType>;
+  type?: "edit" | "make";
+}) => {
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
   return (
@@ -128,24 +136,67 @@ const StakeSubRow = ({ row }: { row: Row<ColumnType> }) => {
           }
         </Box>
       </Flex>
-      <Button
-        ghost
-        variant="primary"
-        css={{
-          width: "140px",
-          marginRight: '1px',
-          height: 'auto',
-          px: "0",
-          fontSize: "18px",
-          fontWeight: 300,
-          textAlign: "center",
-          "&:hover": {
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-          },
-        }}
-      >
-        Make stake
-      </Button>
+      {type === "edit" ? (
+        <>
+          <Button
+            ghost
+            variant="primary"
+            css={{
+              color: "$red",
+              width: "120px",
+              marginRight: "1px",
+              height: "auto",
+              px: "0",
+              fontSize: "15px",
+              fontWeight: 300,
+              textAlign: "center",
+              borderRight: '1px solid $extraMuted',
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            Close partition
+          </Button>
+          <Button
+            ghost
+            variant="primary"
+            css={{
+              width: "100px",
+              marginRight: "1px",
+              height: "auto",
+              px: "0",
+              fontSize: "15px",
+              fontWeight: 300,
+              textAlign: "center",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            Save
+          </Button>
+        </>
+      ) : (
+        <Button
+          ghost
+          variant="primary"
+          css={{
+            width: "140px",
+            marginRight: "1px",
+            height: "auto",
+            px: "0",
+            fontSize: "18px",
+            fontWeight: 300,
+            textAlign: "center",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+            },
+          }}
+        >
+          Make stake
+        </Button>
+      )}
     </Flex>
   );
 };
