@@ -175,7 +175,7 @@ const Home: NextPage = () => {
               },
             }}
           >
-            Decentra&shy;lized Asset Manager for Web3
+            Decentralized Asset Manager for Web3
           </Heading>
         </Box>
 
@@ -244,7 +244,7 @@ const Home: NextPage = () => {
                 },
               }}
             >
-              <SectionHeading text="GET INFORMED, win $JUICE" />
+              <SectionHeading text="GET INFORMED, WIN $JUICE" />
               {/* <Divider /> */}
               <SectionDescription
                 muted
@@ -529,6 +529,7 @@ const Home: NextPage = () => {
                 css={{
                   flexDirection: "column",
                 }}
+                data-testid="join-community"
               >
                 <SectionHeading text="JOIN" muted topSegment />
                 <SectionHeading text="THE COMMUNITY" />
