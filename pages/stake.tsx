@@ -11,10 +11,10 @@ import { JuicingIcon } from "../assets";
 import { GetStaticProps } from "next";
 import { ArrowLink } from "../components/ArrowLink";
 import Container from "../components/Container";
-import { connectWallet } from '../state/actions/wallet';
-import Box from '../components/Box';
-import { MyStakes } from '../components/MyStakes';
-import { AvailableStakes } from '../components/AvailableStakes';
+import { connectWallet } from "../state/actions/wallet";
+import Box from "../components/Box";
+import { MyStakes } from "../components/MyStakes";
+import { AvailableStakes } from "../components/AvailableStakes";
 
 const StakingIntro = () => (
   <Stack

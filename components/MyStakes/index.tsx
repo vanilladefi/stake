@@ -1,6 +1,8 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
+import * as stakeSdk from "@vanilladefi/stake-sdk";
+import { useSnapshot } from "valtio";
 
 import Box from "../Box";
 import Button from "../Button";
@@ -16,8 +18,25 @@ import { Column, Row } from "react-table";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Link from "../Link";
 import tokens from "../../tokensV2";
+import { Token } from "@vanilladefi/core-sdk";
+import { useGetAssetPairsQuery } from "../../generated/graphql";
 
+/**
+ * Early rough implementation
+ * Just a POC
+ */
 export const MyStakes = () => {
+  const [{ fetching, data: _data }, executeQuery] = useGetAssetPairsQuery();
+  const priceData = useMemo(() => {
+    return (
+      _data?.assetPairs.filter((t) => {
+        const id = t.id.split("/")[0];
+        const isEnabled = tokens.find((ot) => ot.id === id)?.enabled;
+        return isEnabled;
+      }) || []
+    );
+  }, [_data?.assetPairs]);
+  const snap = useSnapshot(state);
   const columns: Column<ColumnType>[] = useMemo(
     () => [
       {
@@ -171,7 +190,71 @@ export const MyStakes = () => {
     },
     []
   );
-  let hasStakes = false;
+  const [stakes, setStakes] = useState<any[] | null>(null);
+  const getStakes = useCallback(async () => {
+    if (!snap.walletAddress) return;
+
+    const _tokens: Token[] = tokens
+      .filter((t) => t.enabled && t.address)
+      .map((t) => ({
+        address: t.address as any,
+        pairId: t.id,
+        symbol: "",
+        decimals: t.decimals + "",
+        chainId: "",
+        logoColor: "",
+      }));
+
+    const res = await stakeSdk.getAllStakes(
+      snap.walletAddress,
+      _tokens,
+      snap.signer || (snap.provider as any)
+    );
+    console.log({ res });
+    let stakes: any[] = [];
+
+    _tokens.forEach((token, idx) => {
+      if (!res[idx].amount.isZero()) {
+        const stake = {
+          id: token.pairId,
+          stakeAmount: res[idx].amount.div(10 ** 8).toString(),
+          sentiment: res[idx].sentiment === true ? "long" : "short",
+        };
+        if (stake) stakes.push(stake);
+      }
+    });
+    console.log({ stakes });
+    setStakes(stakes);
+  }, [snap.provider, snap.signer, snap.walletAddress]);
+
+  useEffect(() => {
+    // TODO this should be called based on events of contract
+    let interval = setInterval(() => {
+      getStakes();
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [getStakes]);
+
+  const [tableData, setTableData] = useState<ColumnType[] | null>(null);
+
+  useEffect(() => {
+    if (stakes) {
+      let _tableData: ColumnType[] = [];
+      priceData.forEach((pd, idx) => {
+        const s = stakes.find((stake) => stake.id === pd.id.split("/")[0]);
+        if (s) {
+          _tableData.push({
+            ...pd,
+            ...s,
+          });
+        }
+      });
+      setTableData(_tableData);
+    } else {
+      setTableData(null);
+    }
+  }, [priceData, stakes]);
+
   return (
     <>
       <Flex
@@ -191,11 +274,11 @@ export const MyStakes = () => {
           Manage funds
         </Button>
       </Flex>
-      {hasStakes ? (
+      {tableData ? (
         <Box
           css={{
             overflowX: "auto",
-            mb: '$10',
+            mb: "$10",
             "&::-webkit-scrollbar": {
               height: 0,
               background: "transparent",
@@ -204,7 +287,7 @@ export const MyStakes = () => {
         >
           <Table
             columns={columns}
-            data={[]}
+            data={tableData}
             renderRowSubComponent={renderRowSubComponent}
           />
         </Box>

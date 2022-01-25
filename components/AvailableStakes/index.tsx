@@ -17,7 +17,14 @@ import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import TableFilter from "../TableFilter";
 
 export const AvailableStakes = () => {
-  const [{ fetching, data }, executeQuery] = useGetAssetPairsQuery();
+  const [{ fetching, data: _data }, executeQuery] = useGetAssetPairsQuery();
+  const data =
+    _data?.assetPairs.filter((t) => {
+      const id = t.id.split("/")[0];
+      const isEnabled = tokens.find((ot) => ot.id === id)?.enabled;
+      return isEnabled;
+    }) || [];
+  
   // refetch data every 60 seconds
   useEffect(() => {
     const id = setTimeout(() => {
@@ -181,7 +188,7 @@ export const AvailableStakes = () => {
             <Table
               filter={filterValue}
               columns={columns}
-              data={data?.assetPairs || []}
+              data={data}
               renderRowSubComponent={renderRowSubComponent}
             />
           </Box>

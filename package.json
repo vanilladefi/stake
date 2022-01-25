@@ -13,7 +13,7 @@
     "@mailchimp/mailchimp_marketing": "^3.0.72",
     "@matejmazur/react-katex": "^3.1.3",
     "@stitches/react": "^1.2.5",
-    "@vanilladefi/sdk": "./vanilladefi-sdk-2.1.8.tgz",
+    "@vanilladefi/sdk": "file:./vanilladefi-sdk-2.1.14.tgz",
     "@walletconnect/web3-provider": "^1.6.6",
     "ethers": "^5.5.1",
     "graphql": "^16.0.1",

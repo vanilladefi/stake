@@ -12,6 +12,9 @@ import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
 import client, { ssrCache } from "../urql";
 import useOrigin from "../lib/hooks/useOrigin";
+import { useEffect } from "react";
+import { state } from "../state";
+import * as sdk from "@vanilladefi/stake-sdk";
 
 const ActiveWallet = dynamic(
   () => import("../components/Wallet/ActiveWallet"),
@@ -28,6 +31,32 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const origin = useOrigin();
   const shareImg = "/images/share-image.png";
+  // DONT FORGET TO REMOVE LATER
+  useEffect(() => {
+    const expose = ((window as any).__AABRA_KA_DAABRA__ = {}) as any;
+
+    expose.state = state;
+    expose.sdk = sdk;
+    // set default from localstorage or most most likely one
+    if (!sdk.getContractAddress()) {
+      sdk.__UNSAFE__setContractAddress(
+        localStorage.getItem("CONTRACT_ADDRESS") ||
+          "0x7c4bda48bd4c9ac4fbcc60deeb66bf80d35705f0"
+      );
+    }
+    expose.promptForAddress = () => {
+      const address = prompt("Enter the contract address");
+      if (!address) return "Cancelled";
+      if (address) {
+        sdk.__UNSAFE__setContractAddress(address);
+        localStorage.setItem("CONTRACT_ADDRESS", address);
+        alert(
+          `Contract address set to ${sdk.getContractAddress()}.\nHAPPY TESTING!`
+        );
+        return "Ok";
+      }
+    };
+  }, []);
   return (
     <>
       <Head>

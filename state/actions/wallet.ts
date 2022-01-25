@@ -1,5 +1,6 @@
 import { getBasicWalletDetails, isAddress, vnl } from "@vanilladefi/trade-sdk"
 import { VanillaVersion } from "@vanilladefi/core-sdk"
+import { getJuiceStakingContract } from "@vanilladefi/stake-sdk"
 import { providers } from "ethers"
 import { persistedKeys, ref, state, subscribeKey } from ".."
 
@@ -28,12 +29,54 @@ export const getMaticAndVnlBalance = async () => {
   }
 }
 
+export const updateUnstakedAmount = async () => {
+  if (!state.walletAddress) {
+    return
+  }
+  try {
+    const contract = getJuiceStakingContract(state.signer || state.provider || undefined)
+    const unstaked = (await contract.unstakedBalanceOf(state.walletAddress)).div(10 ** 8).toString()
+    console.log({ unstaked })
+    state.unstakedBalance = unstaked
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const connectWallet = async () => {
   const provider = await state.modal?.connect()
   const web3Provider = new providers.Web3Provider(provider)
   state.signer = ref(web3Provider.getSigner())
   state.walletAddress = await state.signer?.getAddress()
+
+  // updateStakedAmount()
 }
+
+// Temporary for now, this whole file needs to be refactored
+let called = false
+function fn() {
+  if (called) return
+  called = true
+  subscribeKey(state, 'walletOpen', walletOpen => {
+    if (walletOpen) {
+      updateUnstakedAmount()
+    }
+  })
+  subscribeKey(state, 'walletAddress', walletAddress => {
+    if (walletAddress) {
+      try {
+        const contract = getJuiceStakingContract(state.signer || state.provider || undefined)
+        contract.on('JUICEDeposited', (depositor, amount) => {
+          updateUnstakedAmount()
+        })
+        contract.on('JUICEWithdrawn', (depositor, amount) => {
+          updateUnstakedAmount()
+        })
+      } catch (error) { }
+    }
+  })
+}
+fn()
 
 export const disconnect = () => {
   state.modal?.clearCachedProvider()

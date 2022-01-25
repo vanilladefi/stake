@@ -13,7 +13,7 @@ type State = {
   truncatedWalletAddress: string | null,
   modal: Web3Modal | null,
   walletOpen: boolean,
-  staked: string | null,
+  unstakedBalance: string | null,
 }
 
 export const initialState: State = {
@@ -25,7 +25,7 @@ export const initialState: State = {
   truncatedWalletAddress: null,
   modal: null,
   walletOpen: false,
-  staked: '3000.00',
+  unstakedBalance: '0',
 }
 
 const persistedKeys = {

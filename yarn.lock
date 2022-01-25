@@ -1874,38 +1874,38 @@
   resolved "https://registry.yarnpkg.com/@urql/introspection/-/introspection-0.3.0.tgz#545f2425b68d95892afa5961433a19aab1867268"
   integrity sha512-dw87YiSmCgEUFnWj7fYu+wnrFcSEhYyQ8DykTvL1UzCKPm9uLDeey1z0yiSxZeX2qP9oD+TSGIq+61AZHhQO0w==
 
-"@vanilladefi/core-sdk@file:../../../../AppData/Local/Yarn/Cache/v6/.tmp/32c9075bd0aba4892ea7579f32fea568/packages/core", "@vanilladefi/core-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/32c9075bd0aba4892ea7579f32fea568/packages/core":
+"@vanilladefi/core-sdk@file:../../../../AppData/Local/Yarn/Cache/v6/.tmp/7ddee2131b8a90fb89f18008e0d769a4/packages/core", "@vanilladefi/core-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/7ddee2131b8a90fb89f18008e0d769a4/packages/core":
   version "1.0.5"
 
-"@vanilladefi/core-sdk@file:../../../../AppData/Local/Yarn/Cache/v6/.tmp/c9104f306c1ed0c95b8fa88d0efcef67/packages/core", "@vanilladefi/core-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/c9104f306c1ed0c95b8fa88d0efcef67/packages/core":
+"@vanilladefi/core-sdk@file:../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/core", "@vanilladefi/core-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/core":
   version "1.0.5"
 
-"@vanilladefi/sdk@.\\vanilladefi-sdk-2.1.7.tgz":
-  version "2.1.7"
-  resolved ".\\vanilladefi-sdk-2.1.7.tgz#0de8d454102d4c3eb55880538848cc655afc4717"
+"@vanilladefi/sdk@file:./vanilladefi-sdk-2.1.14.tgz":
+  version "2.1.14"
+  resolved "file:./vanilladefi-sdk-2.1.14.tgz#be312ca743e7032dacd2f9ed347cb4842aef06b4"
   dependencies:
-    "@vanilladefi/core-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/c9104f306c1ed0c95b8fa88d0efcef67/packages/core"
-    "@vanilladefi/stake-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/c9104f306c1ed0c95b8fa88d0efcef67/packages/stake"
-    "@vanilladefi/trade-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/c9104f306c1ed0c95b8fa88d0efcef67/packages/trade"
+    "@vanilladefi/core-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/core"
+    "@vanilladefi/stake-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/stake"
+    "@vanilladefi/trade-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/trade"
 
-"@vanilladefi/sdk@.\\vanilladefi-sdk-2.1.8.tgz":
-  version "2.1.8"
-  resolved ".\\vanilladefi-sdk-2.1.8.tgz#fcc366c2e3b22c50e3c9e255931061d10c63f20f"
+"@vanilladefi/sdk@file:./vanilladefi-sdk-v2.2.0.tgz":
+  version "2.2.0"
+  resolved "file:./vanilladefi-sdk-v2.2.0.tgz#4e608e6b57c6c65eb6e55885248ec5233ee7d903"
   dependencies:
-    "@vanilladefi/core-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/32c9075bd0aba4892ea7579f32fea568/packages/core"
-    "@vanilladefi/stake-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/32c9075bd0aba4892ea7579f32fea568/packages/stake"
-    "@vanilladefi/trade-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/32c9075bd0aba4892ea7579f32fea568/packages/trade"
+    "@vanilladefi/core-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/7ddee2131b8a90fb89f18008e0d769a4/packages/core"
+    "@vanilladefi/stake-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/7ddee2131b8a90fb89f18008e0d769a4/packages/stake"
+    "@vanilladefi/trade-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/7ddee2131b8a90fb89f18008e0d769a4/packages/trade"
 
-"@vanilladefi/stake-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/32c9075bd0aba4892ea7579f32fea568/packages/stake":
-  version "1.0.5"
+"@vanilladefi/stake-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/7ddee2131b8a90fb89f18008e0d769a4/packages/stake":
+  version "1.1.0"
   dependencies:
-    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-stake-sdk-1.0.5-eb68970b-424b-47d4-b957-3532547663a5-1642604849634/node_modules/@vanilladefi/core"
+    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-stake-sdk-1.1.0-8682df95-3d5c-490d-8af9-d0c041ac28cd-1643107301198/node_modules/@vanilladefi/core"
     ethers "^5.5.2"
 
-"@vanilladefi/stake-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/c9104f306c1ed0c95b8fa88d0efcef67/packages/stake":
-  version "1.0.4"
+"@vanilladefi/stake-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/stake":
+  version "1.0.10"
   dependencies:
-    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-stake-sdk-1.0.4-144bbaa5-3cf1-4543-bc01-4eb6c40e18f0-1642604848234/node_modules/@vanilladefi/core"
+    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-stake-sdk-1.0.10-a39375a4-16c7-4fc1-b6c1-45656ec77dff-1643107297599/node_modules/@vanilladefi/core"
     ethers "^5.5.2"
 
 "@vanilladefi/trade-contracts@^1.1.27":
@@ -1922,26 +1922,26 @@
     keccak256 "^1.0.3"
     merkletreejs "^0.2.24"
 
-"@vanilladefi/trade-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/32c9075bd0aba4892ea7579f32fea568/packages/trade":
+"@vanilladefi/trade-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/7ddee2131b8a90fb89f18008e0d769a4/packages/trade":
   version "1.1.4"
   dependencies:
     "@uniswap/default-token-list" "^2.0.0"
     "@uniswap/sdk" "^3.0.3"
     "@uniswap/sdk-core" "^1.0.10"
     "@uniswap/v3-sdk" "^3.5.1"
-    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-trade-sdk-1.1.4-83b0f977-30ba-43c3-babb-e446b40f9061-1642604849637/node_modules/@vanilladefi/core"
+    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-trade-sdk-1.1.4-12f6b432-a326-4436-adc9-578de0702507-1643107301208/node_modules/@vanilladefi/core"
     "@vanilladefi/trade-contracts" "^1.1.27"
     ethers "^5.4.7"
     merkletreejs "^0.2.24"
 
-"@vanilladefi/trade-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/c9104f306c1ed0c95b8fa88d0efcef67/packages/trade":
+"@vanilladefi/trade-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/trade":
   version "1.1.4"
   dependencies:
     "@uniswap/default-token-list" "^2.0.0"
     "@uniswap/sdk" "^3.0.3"
     "@uniswap/sdk-core" "^1.0.10"
     "@uniswap/v3-sdk" "^3.5.1"
-    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-trade-sdk-1.1.4-26c67301-c095-4c11-99d8-7744d77e70c5-1642604848317/node_modules/@vanilladefi/core"
+    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-trade-sdk-1.1.4-4cbc3052-ac1e-4beb-8460-ada0735b5a96-1643107297723/node_modules/@vanilladefi/core"
     "@vanilladefi/trade-contracts" "^1.1.27"
     ethers "^5.4.7"
     merkletreejs "^0.2.24"

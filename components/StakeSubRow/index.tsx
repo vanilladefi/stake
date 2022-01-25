@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
 import Image from "next/image";
+import * as sdk from "@vanilladefi/stake-sdk";
+import { BigNumber, ethers } from "ethers";
 
 import tokens from "../../tokensV2";
 import Box from "../Box";
@@ -8,6 +10,9 @@ import Button from "../Button";
 import Flex from "../Flex";
 import Input from "../Input";
 import Text from "../Text";
+import { useSnapshot } from "valtio";
+import { state } from "../../state";
+import { connectWallet } from "../../state/actions/wallet";
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -30,16 +35,51 @@ export type ColumnType = {
     timestamp: any;
   }>;
 };
-
-const StakeSubRow = ({
-  row,
-  type = "make",
-}: {
+interface SubRowProps {
   row: Row<ColumnType>;
   type?: "edit" | "make";
-}) => {
+}
+const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
+  const snap = useSnapshot(state);
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    const _disabled = !(stakeAmount && +stakeAmount);
+    if (_disabled && !disabled) setDisabled(true);
+    else if (!_disabled && disabled) setDisabled(false);
+  }, [disabled, setDisabled, stakeAmount]);
+
+  const makeStake = useCallback(async () => {
+    if (disabled) return;
+
+    if (!snap.signer) {
+      return connectWallet();
+    }
+    const token = tokens
+      // .filter((t) => t.enabled)
+      .find((t) => t.id === row.original.id.split("/")[0])?.address;
+    if (!token) {
+      // TODO Something better
+      return alert("Not implemented yet");
+    }
+    const amount = ethers.BigNumber.from(stakeAmount).mul(10 ** 8);
+    const sentiment = stakePosition === "short" ? false : true;
+
+    if (BigNumber.from(snap.unstakedBalance).mul(10 ** 8) < amount) {
+      return alert("Insufficient juice");
+    }
+    try {
+      const stake = { token, amount, sentiment };
+      console.log("Callin sdk with stake: ", stake);
+      const tx = await sdk.modifyStake(stake, snap.signer);
+      console.log("Transaction: ", tx);
+    } catch (error) {
+      console.log({ error });
+    }
+  }, [disabled, row.original.id, snap.signer, stakeAmount, stakePosition]);
+
   return (
     <Flex
       css={{
@@ -150,7 +190,7 @@ const StakeSubRow = ({
               fontSize: "15px",
               fontWeight: 300,
               textAlign: "center",
-              borderRight: '1px solid $extraMuted',
+              borderRight: "1px solid $extraMuted",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
               },
@@ -181,6 +221,8 @@ const StakeSubRow = ({
         <Button
           ghost
           variant="primary"
+          disabled={disabled}
+          onClick={makeStake}
           css={{
             width: "140px",
             marginRight: "1px",
