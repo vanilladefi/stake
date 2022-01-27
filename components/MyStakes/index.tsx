@@ -20,7 +20,6 @@ import Link from "../Link";
 import tokens from "../../tokensV2";
 import { Token } from "@vanilladefi/core-sdk";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
-import { formatJuice } from "../../utils/helpers";
 import Loader from "../Loader";
 
 /**
@@ -229,8 +228,14 @@ export const MyStakes = () => {
       }
     });
     setStakes(stakes);
+    console.log({ stakes });
+
     if (stakesLoading) setStakesLoading(false);
   }, [snap.provider, snap.signer, snap.walletAddress, stakesLoading]);
+
+  useEffect(() => {
+    getStakes();
+  }, [getStakes]);
 
   useEffect(() => {
     const contract = getJuiceStakingContract(
@@ -287,7 +292,11 @@ export const MyStakes = () => {
         </Button>
       </Flex>
       {stakesLoading ? (
-        <Flex align="center" justify="center" css={{ mb: "$3", height: '92px' }}>
+        <Flex
+          align="center"
+          justify="center"
+          css={{ mb: "$3", height: "92px" }}
+        >
           <Loader />
         </Flex>
       ) : tableData ? (

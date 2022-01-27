@@ -14,7 +14,7 @@ import Input from "../Input";
 import Loader from "../Loader";
 import Text from "../Text";
 import Curtain from "./Curtain";
-import { toJuice } from '../../utils/helpers';
+import { toJuice } from "../../utils/helpers";
 
 const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (
@@ -105,6 +105,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       if (!signer) return connectWallet();
 
       setTxLoading(true);
+      setMessage({ value: null, error: false });
       try {
         const amount = toJuice(juiceAmount).toString();
         await stakeSdk[type](amount, signer);
@@ -116,7 +117,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       } catch (error) {
         console.warn("Error depositing, ", error); // TODO remove in prod, console.warn to differentiate from unhandled errors
         setMessage({
-          value: "Something went wrong!",
+          value: "Tansaction failed!",
           error: true,
         });
       }
