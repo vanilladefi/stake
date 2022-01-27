@@ -40,8 +40,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     // set default from localstorage or most most likely one
     if (!sdk.getContractAddress()) {
       sdk.__UNSAFE__setContractAddress(
-        localStorage.getItem("CONTRACT_ADDRESS") ||
-          "0x7c4bda48bd4c9ac4fbcc60deeb66bf80d35705f0"
+        localStorage.getItem("CONTRACT_ADDRESS") || ""
       );
     }
     expose.promptForAddress = () => {

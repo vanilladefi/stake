@@ -1,9 +1,10 @@
 import type * as Stitches from "@stitches/react";
 import * as tradeSdk from "@vanilladefi/trade-sdk";
 import * as stakeSdk from "@vanilladefi/stake-sdk";
+import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { state, useSnapshot } from "../../state";
 import { disconnect } from "../../state/actions/wallet";
 import Box from "../Box";
@@ -56,7 +57,12 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
   const [copied, setCopied] = useState(false);
   const [juiceAmount, setJuiceAmount] = useState("");
-  const [loadingTx, setLoadingTx] = useState(false);
+  const [txLoading, setTxLoading] = useState(false);
+  const [txDisabled, setTxDisabled] = useState(false);
+  const [message, setMessage] = useState({
+    value: null as string | null,
+    error: false,
+  });
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard.writeText(text).then(
@@ -70,24 +76,53 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     );
   }, []);
 
+  useEffect(() => {
+    const contract = getJuiceStakingContract(
+      state.signer || state.provider || undefined
+    );
+    const onTx = (user: string, amount: any) => {
+      // updateUnstakedAmount(); set inwallet.ts
+      setMessage({ value: null, error: false });
+    };
+
+    contract.on("JUICEDeposited", onTx);
+    contract.on("JUICEWithdrawn", onTx);
+    return () => {
+      contract.off("JUICEDeposited", onTx);
+      contract.off("JUICEWithdrawn", onTx);
+    };
+  }, []);
+
+  useEffect(() => {
+    const _disabled = !(juiceAmount && +juiceAmount) || !signer;
+    if (_disabled && !txDisabled) setTxDisabled(true);
+    else if (!_disabled && txDisabled) setTxDisabled(false);
+  }, [juiceAmount, signer, txDisabled]);
+
   const handleTx = useCallback(
     async (type: "deposit" | "withdraw") => {
-      if (!signer) return;
-      setLoadingTx(true);
+      if (txDisabled || !signer) return;
+      setTxLoading(true);
       try {
         const amount = BigNumber.from(juiceAmount)
           .mul(10 ** 8)
           .toString();
         await stakeSdk[type](amount, signer);
         setJuiceAmount("");
+        setMessage({
+          value: "Transaction sent [SUGGEST BETTER MESSAGE HERE]",
+          error: false,
+        });
       } catch (error) {
-        console.log("Error depositing, ", error);
-        if (typeof error === 'object' && error && "message" in error)
-          alert("Error: " + (error as any).message);
+        console.warn("Error depositing, ", error); // TODO remove in prod, console.warn to differentiate from unhandled errors
+        setMessage({
+          value: "Something went wrong!",
+          error: true,
+        });
       }
-      setLoadingTx(false);
+      setTxLoading(false);
     },
-    [juiceAmount, signer]
+    [juiceAmount, signer, txDisabled]
   );
 
   return walletOpen ? (
@@ -308,10 +343,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               variant="bordered"
             ></Input>
             <Box css={{ display: "flex", flexDirection: "row", mt: "$2" }}>
-              {!loadingTx ? (
+              {!txLoading ? (
                 <>
                   <Button
-                    disabled={!signer}
+                    disabled={txDisabled}
                     onClick={() => handleTx("withdraw")}
                     variant="bordered"
                     css={{ display: "flex", flex: "1 0" }}
@@ -319,7 +354,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     Withdraw
                   </Button>
                   <Button
-                    disabled={!signer}
+                    disabled={txDisabled}
                     onClick={() => handleTx("deposit")}
                     variant="bordered"
                     css={{ display: "flex", flex: "1 0" }}
@@ -331,6 +366,12 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 <Loader css={{ height: "$10" }} />
               )}
             </Box>
+            <Text
+              size="small"
+              css={{ mt: "$1", color: message.error ? "$red" : "$primary" }}
+            >
+              {message.value}
+            </Text>
           </Box>
           <Button
             variant="primary"

@@ -3,6 +3,7 @@ import { VanillaVersion } from "@vanilladefi/core-sdk"
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk"
 import { providers } from "ethers"
 import { persistedKeys, ref, state, subscribeKey } from ".."
+import { toJuice } from '../../utils/helpers'
 
 export const persistWalletAddress = () => {
   const walletAddress = localStorage.getItem(persistedKeys.walletAddress)
@@ -65,12 +66,16 @@ function fn() {
   subscribeKey(state, 'walletAddress', walletAddress => {
     if (walletAddress) {
       try {
+        // TODO unsubscribe on account change
         const contract = getJuiceStakingContract(state.signer || state.provider || undefined)
         contract.on('JUICEDeposited', (depositor, amount) => {
           updateUnstakedAmount()
+          // TODO Replace with modal
+          alert(`${toJuice(amount)} JUICE deposited successfully!`)
         })
         contract.on('JUICEWithdrawn', (depositor, amount) => {
           updateUnstakedAmount()
+          alert(`${toJuice(amount)} JUICE withdrawn successfully!`)
         })
       } catch (error) { }
     }
