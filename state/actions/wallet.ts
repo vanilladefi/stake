@@ -1,9 +1,9 @@
 import { getBasicWalletDetails, isAddress, vnl } from "@vanilladefi/trade-sdk"
 import { VanillaVersion } from "@vanilladefi/core-sdk"
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk"
-import { providers } from "ethers"
+import { BigNumber, providers } from "ethers"
 import { persistedKeys, ref, state, subscribeKey } from ".."
-import { toJuice } from '../../utils/helpers'
+import { formatJuice } from '../../utils/helpers'
 
 export const persistWalletAddress = () => {
   const walletAddress = localStorage.getItem(persistedKeys.walletAddress)
@@ -36,8 +36,7 @@ export const updateUnstakedAmount = async () => {
   }
   try {
     const contract = getJuiceStakingContract(state.signer || state.provider || undefined)
-    const unstaked = (await contract.unstakedBalanceOf(state.walletAddress)).div(10 ** 8).toString()
-    console.log({ unstaked })
+    const unstaked = formatJuice(await contract.unstakedBalanceOf(state.walletAddress))
     state.unstakedBalance = unstaked
   } catch (error) {
     console.error(error)
@@ -68,14 +67,14 @@ function fn() {
       try {
         // TODO unsubscribe on account change
         const contract = getJuiceStakingContract(state.signer || state.provider || undefined)
-        contract.on('JUICEDeposited', (depositor, amount) => {
+        contract.on('JUICEDeposited', (depositor: string, amount: BigNumber) => {
           updateUnstakedAmount()
           // TODO Replace with modal
-          alert(`${toJuice(amount)} JUICE deposited successfully!`)
+          alert(`${formatJuice(amount)} JUICE deposited successfully!`)
         })
-        contract.on('JUICEWithdrawn', (depositor, amount) => {
+        contract.on('JUICEWithdrawn', (depositor: string, amount: BigNumber) => {
           updateUnstakedAmount()
-          alert(`${toJuice(amount)} JUICE withdrawn successfully!`)
+          alert(`${formatJuice(amount)} JUICE withdrawn successfully!`)
         })
       } catch (error) { }
     }

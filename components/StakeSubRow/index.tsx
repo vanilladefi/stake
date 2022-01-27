@@ -2,7 +2,6 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
 import Image from "next/image";
 import * as sdk from "@vanilladefi/stake-sdk";
-import { BigNumber, ethers } from "ethers";
 
 import tokens from "../../tokensV2";
 import Box from "../Box";
@@ -13,6 +12,7 @@ import Text from "../Text";
 import { useSnapshot } from "valtio";
 import { state } from "../../state";
 import { connectWallet } from "../../state/actions/wallet";
+import { toJuice } from "../../utils/helpers";
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -43,13 +43,14 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const snap = useSnapshot(state);
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
+  const [stakePending, setStakePending] = useState(false);
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    const _disabled = !(stakeAmount && +stakeAmount);
+    const _disabled = !(stakeAmount && +stakeAmount) || stakePending;
     if (_disabled && !disabled) setDisabled(true);
     else if (!_disabled && disabled) setDisabled(false);
-  }, [disabled, setDisabled, stakeAmount]);
+  }, [disabled, setDisabled, stakeAmount, stakePending]);
 
   const makeStake = useCallback(async () => {
     if (disabled) return;
@@ -57,28 +58,45 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
     if (!snap.signer) {
       return connectWallet();
     }
+
     const token = tokens
       // .filter((t) => t.enabled)
       .find((t) => t.id === row.original.id.split("/")[0])?.address;
+
     if (!token) {
       // TODO Something better
-      return alert("Not implemented yet");
+      return alert("Token is not available to stake yet");
     }
-    const amount = ethers.BigNumber.from(stakeAmount).mul(10 ** 8);
-    const sentiment = stakePosition === "short" ? false : true;
-
-    if (BigNumber.from(snap.unstakedBalance).mul(10 ** 8) < amount) {
-      return alert("Insufficient juice");
-    }
+    setStakePending(true);
     try {
+      const amount = toJuice(stakeAmount);
+      const sentiment = stakePosition === "short" ? false : true;
+
+      // TODO Maybe use orignal number from contract here
+      if (!snap.unstakedBalance || +snap.unstakedBalance < +stakeAmount) {
+        alert("Insufficient JUICE!");
+        return setStakePending(false);
+      }
+
       const stake = { token, amount, sentiment };
       console.log("Callin sdk with stake: ", stake);
       const tx = await sdk.modifyStake(stake, snap.signer);
-      console.log("Transaction: ", tx);
+      const res = await tx.wait();
+      if (res.status === 1) alert("Transaction Successfull");
+      else alert("Transaction Failed");
     } catch (error) {
       console.log({ error });
+      alert("Something went wrong!");
     }
-  }, [disabled, row.original.id, snap.signer, stakeAmount, stakePosition]);
+    setStakePending(false);
+  }, [
+    disabled,
+    row.original.id,
+    snap.signer,
+    snap.unstakedBalance,
+    stakeAmount,
+    stakePosition,
+  ]);
 
   return (
     <Flex
@@ -236,7 +254,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
             },
           }}
         >
-          Make stake
+          {stakePending ? "Pending..." : "Make stake"}
         </Button>
       )}
     </Flex>

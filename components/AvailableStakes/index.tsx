@@ -25,13 +25,13 @@ export const AvailableStakes = () => {
       return isEnabled;
     }) || [];
   
-  // refetch data every 60 seconds
+  // refetch data every 3 seconds
   useEffect(() => {
     const id = setTimeout(() => {
       if (!fetching) {
         executeQuery({ requestPolicy: "network-only" });
       }
-    }, 2000);
+    }, 3000);
     return () => clearTimeout(id);
   }, [fetching, executeQuery]);
 

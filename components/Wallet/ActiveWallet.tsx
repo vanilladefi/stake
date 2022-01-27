@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import { state, useSnapshot } from "../../state";
-import { disconnect } from "../../state/actions/wallet";
+import { connectWallet, disconnect } from "../../state/actions/wallet";
 import Box from "../Box";
 import Button from "../Button";
 import Heading from "../Heading";
@@ -14,7 +14,7 @@ import Input from "../Input";
 import Loader from "../Loader";
 import Text from "../Text";
 import Curtain from "./Curtain";
-import { BigNumber } from "ethers";
+import { toJuice } from '../../utils/helpers';
 
 const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (
@@ -101,12 +101,12 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
   const handleTx = useCallback(
     async (type: "deposit" | "withdraw") => {
-      if (txDisabled || !signer) return;
+      if (txDisabled) return;
+      if (!signer) return connectWallet();
+
       setTxLoading(true);
       try {
-        const amount = BigNumber.from(juiceAmount)
-          .mul(10 ** 8)
-          .toString();
+        const amount = toJuice(juiceAmount).toString();
         await stakeSdk[type](amount, signer);
         setJuiceAmount("");
         setMessage({
@@ -342,7 +342,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               size="xl"
               variant="bordered"
             ></Input>
-            <Box css={{ display: "flex", flexDirection: "row", mt: "$2" }}>
+            <Box css={{ display: "flex", flexDirection: "row", mt: "1px" }}>
               {!txLoading ? (
                 <>
                   <Button
