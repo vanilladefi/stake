@@ -21,6 +21,7 @@ import tokens from "../../tokensV2";
 import { Token } from "@vanilladefi/core-sdk";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { formatJuice } from "../../utils/helpers";
+import Loader from "../Loader";
 
 /**
  * Early rough implementation
@@ -195,6 +196,7 @@ export const MyStakes = () => {
     []
   );
   const [stakes, setStakes] = useState<any[] | null>(null);
+  const [stakesLoading, setStakesLoading] = useState(true);
   const getStakes = useCallback(async () => {
     if (!snap.walletAddress) return;
 
@@ -227,7 +229,8 @@ export const MyStakes = () => {
       }
     });
     setStakes(stakes);
-  }, [snap.provider, snap.signer, snap.walletAddress]);
+    if (stakesLoading) setStakesLoading(false);
+  }, [snap.provider, snap.signer, snap.walletAddress, stakesLoading]);
 
   useEffect(() => {
     const contract = getJuiceStakingContract(
@@ -283,7 +286,11 @@ export const MyStakes = () => {
           Manage funds
         </Button>
       </Flex>
-      {tableData ? (
+      {stakesLoading ? (
+        <Flex align="center" justify="center" css={{ mb: "$3", height: '92px' }}>
+          <Loader />
+        </Flex>
+      ) : tableData ? (
         <Box
           css={{
             overflowX: "auto",
