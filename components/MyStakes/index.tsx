@@ -222,7 +222,7 @@ export const MyStakes = () => {
       if (!res[idx].amount.isZero()) {
         const stake = {
           id: token.pairId,
-          stakedAmount: formatJuice(res[idx].amount),
+          stakedAmount: res[idx].amount.toString(),
           sentiment: res[idx].sentiment === true ? "long" : "short",
         };
         stakes.push(stake);
