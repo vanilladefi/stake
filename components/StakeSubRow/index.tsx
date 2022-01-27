@@ -18,7 +18,7 @@ export type ColumnType = {
   __typename?: "AssetPair";
   id: string;
   currentPrice: any;
-  stakedAmount?: any;
+  stakedAmount?: string;
   sentiment?: "long" | "short";
   decimals: number;
   roundId: any;
@@ -44,16 +44,23 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
   const [stakePending, setStakePending] = useState(false);
-  const [disabled, setDisabled] = useState(true);
+  const [stakingDisabled, setStakingDisabled] = useState(true);
+  const [closingDisabled, setClosingDisabled] = useState(true);
 
   useEffect(() => {
     const _disabled = !(stakeAmount && +stakeAmount) || stakePending;
-    if (_disabled && !disabled) setDisabled(true);
-    else if (!_disabled && disabled) setDisabled(false);
-  }, [disabled, setDisabled, stakeAmount, stakePending]);
+    if (_disabled && !stakingDisabled) setStakingDisabled(true);
+    else if (!_disabled && stakingDisabled) setStakingDisabled(false);
+  }, [stakingDisabled, setStakingDisabled, stakeAmount, stakePending]);
 
-  const makeStake = useCallback(async () => {
-    if (disabled) return;
+  useEffect(() => {
+    const _disabled = stakePending;
+    if (_disabled && !closingDisabled) setClosingDisabled(true);
+    else if (!_disabled && closingDisabled) setClosingDisabled(false);
+  }, [stakePending, closingDisabled]);
+
+  const modifyStake = useCallback(async () => {
+    if (stakingDisabled) return;
 
     if (!snap.signer) {
       return connectWallet();
@@ -69,34 +76,66 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
     }
     setStakePending(true);
     try {
-      const amount = toJuice(stakeAmount);
+      const amount = toJuice(stakeAmount).toString();
       const sentiment = stakePosition === "short" ? false : true;
 
-      // TODO Maybe use orignal number from contract here
-      if (!snap.unstakedBalance || +snap.unstakedBalance < +stakeAmount) {
-        alert("Insufficient JUICE!");
-        return setStakePending(false);
-      }
+      // if (!snap.unstakedBalance || +snap.unstakedBalance < +stakeAmount) {
+      //   alert("Insufficient JUICE!");
+      //   return setStakePending(false);
+      // }
 
       const stake = { token, amount, sentiment };
-      console.log("Callin sdk with stake: ", stake);
+      console.log("Calling modifyStake with stake: ", stake);
+
       const tx = await sdk.modifyStake(stake, snap.signer);
       const res = await tx.wait();
       if (res.status === 1) alert("Transaction Successfull");
       else alert("Transaction Failed");
     } catch (error) {
-      console.log({ error });
+      console.log("modifyStake error: ", error);
       alert("Something went wrong!");
     }
     setStakePending(false);
   }, [
-    disabled,
+    stakingDisabled,
     row.original.id,
     snap.signer,
-    snap.unstakedBalance,
     stakeAmount,
     stakePosition,
   ]);
+
+  const closeStakePartition = useCallback(async () => {
+    if (closingDisabled) return;
+
+    if (!snap.signer) {
+      return connectWallet();
+    }
+
+    const token = tokens
+      // .filter((t) => t.enabled)
+      .find((t) => t.id === row.original.id.split("/")[0])?.address;
+
+    if (!token) {
+      // TODO Something better
+      return alert("Not allowed as of now!");
+    }
+    setStakePending(true);
+    try {
+      const stake = { token, amount: 0, sentiment: false };
+      console.log("Callin sdk with stake: ", stake);
+
+      const tx = await sdk.modifyStake(stake, snap.signer);
+      const res = await tx.wait();
+
+      if (res.status === 1) alert("Transaction Successfull");
+      else alert("Transaction Failed");
+    } catch (error) {
+      console.warn("closeStakePartition erorr: ", error);
+      alert("Something went wrong!");
+    }
+
+    setStakePending(false);
+  }, [closingDisabled, row.original.id, snap.signer]);
 
   return (
     <Flex
@@ -115,6 +154,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       >
         <Text css={{ color: "$muted", fontSize: "$xl", mr: "$2" }}>Stake</Text>
         <Input
+          disabled={stakePending}
           size="lg"
           type="number"
           placeholder="100"
@@ -134,6 +174,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         <Button
           onClick={() => setStakePosition("long")}
           outline
+          disabled={stakePending}
           uppercase
           size="sm"
           css={{
@@ -147,6 +188,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
           onClick={() => setStakePosition("short")}
           outline
           uppercase
+          disabled={stakePending}
           size="sm"
           css={{
             width: "90px",
@@ -195,52 +237,62 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         </Box>
       </Flex>
       {type === "edit" ? (
-        <>
-          <Button
-            ghost
-            variant="primary"
-            css={{
-              color: "$red",
-              width: "120px",
-              marginRight: "1px",
-              height: "auto",
-              px: "0",
-              fontSize: "15px",
-              fontWeight: 300,
-              textAlign: "center",
-              borderRight: "1px solid $extraMuted",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-              },
-            }}
-          >
-            Close partition
-          </Button>
-          <Button
-            ghost
-            variant="primary"
-            css={{
-              width: "100px",
-              marginRight: "1px",
-              height: "auto",
-              px: "0",
-              fontSize: "15px",
-              fontWeight: 300,
-              textAlign: "center",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-              },
-            }}
-          >
-            Save
-          </Button>
-        </>
+        stakePending ? (
+          <Flex justify="center" align="center" css={{ width: "220px" }}>
+            Pending...
+          </Flex>
+        ) : (
+          <>
+            <Button
+              ghost
+              variant="primary"
+              disabled={closingDisabled}
+              onClick={closeStakePartition}
+              css={{
+                color: "$red",
+                width: "120px",
+                marginRight: "1px",
+                height: "auto",
+                px: "0",
+                fontSize: "15px",
+                fontWeight: 300,
+                textAlign: "center",
+                borderRight: "1px solid $extraMuted",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                },
+              }}
+            >
+              Close partition
+            </Button>
+            <Button
+              ghost
+              variant="primary"
+              disabled={stakingDisabled}
+              onClick={modifyStake}
+              css={{
+                width: "100px",
+                marginRight: "1px",
+                height: "auto",
+                px: "0",
+                fontSize: "15px",
+                fontWeight: 300,
+                textAlign: "center",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                },
+              }}
+            >
+              Save
+            </Button>
+          </>
+        )
       ) : (
         <Button
           ghost
           variant="primary"
-          disabled={disabled}
-          onClick={makeStake}
+          disabled={stakingDisabled}
+          onClick={modifyStake}
           css={{
             width: "140px",
             marginRight: "1px",

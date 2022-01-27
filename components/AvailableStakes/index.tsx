@@ -24,7 +24,7 @@ export const AvailableStakes = () => {
       const isEnabled = tokens.find((ot) => ot.id === id)?.enabled;
       return isEnabled;
     }) || [];
-  
+
   // refetch data every 3 seconds
   useEffect(() => {
     const id = setTimeout(() => {
@@ -140,7 +140,7 @@ export const AvailableStakes = () => {
         align: "right",
         width: "10%",
         minWidth: "100px",
-        Cell: ({ value, row }) => {
+        Cell: ({ row }) => {
           return (
             <Button
               ghost

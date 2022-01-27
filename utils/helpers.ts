@@ -1,5 +1,4 @@
 import { ethers } from 'ethers'
-import { BigNumber } from 'bignumber.js'
 
 // RFC 2822 email spec
 export const EMAIL_REGEX =
@@ -7,5 +6,6 @@ export const EMAIL_REGEX =
 
 export const isValidEmail = (email?: string) => !!email && EMAIL_REGEX.test(email)
 
-export const formatJuice = (amount: ethers.BigNumberish) => ethers.BigNumber.from(amount).div(10 ** 8).toNumber().toFixed(3)
-export const toJuice = (amount: string | number) => ethers.BigNumber.from(new BigNumber(amount).multipliedBy(10 ** 8).toFixed(0))
+export const formatJuice = (amount: ethers.BigNumberish) => Number(ethers.utils.formatUnits(amount, 8)).toFixed(3)
+
+export const toJuice = (amount: string | number) => ethers.utils.parseUnits(amount.toString(), 8)

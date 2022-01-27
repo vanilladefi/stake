@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
-import * as stakeSdk from "@vanilladefi/stake-sdk";
+import { getJuiceStakingContract, getAllStakes } from "@vanilladefi/stake-sdk";
 import { useSnapshot } from "valtio";
 
 import Box from "../Box";
@@ -20,13 +20,15 @@ import Link from "../Link";
 import tokens from "../../tokensV2";
 import { Token } from "@vanilladefi/core-sdk";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
+import { formatJuice } from "../../utils/helpers";
 
 /**
  * Early rough implementation
  * Just a POC
  */
 export const MyStakes = () => {
-  const [{ fetching, data: _data }, executeQuery] = useGetAssetPairsQuery();
+  // leaving `executQuery` to AvailableStakes component
+  const [{ fetching, data: _data }] = useGetAssetPairsQuery();
   const priceData = useMemo(() => {
     return (
       _data?.assetPairs.filter((t) => {
@@ -36,7 +38,9 @@ export const MyStakes = () => {
       }) || []
     );
   }, [_data?.assetPairs]);
+
   const snap = useSnapshot(state);
+
   const columns: Column<ColumnType>[] = useMemo(
     () => [
       {
@@ -197,7 +201,7 @@ export const MyStakes = () => {
     const _tokens: Token[] = tokens
       .filter((t) => t.enabled && t.address)
       .map((t) => ({
-        address: t.address as any,
+        address: t.address as string,
         pairId: t.id,
         symbol: "",
         decimals: t.decimals + "",
@@ -205,40 +209,45 @@ export const MyStakes = () => {
         logoColor: "",
       }));
 
-    const res = await stakeSdk.getAllStakes(
+    const res = await getAllStakes(
       snap.walletAddress,
       _tokens,
       snap.signer || (snap.provider as any)
     );
-    console.log({ res });
     let stakes: any[] = [];
 
     _tokens.forEach((token, idx) => {
       if (!res[idx].amount.isZero()) {
         const stake = {
           id: token.pairId,
-          stakeAmount: res[idx].amount.div(10 ** 8).toString(),
+          stakedAmount: formatJuice(res[idx].amount),
           sentiment: res[idx].sentiment === true ? "long" : "short",
         };
-        if (stake) stakes.push(stake);
+        stakes.push(stake);
       }
     });
-    console.log({ stakes });
     setStakes(stakes);
   }, [snap.provider, snap.signer, snap.walletAddress]);
 
   useEffect(() => {
-    // TODO this should be called based on events of contract
-    let interval = setInterval(() => {
+    const contract = getJuiceStakingContract(
+      state.signer || state.provider || undefined
+    );
+    const onStakesChanged = () => {
       getStakes();
-    }, 3000);
-    return () => clearInterval(interval);
+    };
+
+    contract.on("StakeAdded", onStakesChanged);
+    contract.on("StakeRemoved", onStakesChanged);
+    return () => {
+      contract.off("StakeAdded", onStakesChanged);
+      contract.off("StakeRemoved", onStakesChanged);
+    };
   }, [getStakes]);
 
   const [tableData, setTableData] = useState<ColumnType[] | null>(null);
-
   useEffect(() => {
-    if (stakes) {
+    if (stakes && stakes.length) {
       let _tableData: ColumnType[] = [];
       priceData.forEach((pd, idx) => {
         const s = stakes.find((stake) => stake.id === pd.id.split("/")[0]);
