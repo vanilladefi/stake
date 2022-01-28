@@ -4,6 +4,7 @@ import { getJuiceStakingContract } from "@vanilladefi/stake-sdk"
 import { BigNumber, providers } from "ethers"
 import { persistedKeys, ref, state, subscribeKey } from ".."
 import { formatJuice } from '../../utils/helpers'
+import { showDialog } from './dialog'
 
 export const persistWalletAddress = () => {
   const walletAddress = localStorage.getItem(persistedKeys.walletAddress)
@@ -69,12 +70,17 @@ function fn() {
         const contract = getJuiceStakingContract(state.signer || state.provider || undefined)
         contract.on('JUICEDeposited', (depositor: string, amount: BigNumber) => {
           updateUnstakedAmount()
-          // TODO Replace with modal
-          alert(`${formatJuice(amount)} JUICE deposited successfully!`)
+          if (!state.walletOpen)
+            showDialog("Juice deposited", {
+              body: `${formatJuice(amount)} JUICE deposited successfully!`
+            })
         })
         contract.on('JUICEWithdrawn', (depositor: string, amount: BigNumber) => {
           updateUnstakedAmount()
-          alert(`${formatJuice(amount)} JUICE withdrawn successfully!`)
+          if (!state.walletOpen)
+            showDialog("Juice withdrawn", {
+              body: `${formatJuice(amount)} JUICE withdrawn successfully!`
+            })
         })
       } catch (error) { }
     }

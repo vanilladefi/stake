@@ -12,6 +12,7 @@ type State = {
   walletAddress: string | null,
   truncatedWalletAddress: string | null,
   modal: Web3Modal | null,
+  alert: { title: string, body?: string } | null,
   walletOpen: boolean,
   unstakedBalance: string | null,
 }
@@ -24,6 +25,7 @@ export const initialState: State = {
   walletAddress: null,
   truncatedWalletAddress: null,
   modal: null,
+  alert: { title: 'Hello', body: 'loremn eoiffu eu foef uoeu fe f98 '},
   walletOpen: false,
   unstakedBalance: '0',
 }

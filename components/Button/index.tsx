@@ -37,6 +37,11 @@ const StyledButton = styled(
           opacity: 0.5,
         },
       },
+      fluid: {
+        true: {
+          width: '100%'
+        }
+      },
       variant: {
         default: {
           color: "$background",

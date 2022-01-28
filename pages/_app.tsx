@@ -15,7 +15,11 @@ import useOrigin from "../lib/hooks/useOrigin";
 import { useEffect } from "react";
 import { state } from "../state";
 import * as sdk from "@vanilladefi/stake-sdk";
+import { showDialog } from "../state/actions/dialog";
 
+const AlertDialog = dynamic(() => import("../components/AlertDialog"), {
+  ssr: false,
+});
 const ActiveWallet = dynamic(
   () => import("../components/Wallet/ActiveWallet"),
   { ssr: false }
@@ -33,6 +37,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const shareImg = "/images/share-image.png";
   // DONT FORGET TO REMOVE LATER
   useEffect(() => {
+    (window as any).alert = (title: string) => (state.alert = { title });
     const expose = ((window as any).__AABRA_KA_DAABRA__ = {}) as any;
 
     expose.state = state;
@@ -49,9 +54,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       if (address) {
         sdk.__UNSAFE__setContractAddress(address);
         localStorage.setItem("CONTRACT_ADDRESS", address);
-        alert(
-          `Contract address set to ${sdk.getContractAddress()}.\nHAPPY TESTING!`
-        );
+        showDialog("🏅 HAPPY TESTING 🏅", {
+          body: `Contract address set to ${sdk.getContractAddress()}.`,
+        });
         return "Ok";
       }
     };
@@ -145,6 +150,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         >
           <Box>
+            <AlertDialog />
             <WalletModal />
             <ActiveWallet />
             <Navigation />

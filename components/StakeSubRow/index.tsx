@@ -13,6 +13,7 @@ import { useSnapshot } from "valtio";
 import { state } from "../../state";
 import { connectWallet } from "../../state/actions/wallet";
 import { toJuice } from "../../utils/helpers";
+import { showDialog } from "../../state/actions/dialog";
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -72,7 +73,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
     if (!token) {
       // TODO Something better
-      return alert("Token is not available to stake yet");
+      return showDialog("Invalid operation", {
+        body: "Token is not available to stake yet",
+      });
     }
     setStakePending(true);
     try {
@@ -89,11 +92,17 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
       const tx = await sdk.modifyStake(stake, snap.signer);
       const res = await tx.wait();
-      if (res.status === 1) alert("Transaction Successfull");
-      else alert("Transaction Failed");
+      if (res.status === 1)
+        showDialog("Successs", {
+          body: "Transaction was successful, [LINK]",
+        });
+      else
+        showDialog("Error", {
+          body: "Transaction failed, [LINK]",
+        });
     } catch (error) {
       console.log("modifyStake error: ", error);
-      alert("Something went wrong!");
+      showDialog("Error", { body: "Something went wrong!" });
     }
     setStakePending(false);
   }, [
@@ -117,7 +126,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
     if (!token) {
       // TODO Something better
-      return alert("Not allowed as of now!");
+      return showDialog("Error", {
+        body: "Not allowed as of now!",
+      });
     }
     setStakePending(true);
     try {
@@ -128,10 +139,15 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       const res = await tx.wait();
 
       if (res.status === 1) alert("Transaction Successfull");
-      else alert("Transaction Failed");
+      else
+        showDialog("Error", {
+          body: "Transaction failed [LINK]",
+        });
     } catch (error) {
       console.warn("closeStakePartition erorr: ", error);
-      alert("Something went wrong!");
+      showDialog("Error", {
+        body: "Something went wrong, try again later",
+      });
     }
 
     setStakePending(false);
