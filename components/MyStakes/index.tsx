@@ -28,7 +28,7 @@ import Loader from "../Loader";
  */
 export const MyStakes = () => {
   // leaving `executQuery` to AvailableStakes component
-  const [{ fetching, data: _data }] = useGetAssetPairsQuery();
+  const [{ fetching: _, data: _data }] = useGetAssetPairsQuery();
   const priceData = useMemo(() => {
     return (
       _data?.assetPairs.filter((t) => {
