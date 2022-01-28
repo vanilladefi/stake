@@ -82,13 +82,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       const amount = toJuice(stakeAmount).toString();
       const sentiment = stakePosition === "short" ? false : true;
 
-      // if (!snap.unstakedBalance || +snap.unstakedBalance < +stakeAmount) {
-      //   alert("Insufficient JUICE!");
-      //   return setStakePending(false);
-      // }
-
       const stake = { token, amount, sentiment };
-      console.log("Calling modifyStake with stake: ", stake);
 
       const tx = await sdk.modifyStake(stake, snap.signer);
       const res = await tx.wait();
@@ -138,7 +132,10 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       const tx = await sdk.modifyStake(stake, snap.signer);
       const res = await tx.wait();
 
-      if (res.status === 1) alert("Transaction Successfull");
+      if (res.status === 1)
+        showDialog("Success", {
+          body: "Stake position closed",
+        });
       else
         showDialog("Error", {
           body: "Transaction failed [LINK]",

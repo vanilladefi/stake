@@ -1,12 +1,15 @@
 import type * as Stitches from "@stitches/react";
 import * as tradeSdk from "@vanilladefi/trade-sdk";
 import * as stakeSdk from "@vanilladefi/stake-sdk";
-import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import { state, useSnapshot } from "../../state";
-import { connectWallet, disconnect } from "../../state/actions/wallet";
+import {
+  connectWallet,
+  disconnect,
+  maybeGetContract,
+} from "../../state/actions/wallet";
 import Box from "../Box";
 import Button from "../Button";
 import Heading from "../Heading";
@@ -77,9 +80,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   }, []);
 
   useEffect(() => {
-    const contract = getJuiceStakingContract(
-      state.signer || state.provider || undefined
-    );
+    if (!walletAddress) return;
+    const contract = maybeGetContract();
+    if (!contract) return;
+
     const onTx = (user: string, amount: any) => {
       // updateUnstakedAmount(); set inwallet.ts
       setMessage({ value: null, error: false });
@@ -91,7 +95,11 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       contract.off("JUICEDeposited", onTx);
       contract.off("JUICEWithdrawn", onTx);
     };
-  }, []);
+  }, [walletAddress]);
+
+  useEffect(() => {
+    if (walletOpen) setMessage({ value: null, error: false });
+  }, [walletOpen]);
 
   useEffect(() => {
     const _disabled = !(juiceAmount && +juiceAmount) || !signer;

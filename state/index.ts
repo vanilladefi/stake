@@ -25,9 +25,9 @@ export const initialState: State = {
   walletAddress: null,
   truncatedWalletAddress: null,
   modal: null,
-  alert: { title: 'Hello', body: 'loremn eoiffu eu foef uoeu fe f98 '},
+  alert: null,
   walletOpen: false,
-  unstakedBalance: '0',
+  unstakedBalance: null,
 }
 
 const persistedKeys = {

@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
-import { getJuiceStakingContract, getAllStakes } from "@vanilladefi/stake-sdk";
+import { getAllStakes } from "@vanilladefi/stake-sdk";
 import { useSnapshot } from "valtio";
 
 import Box from "../Box";
@@ -21,6 +21,7 @@ import tokens from "../../tokensV2";
 import { Token } from "@vanilladefi/core-sdk";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import Loader from "../Loader";
+import { maybeGetContract } from '../../state/actions/wallet';
 
 /**
  * Early rough implementation
@@ -228,7 +229,6 @@ export const MyStakes = () => {
       }
     });
     setStakes(stakes);
-    console.log({ stakes });
 
     if (stakesLoading) setStakesLoading(false);
   }, [snap.provider, snap.signer, snap.walletAddress, stakesLoading]);
@@ -238,9 +238,10 @@ export const MyStakes = () => {
   }, [getStakes]);
 
   useEffect(() => {
-    const contract = getJuiceStakingContract(
-      state.signer || state.provider || undefined
-    );
+    if (!snap.walletAddress) return 
+    const contract = maybeGetContract()
+    if (!contract) return
+    
     const onStakesChanged = () => {
       getStakes();
     };
@@ -251,7 +252,7 @@ export const MyStakes = () => {
       contract.off("StakeAdded", onStakesChanged);
       contract.off("StakeRemoved", onStakesChanged);
     };
-  }, [getStakes]);
+  }, [getStakes, snap.walletAddress]);
 
   const [tableData, setTableData] = useState<ColumnType[] | null>(null);
   useEffect(() => {

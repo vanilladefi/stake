@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import { state } from "../state";
 import * as sdk from "@vanilladefi/stake-sdk";
 import { showDialog } from "../state/actions/dialog";
+import { connectWallet, initWalletSubscriptions } from "../state/actions/wallet";
 
 const AlertDialog = dynamic(() => import("../components/AlertDialog"), {
   ssr: false,
@@ -35,18 +36,25 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const origin = useOrigin();
   const shareImg = "/images/share-image.png";
+
+  // One time initializations
+  useEffect(() => {
+    initWalletSubscriptions();
+  }, []);
+
   // DONT FORGET TO REMOVE LATER
   useEffect(() => {
-    (window as any).alert = (title: string) => (state.alert = { title });
     const expose = ((window as any).__AABRA_KA_DAABRA__ = {}) as any;
 
     expose.state = state;
     expose.sdk = sdk;
     // set default from localstorage or most most likely one
-    if (!sdk.getContractAddress()) {
-      sdk.__UNSAFE__setContractAddress(
-        localStorage.getItem("CONTRACT_ADDRESS") || ""
-      );
+    const savedAddress = localStorage.getItem("CONTRACT_ADDRESS");
+    if (!sdk.getContractAddress() && savedAddress) {
+      sdk.__UNSAFE__setContractAddress(savedAddress);
+      showDialog("🏅 HAPPY TESTING 🏅", {
+        body: `Contract address set to ${sdk.getContractAddress()}.`,
+      });
     }
     expose.promptForAddress = () => {
       const address = prompt("Enter the contract address");
@@ -57,6 +65,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         showDialog("🏅 HAPPY TESTING 🏅", {
           body: `Contract address set to ${sdk.getContractAddress()}.`,
         });
+        // just to refresh
+        connectWallet()
         return "Ok";
       }
     };

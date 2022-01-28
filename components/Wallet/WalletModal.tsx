@@ -5,12 +5,10 @@ import { useEffect } from "react";
 import Web3Modal, { IProviderOptions } from "web3modal";
 import { rpcUrl } from "../../lib/config";
 import { ref, state } from "../../state";
-import { persistWalletAddress } from "../../state/actions/wallet";
+// import { persistWalletAddress } from "../../state/actions/wallet";
 import { darkTheme, theme } from "../../stitches.config";
 
-const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  persistWalletAddress()
-  
+const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {  
   const { resolvedTheme } = useTheme()
 
   useEffect(() => {

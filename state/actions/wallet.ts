@@ -6,98 +6,67 @@ import { persistedKeys, ref, state, subscribeKey } from ".."
 import { formatJuice } from '../../utils/helpers'
 import { showDialog } from './dialog'
 
-export const persistWalletAddress = () => {
-  const walletAddress = localStorage.getItem(persistedKeys.walletAddress)
-  if (walletAddress && isAddress(walletAddress)) {
-    state.walletAddress = walletAddress
-  }
-  // Persist walletAddress
-  subscribeKey(state, 'walletAddress', (address) => {
-    address !== walletAddress && localStorage.setItem(persistedKeys.walletAddress, JSON.stringify(address))
-    if (address && isAddress(address)) {
-      getMaticAndVnlBalance()
-      state.truncatedWalletAddress = `${state.walletAddress?.substring(0, 6)}…${state.walletAddress?.substring(state.walletAddress.length - 4)}`
-    }
-  })
-}
-
-export const getMaticAndVnlBalance = async () => {
-  if (state.walletAddress && isAddress(state.walletAddress)) {
-    const walletBalances = await getBasicWalletDetails(VanillaVersion.V1_1, state.walletAddress)
-    if (walletBalances.vnlBalance && walletBalances.ethBalance) {
-      state.balances[vnl.address] = Number(walletBalances.vnlBalance).toFixed(3)
-      state.balances["0"] = Number(walletBalances.ethBalance).toFixed(3)
-    }
-  }
-}
-
-export const updateUnstakedAmount = async () => {
-  if (!state.walletAddress) {
-    return
-  }
-  try {
-    const contract = getJuiceStakingContract(state.signer || state.provider || undefined)
-    const unstaked = formatJuice(await contract.unstakedBalanceOf(state.walletAddress))
-    state.unstakedBalance = unstaked
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 export const connectWallet = async () => {
-  const provider = await state.modal?.connect()
-  const web3Provider = new providers.Web3Provider(provider)
-  state.signer = ref(web3Provider.getSigner())
-  state.walletAddress = await state.signer?.getAddress()
+  console.log('Connect wallet')
+  try {
+    const provider = await state.modal?.connect()
+    const web3Provider = new providers.Web3Provider(provider)
+    state.signer = ref(web3Provider.getSigner())
+    state.walletAddress = await state.signer?.getAddress()
 
-  // updateStakedAmount()
+    updateMaticAndVnlBalance()
+    updateUnstakedAmount()
+  } catch (error) {
+    console.warn(error)
+  }
 }
-
-// Temporary for now, this whole file needs to be refactored
-let called = false
-function fn() {
-  if (called) return
-  called = true
-  subscribeKey(state, 'walletOpen', walletOpen => {
-    if (walletOpen) {
-      updateUnstakedAmount()
-    }
-  })
-  subscribeKey(state, 'walletAddress', walletAddress => {
-    if (walletAddress) {
-      try {
-        // TODO unsubscribe on account change
-        const contract = getJuiceStakingContract(state.signer || state.provider || undefined)
-        contract.on('JUICEDeposited', (depositor: string, amount: BigNumber) => {
-          updateUnstakedAmount()
-          if (!state.walletOpen)
-            showDialog("Juice deposited", {
-              body: `${formatJuice(amount)} JUICE deposited successfully!`
-            })
-        })
-        contract.on('JUICEWithdrawn', (depositor: string, amount: BigNumber) => {
-          updateUnstakedAmount()
-          if (!state.walletOpen)
-            showDialog("Juice withdrawn", {
-              body: `${formatJuice(amount)} JUICE withdrawn successfully!`
-            })
-        })
-      } catch (error) { }
-    }
-  })
-}
-fn()
 
 export const disconnect = () => {
   state.modal?.clearCachedProvider()
   state.signer = null
   state.walletAddress = null
-  state.balances = {}
   state.walletOpen = false
+  state.truncatedWalletAddress = null
+
   localStorage.removeItem(persistedKeys.walletAddress)
+  state.balances = {}
+  state.unstakedBalance = null
 }
 
-export const connectToCachedProvider = () => {
+
+export const initWalletSubscriptions = () => {
+  console.log('initWalletSubscriptions')
+  subscribeKey(state, 'walletOpen', walletOpen => {
+    if (walletOpen) {
+      updateMaticAndVnlBalance()
+      updateUnstakedAmount()
+    }
+  })
+
+  subscribeKey(state, 'walletAddress', address => {
+    updateMaticAndVnlBalance()
+    updateUnstakedAmount()
+    updateTruncatedAddress()
+
+    persistWalletAddress()
+
+    // subscribe to juice transactions
+    try {
+      const contract = maybeGetContract()
+      if (address) {
+        contract?.on('JUICEWithdrawn', onJuiceWithdrawn)
+        contract?.on('JUICEDeposited', onJuiceDeposited)
+      }
+      else {
+        contract?.off('JUICEWithdrawn', onJuiceWithdrawn)
+        contract?.off('JUICEDeposited', onJuiceDeposited)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  })
+
   subscribeKey(state, 'modal', (modal) => {
     if (modal?.cachedProvider) {
       connectWallet()
@@ -118,4 +87,69 @@ export const connectToCachedProvider = () => {
       state.providerName = name
     }
   })
+}
+
+export const persistWalletAddress = () => {
+  const persistedAddress = localStorage.getItem(persistedKeys.walletAddress)
+  if (state.walletAddress !== persistedAddress)
+    localStorage.setItem(persistedKeys.walletAddress, JSON.stringify(state.walletAddress))
+}
+
+
+export const updateMaticAndVnlBalance = async () => {
+  if (state.walletAddress && isAddress(state.walletAddress)) {
+    const walletBalances = await getBasicWalletDetails(VanillaVersion.V1_1, state.walletAddress)
+    if (walletBalances.vnlBalance && walletBalances.ethBalance) {
+      state.balances[vnl.address] = Number(walletBalances.vnlBalance).toFixed(3)
+      state.balances["0"] = Number(walletBalances.ethBalance).toFixed(3)
+    }
+  }
+  else {
+    state.balances = {}
+  }
+}
+
+export const updateUnstakedAmount = async () => {
+  if (!state.walletAddress) {
+    state.unstakedBalance = null
+    return
+  }
+  try {
+    const contract = maybeGetContract()
+    if (contract) {
+      const unstaked = formatJuice(await contract.unstakedBalanceOf(state.walletAddress))
+      state.unstakedBalance = unstaked
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const updateTruncatedAddress = () => {
+  const address = state.walletAddress
+  state.truncatedWalletAddress = address ? `${address?.substring(0, 6)}…${address?.substring(address.length - 4)}` : null
+}
+
+export const maybeGetContract = () => {
+  try {
+    return getJuiceStakingContract(state.signer || state.provider || undefined)
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
+async function onJuiceDeposited(depositor: string, amount: BigNumber) {
+  await updateUnstakedAmount()
+  if (!state.walletOpen)
+    showDialog("Juice deposited", {
+      body: `${formatJuice(amount)} JUICE deposited successfully!`
+    })
+}
+async function onJuiceWithdrawn(depositor: string, amount: BigNumber) {
+  await updateUnstakedAmount()
+  if (!state.walletOpen)
+    showDialog("Juice withdrawn", {
+      body: `${formatJuice(amount)} JUICE withdrawn successfully!`
+    })
 }
