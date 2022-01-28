@@ -1874,21 +1874,14 @@
   resolved "https://registry.yarnpkg.com/@urql/introspection/-/introspection-0.3.0.tgz#545f2425b68d95892afa5961433a19aab1867268"
   integrity sha512-dw87YiSmCgEUFnWj7fYu+wnrFcSEhYyQ8DykTvL1UzCKPm9uLDeey1z0yiSxZeX2qP9oD+TSGIq+61AZHhQO0w==
 
-"@vanilladefi/core-sdk@file:../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/core", "@vanilladefi/core-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/core":
-  version "1.0.5"
+"@vanilladefi/core-sdk@.\\vanilladefi-core-sdk-2.1.15.tgz":
+  version "2.1.15"
+  resolved ".\\vanilladefi-core-sdk-2.1.15.tgz#c514b19fff7827147946d31dbf3d8108282cc703"
 
-"@vanilladefi/sdk@file:./vanilladefi-sdk-2.1.14.tgz":
-  version "2.1.14"
-  resolved "file:./vanilladefi-sdk-2.1.14.tgz#be312ca743e7032dacd2f9ed347cb4842aef06b4"
+"@vanilladefi/stake-sdk@.\\vanilladefi-stake-sdk-2.1.15.tgz":
+  version "2.1.15"
+  resolved ".\\vanilladefi-stake-sdk-2.1.15.tgz#06a0de6638a11712b51b7343a5e7b5fee5267f47"
   dependencies:
-    "@vanilladefi/core-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/core"
-    "@vanilladefi/stake-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/stake"
-    "@vanilladefi/trade-sdk" "file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/trade"
-
-"@vanilladefi/stake-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/stake":
-  version "1.0.10"
-  dependencies:
-    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-stake-sdk-1.0.10-097e3c46-1706-42f7-9336-d754e1c6adfb-1643290575722/node_modules/@vanilladefi/core"
     ethers "^5.5.2"
 
 "@vanilladefi/trade-contracts@^1.1.27":
@@ -1905,14 +1898,14 @@
     keccak256 "^1.0.3"
     merkletreejs "^0.2.24"
 
-"@vanilladefi/trade-sdk@file:./../../../../AppData/Local/Yarn/Cache/v6/.tmp/961aab654f21aa96260a4ccca82302c0/packages/trade":
-  version "1.1.4"
+"@vanilladefi/trade-sdk@.\\vanilladefi-trade-sdk-2.1.15.tgz":
+  version "2.1.15"
+  resolved ".\\vanilladefi-trade-sdk-2.1.15.tgz#453ea405f7d894ab7f80e816d018a840bb085fd3"
   dependencies:
     "@uniswap/default-token-list" "^2.0.0"
     "@uniswap/sdk" "^3.0.3"
     "@uniswap/sdk-core" "^1.0.10"
     "@uniswap/v3-sdk" "^3.5.1"
-    "@vanilladefi/core-sdk" "file:../../../../AppData/Local/Yarn/Cache/v6/npm-@vanilladefi-trade-sdk-1.1.4-58149c31-c622-4fc8-8798-cc22c9ac2f41-1643290575876/node_modules/@vanilladefi/core"
     "@vanilladefi/trade-contracts" "^1.1.27"
     ethers "^5.4.7"
     merkletreejs "^0.2.24"
