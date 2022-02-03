@@ -16,7 +16,10 @@ import { useEffect } from "react";
 import { state } from "../state";
 import * as sdk from "@vanilladefi/stake-sdk";
 import { showDialog } from "../state/actions/dialog";
-import { connectWallet, initWalletSubscriptions } from "../state/actions/wallet";
+import {
+  connectWallet,
+  initWalletSubscriptions,
+} from "../state/actions/wallet";
 
 const AlertDialog = dynamic(() => import("../components/AlertDialog"), {
   ssr: false,
@@ -48,25 +51,30 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     expose.state = state;
     expose.sdk = sdk;
+
+    const getAddress = sdk.__UNSAFE__getContractAddress;
+    const setAddress = sdk.__UNSAFE__setContractAddress;
+
+    if (!getAddress || !setAddress) return;
     // set default from localstorage or most most likely one
     const savedAddress = localStorage.getItem("CONTRACT_ADDRESS");
-    if (!sdk.getContractAddress() && savedAddress) {
-      sdk.__UNSAFE__setContractAddress(savedAddress);
+    if (!getAddress() && savedAddress) {
+      setAddress(savedAddress);
       showDialog("🏅 HAPPY TESTING 🏅", {
-        body: `Contract address set to ${sdk.getContractAddress()}.`,
+        body: `Contract address set to ${getAddress()}.`,
       });
     }
     expose.promptForAddress = () => {
       const address = prompt("Enter the contract address");
       if (!address) return "Cancelled";
       if (address) {
-        sdk.__UNSAFE__setContractAddress(address);
+        setAddress(address);
         localStorage.setItem("CONTRACT_ADDRESS", address);
         showDialog("🏅 HAPPY TESTING 🏅", {
-          body: `Contract address set to ${sdk.getContractAddress()}.`,
+          body: `Contract address set to ${getAddress()}.`,
         });
         // just to refresh
-        connectWallet()
+        connectWallet();
         return "Ok";
       }
     };

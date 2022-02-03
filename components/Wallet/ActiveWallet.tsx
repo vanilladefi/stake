@@ -1,6 +1,5 @@
 import type * as Stitches from "@stitches/react";
-import * as tradeSdk from "@vanilladefi/trade-sdk";
-import * as stakeSdk from "@vanilladefi/stake-sdk";
+import * as sdk from "@vanilladefi/stake-sdk";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
@@ -116,14 +115,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       setMessage({ value: null, error: false });
       try {
         const amount = toJuice(juiceAmount).toString();
-        await stakeSdk[type](amount, signer);
+        await sdk[type](amount, signer);
         setJuiceAmount("");
         setMessage({
-          value: "Transaction sent [SUGGEST BETTER MESSAGE HERE]",
+          value: "Transaction pending...",
           error: false,
         });
       } catch (error) {
-        console.warn("Error depositing, ", error); // TODO remove in prod, console.warn to differentiate from unhandled errors
+        console.warn("Error depositing!, ", error);
         setMessage({
           value: "Tansaction failed!",
           error: true,
@@ -231,10 +230,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 mb: "$space$1",
               }}
             >
-              {balances[0] ? (
+              {balances.vnl ? (
                 <>
                   <Text css={{ color: "$textA", fontSize: "$xl" }}>
-                    {balances[0]} JUICE
+                    {balances.vnl} VNL
                   </Text>
                   <TradeLink href="">Buy JUICE</TradeLink>
                 </>
@@ -252,10 +251,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 mb: "$space$1",
               }}
             >
-              {balances[0] ? (
+              {balances.vnl ? (
                 <>
                   <Text css={{ color: "$textA", fontSize: "$xl" }}>
-                    {balances[tradeSdk.vnl.address]} VNL
+                    {balances.vnl} VNL
                   </Text>
                   <TradeLink href="">Buy VNL</TradeLink>
                 </>

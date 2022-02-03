@@ -1,6 +1,5 @@
-import { getBasicWalletDetails, isAddress, vnl } from "@vanilladefi/trade-sdk"
-import { VanillaVersion } from "@vanilladefi/core-sdk"
-import { getJuiceStakingContract } from "@vanilladefi/stake-sdk"
+import { VanillaVersion, isAddress } from "@vanilladefi/core-sdk"
+import { getJuiceStakingContract, getBasicWalletDetails } from "@vanilladefi/stake-sdk"
 import { BigNumber, providers } from "ethers"
 import { persistedKeys, ref, state, subscribeKey } from ".."
 import { formatJuice } from '../../utils/helpers'
@@ -8,7 +7,6 @@ import { showDialog } from './dialog'
 
 
 export const connectWallet = async () => {
-  console.log('Connect wallet')
   try {
     const provider = await state.modal?.connect()
     const web3Provider = new providers.Web3Provider(provider)
@@ -36,7 +34,6 @@ export const disconnect = () => {
 
 
 export const initWalletSubscriptions = () => {
-  console.log('initWalletSubscriptions')
   subscribeKey(state, 'walletOpen', walletOpen => {
     if (walletOpen) {
       updateMaticAndVnlBalance()
@@ -98,11 +95,14 @@ export const persistWalletAddress = () => {
 
 export const updateMaticAndVnlBalance = async () => {
   if (state.walletAddress && isAddress(state.walletAddress)) {
-    const walletBalances = await getBasicWalletDetails(VanillaVersion.V1_1, state.walletAddress)
+    const walletBalances = await getBasicWalletDetails(VanillaVersion.V2, state.walletAddress, state.provider || undefined)
     if (walletBalances.vnlBalance && walletBalances.ethBalance) {
-      state.balances[vnl.address] = Number(walletBalances.vnlBalance).toFixed(3)
-      state.balances["0"] = Number(walletBalances.ethBalance).toFixed(3)
+      state.balances.vnl = Number(walletBalances.vnlBalance).toFixed(3)
+      state.balances.eth = Number(walletBalances.ethBalance).toFixed(3)
+      state.balances.juice = Number(walletBalances.juiceBalance).toFixed(3)
+      state.balances.matic = Number(walletBalances.maticBalance).toFixed(3)
     }
+    console.log('balances: ', state.balances)
   }
   else {
     state.balances = {}

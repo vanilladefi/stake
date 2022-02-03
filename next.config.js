@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const withTM = require("next-transpile-modules")([
   "@vanilladefi/trade-contracts",
-  "@vanilladefi/trade-sdk",
+  "@vanilladefi/stake-sdk",
+  "@vanilladefi/core-sdk",
 ]); // pass the modules you would like to see transpiled
 
 module.exports = withTM({

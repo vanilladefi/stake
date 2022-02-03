@@ -4,11 +4,14 @@ import { subscribeKey } from 'valtio/utils';
 import Web3Modal from "web3modal";
 import { defaultProvider } from '../lib/config';
 
+type BalanceTypes = 'eth' | 'vnl' | 'juice' | 'matic'
+export type Balances = Partial<Record<BalanceTypes, string>>
+
 type State = {
   provider: providers.JsonRpcProvider | providers.Web3Provider | providers.WebSocketProvider | providers.Provider | providers.BaseProvider | null,
   providerName: string | null,
   signer: Signer | null,
-  balances: { [key: string]: string },
+  balances: Balances,
   walletAddress: string | null,
   truncatedWalletAddress: string | null,
   modal: Web3Modal | null,
