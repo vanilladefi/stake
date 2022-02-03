@@ -1964,6 +1964,14 @@
     "@vanilladefi/trade-contracts" "^1.1.27"
     ethers "^5.5.2"
 
+"@vanilladefi/stake-sdk@file:./vanilladefi-stake-sdk-2.1.17-beta.2.tgz":
+  version "2.1.17-beta.2"
+  resolved "file:./vanilladefi-stake-sdk-2.1.17-beta.2.tgz#ffdd6c8dcb2ac642765e3346bbe23ba85e5657e6"
+  dependencies:
+    "@vanilladefi/core-sdk" "^2.1.17-beta.1"
+    "@vanilladefi/trade-contracts" "^1.1.27"
+    ethers "^5.5.2"
+
 "@vanilladefi/trade-contracts@^1.1.27":
   version "1.1.27"
   resolved "https://registry.yarnpkg.com/@vanilladefi/trade-contracts/-/trade-contracts-1.1.27.tgz#0d9dc636fc0d884eb2a8c74c4e33177abe1a15cd"

@@ -95,7 +95,7 @@ export const persistWalletAddress = () => {
 
 export const updateMaticAndVnlBalance = async () => {
   if (state.walletAddress && isAddress(state.walletAddress)) {
-    const walletBalances = await getBasicWalletDetails(VanillaVersion.V2, state.walletAddress, state.provider || undefined)
+    const walletBalances = await getBasicWalletDetails(VanillaVersion.V2, state.walletAddress, state.signer?.provider || state.provider || undefined)
     if (walletBalances.vnlBalance && walletBalances.ethBalance) {
       state.balances.vnl = Number(walletBalances.vnlBalance).toFixed(3)
       state.balances.eth = Number(walletBalances.ethBalance).toFixed(3)

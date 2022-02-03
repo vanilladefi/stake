@@ -1,5 +1,4 @@
 import type * as Stitches from "@stitches/react";
-import * as sdk from "@vanilladefi/stake-sdk";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
@@ -17,6 +16,7 @@ import Loader from "../Loader";
 import Text from "../Text";
 import Curtain from "./Curtain";
 import { toJuice } from "../../utils/helpers";
+import { ContractTransaction } from "ethers";
 
 const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (
@@ -115,12 +115,29 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       setMessage({ value: null, error: false });
       try {
         const amount = toJuice(juiceAmount).toString();
-        await sdk[type](amount, signer);
-        setJuiceAmount("");
+        const contract = maybeGetContract();
+        if (!contract) throw Error("Cannot access contract ");
+
+        let tx: ContractTransaction;
+        if (type === "deposit") {
+          tx = await contract.deposit(amount);
+        } else {
+          tx = await contract.withdraw(amount);
+        }
         setMessage({
           value: "Transaction pending...",
           error: false,
         });
+        setJuiceAmount("");
+
+        const rec = await tx.wait();
+        if (rec.status === 1) {
+          setMessage({
+            value: "Transaction successful",
+            error: false,
+          });
+        }
+        else throw Error('reciept.status == 0') //TODO we can do better
       } catch (error) {
         console.warn("Error depositing!, ", error);
         setMessage({
@@ -230,10 +247,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 mb: "$space$1",
               }}
             >
-              {balances.vnl ? (
+              {balances.juice ? (
                 <>
                   <Text css={{ color: "$textA", fontSize: "$xl" }}>
-                    {balances.vnl} VNL
+                    {balances.juice} JUICE
                   </Text>
                   <TradeLink href="">Buy JUICE</TradeLink>
                 </>
