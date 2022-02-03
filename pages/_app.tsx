@@ -13,13 +13,7 @@ import "../styles/globals.css";
 import client, { ssrCache } from "../urql";
 import useOrigin from "../lib/hooks/useOrigin";
 import { useEffect } from "react";
-import { state } from "../state";
-import * as sdk from "@vanilladefi/stake-sdk";
-import { showDialog } from "../state/actions/dialog";
-import {
-  connectWallet,
-  initWalletSubscriptions,
-} from "../state/actions/wallet";
+import { initWalletSubscriptions } from "../state/actions/wallet";
 
 const AlertDialog = dynamic(() => import("../components/AlertDialog"), {
   ssr: false,
@@ -45,40 +39,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     initWalletSubscriptions();
   }, []);
 
-  // DONT FORGET TO REMOVE LATER
-  useEffect(() => {
-    const expose = ((window as any).__AABRA_KA_DAABRA__ = {}) as any;
-
-    expose.state = state;
-    expose.sdk = sdk;
-
-    const getAddress = sdk.__UNSAFE__getContractAddress;
-    const setAddress = sdk.__UNSAFE__setContractAddress;
-
-    if (!getAddress || !setAddress) return;
-    // set default from localstorage or most most likely one
-    const savedAddress = localStorage.getItem("CONTRACT_ADDRESS");
-    if (!getAddress() && savedAddress) {
-      setAddress(savedAddress);
-      showDialog("🏅 HAPPY TESTING 🏅", {
-        body: `Contract address set to ${getAddress()}.`,
-      });
-    }
-    expose.promptForAddress = () => {
-      const address = prompt("Enter the contract address");
-      if (!address) return "Cancelled";
-      if (address) {
-        setAddress(address);
-        localStorage.setItem("CONTRACT_ADDRESS", address);
-        showDialog("🏅 HAPPY TESTING 🏅", {
-          body: `Contract address set to ${getAddress()}.`,
-        });
-        // just to refresh
-        connectWallet();
-        return "Ok";
-      }
-    };
-  }, []);
   return (
     <>
       <Head>

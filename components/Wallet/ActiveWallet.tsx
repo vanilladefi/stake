@@ -79,28 +79,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   }, []);
 
   useEffect(() => {
-    if (!walletAddress) return;
-    const contract = maybeGetContract();
-    if (!contract) return;
-
-    const onTx = (user: string, amount: any) => {
-      // updateUnstakedAmount(); set inwallet.ts
-      setMessage({ value: null, error: false });
-    };
-
-    contract.on("JUICEDeposited", onTx);
-    contract.on("JUICEWithdrawn", onTx);
-    return () => {
-      contract.off("JUICEDeposited", onTx);
-      contract.off("JUICEWithdrawn", onTx);
-    };
-  }, [walletAddress]);
-
-  useEffect(() => {
-    if (walletOpen) setMessage({ value: null, error: false });
-  }, [walletOpen]);
-
-  useEffect(() => {
     const _disabled = !(juiceAmount && +juiceAmount) || !signer;
     if (_disabled && !txDisabled) setTxDisabled(true);
     else if (!_disabled && txDisabled) setTxDisabled(false);
@@ -136,8 +114,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             value: "Transaction successful",
             error: false,
           });
-        }
-        else throw Error('reciept.status == 0') //TODO we can do better
+        } else throw Error("reciept.status == 0"); //TODO we can do better
       } catch (error) {
         console.warn("Error depositing!, ", error);
         setMessage({
