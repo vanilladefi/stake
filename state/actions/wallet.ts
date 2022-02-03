@@ -102,7 +102,6 @@ export const updateMaticAndVnlBalance = async () => {
       state.walletAddress,
       state.signer?.provider || state.provider || undefined
     );
-    console.log(walletBalances);
     if (walletBalances.vnlBalance && walletBalances.ethBalance) {
       state.balances.vnl = Number(walletBalances.vnlBalance).toFixed(3);
       state.balances.eth = Number(walletBalances.ethBalance).toFixed(3);
