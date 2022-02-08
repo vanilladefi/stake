@@ -1,4 +1,4 @@
-import { isAddress, VanillaVersion } from "@vanilladefi/core-sdk";
+import { isAddress } from "@vanilladefi/core-sdk";
 import {
   getBasicWalletDetails,
   getJuiceStakingContract,
@@ -15,7 +15,7 @@ export const connectWallet = async () => {
     state.signer = ref(web3Provider.getSigner());
     state.walletAddress = await state.signer?.getAddress();
 
-    updateMaticAndVnlBalance();
+    updateBalances();
     updateUnstakedAmount();
   } catch (error) {
     console.warn(error);
@@ -37,13 +37,13 @@ export const disconnect = () => {
 export const initWalletSubscriptions = () => {
   subscribeKey(state, "walletOpen", (walletOpen) => {
     if (walletOpen) {
-      updateMaticAndVnlBalance();
+      updateBalances();
       updateUnstakedAmount();
     }
   });
 
   subscribeKey(state, "walletAddress", (address) => {
-    updateMaticAndVnlBalance();
+    updateBalances();
     updateUnstakedAmount();
     updateTruncatedAddress();
 
@@ -51,7 +51,12 @@ export const initWalletSubscriptions = () => {
 
     // subscribe to juice transactions
     try {
-      const contract = maybeGetContract();
+      const contract = getJuiceStakingContract({
+        signerOrProvider: state.signer || state.provider || undefined,
+        optionalAddress:
+          isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") ||
+          undefined,
+      });
       if (address) {
         contract?.on("JUICEWithdrawn", onJuiceWithdrawn);
         contract?.on("JUICEDeposited", onJuiceDeposited);
@@ -95,13 +100,13 @@ export const persistWalletAddress = () => {
     );
 };
 
-export const updateMaticAndVnlBalance = async () => {
+export const updateBalances = async () => {
   if (state.walletAddress && isAddress(state.walletAddress)) {
-    const walletBalances = await getBasicWalletDetails(
-      VanillaVersion.V2,
-      state.walletAddress,
-      state.signer?.provider || state.provider || undefined
-    );
+    const walletBalances = await getBasicWalletDetails(state.walletAddress, {
+      provider: state.signer?.provider || state.provider || undefined,
+      optionalAddress:
+        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || undefined,
+    });
     if (walletBalances.vnlBalance && walletBalances.ethBalance) {
       state.balances.vnl = Number(walletBalances.vnlBalance).toFixed(3);
       state.balances.eth = Number(walletBalances.ethBalance).toFixed(3);
@@ -119,7 +124,12 @@ export const updateUnstakedAmount = async () => {
     return;
   }
   try {
-    const contract = maybeGetContract();
+    const contract = getJuiceStakingContract({
+      signerOrProvider: state.signer || state.provider || undefined,
+      optionalAddress:
+        isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") ||
+        undefined,
+    });
     if (contract) {
       const unstaked = formatJuice(
         await contract.unstakedBalanceOf(state.walletAddress)
@@ -138,15 +148,6 @@ export const updateTruncatedAddress = () => {
     : null;
 };
 
-export const maybeGetContract = () => {
-  try {
-    return getJuiceStakingContract(state.signer || state.provider || undefined);
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-
 async function onJuiceDeposited(depositor: string, amount: BigNumber) {
   await updateUnstakedAmount();
   if (!state.walletOpen)
@@ -154,6 +155,7 @@ async function onJuiceDeposited(depositor: string, amount: BigNumber) {
       body: `${formatJuice(amount)} JUICE deposited successfully!`,
     });
 }
+
 async function onJuiceWithdrawn(depositor: string, amount: BigNumber) {
   await updateUnstakedAmount();
   if (!state.walletOpen)

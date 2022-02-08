@@ -1,27 +1,26 @@
-import React, { useMemo, useCallback, useState, useEffect } from "react";
-import Image from "next/image";
+import { isAddress, Token } from "@vanilladefi/core-sdk";
+import { getAllStakes, getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ethers } from "ethers";
-import { getAllStakes } from "@vanilladefi/stake-sdk";
+import Image from "next/image";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
-
+import { useGetAssetPairsQuery } from "../../generated/graphql";
+import { state } from "../../state";
+import tokens from "../../tokensV2";
+import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
 import Container from "../Container";
 import Flex from "../Flex";
 import Heading from "../Heading";
+import Link from "../Link";
+import Loader from "../Loader";
+import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
 
-import valueUSD from "../../utils/valueUSD";
-import { state } from "../../state";
-import { Column, Row } from "react-table";
-import StakeSubRow, { ColumnType } from "../StakeSubRow";
-import Link from "../Link";
-import tokens from "../../tokensV2";
-import { Token } from "@vanilladefi/core-sdk";
-import { useGetAssetPairsQuery } from "../../generated/graphql";
-import Loader from "../Loader";
-import { maybeGetContract } from '../../state/actions/wallet';
+
 
 /**
  * Early rough implementation
@@ -239,7 +238,11 @@ export const MyStakes = () => {
 
   useEffect(() => {
     if (!snap.walletAddress) return 
-    const contract = maybeGetContract()
+    const contract = getJuiceStakingContract({
+      signerOrProvider: state.signer || state.provider || undefined,
+      optionalAddress:
+      isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || undefined,
+    });
     if (!contract) return
     
     const onStakesChanged = () => {

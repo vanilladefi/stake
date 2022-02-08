@@ -1,13 +1,16 @@
 import type * as Stitches from "@stitches/react";
+import { isAddress } from "@vanilladefi/core-sdk";
+import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
+import { ContractTransaction } from "ethers";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import { state, useSnapshot } from "../../state";
 import {
   connectWallet,
-  disconnect,
-  maybeGetContract,
+  disconnect
 } from "../../state/actions/wallet";
+import { toJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Heading from "../Heading";
@@ -15,8 +18,6 @@ import Input from "../Input";
 import Loader from "../Loader";
 import Text from "../Text";
 import Curtain from "./Curtain";
-import { toJuice } from "../../utils/helpers";
-import { ContractTransaction } from "ethers";
 
 const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (
@@ -93,7 +94,11 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       setMessage({ value: null, error: false });
       try {
         const amount = toJuice(juiceAmount).toString();
-        const contract = maybeGetContract();
+        const contract = getJuiceStakingContract({
+          signerOrProvider: state.signer || state.provider || undefined,
+          optionalAddress:
+            isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || undefined,
+        });
         if (!contract) throw Error("Cannot access contract ");
 
         let tx: ContractTransaction;
