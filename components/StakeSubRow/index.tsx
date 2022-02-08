@@ -1,19 +1,19 @@
+import * as sdk from "@vanilladefi/stake-sdk";
+import Image from "next/image";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
-import Image from "next/image";
-import * as sdk from "@vanilladefi/stake-sdk";
-
+import { snapshot } from "valtio";
+import { state } from "../../state";
+import { showDialog } from "../../state/actions/dialog";
+import { connectWallet } from "../../state/actions/wallet";
 import tokens from "../../tokensV2";
+import { toJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Flex from "../Flex";
 import Input from "../Input";
 import Text from "../Text";
-import { useSnapshot } from "valtio";
-import { state } from "../../state";
-import { connectWallet } from "../../state/actions/wallet";
-import { toJuice } from "../../utils/helpers";
-import { showDialog } from "../../state/actions/dialog";
+
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -41,7 +41,6 @@ interface SubRowProps {
   type?: "edit" | "make";
 }
 const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
-  const snap = useSnapshot(state);
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
   const [stakePending, setStakePending] = useState(false);
@@ -61,11 +60,14 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   }, [stakePending, closingDisabled]);
 
   const modifyStake = useCallback(async () => {
+    const { signer } = snapshot(state);
+
     if (stakingDisabled) return;
 
-    if (!snap.signer) {
+    if (!signer) {
       return connectWallet();
     }
+
 
     const token = tokens
       // .filter((t) => t.enabled)
@@ -77,6 +79,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         body: "Token is not available to stake yet",
       });
     }
+    
     setStakePending(true);
     try {
       const amount = toJuice(stakeAmount).toString();
@@ -84,7 +87,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
       const stake = { token, amount, sentiment };
 
-      const tx = await sdk.modifyStake(stake, snap.signer);
+      const tx = await sdk.modifyStake(stake, signer);
       const res = await tx.wait();
       if (res.status === 1)
         showDialog("Successs", {
@@ -102,15 +105,16 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   }, [
     stakingDisabled,
     row.original.id,
-    snap.signer,
     stakeAmount,
     stakePosition,
   ]);
 
   const closeStakePartition = useCallback(async () => {
+    const { signer } = snapshot(state);
+    
     if (closingDisabled) return;
 
-    if (!snap.signer) {
+    if (!signer) {
       return connectWallet();
     }
 
@@ -129,7 +133,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       const stake = { token, amount: 0, sentiment: false };
       console.log("Callin sdk with stake: ", stake);
 
-      const tx = await sdk.modifyStake(stake, snap.signer);
+      const tx = await sdk.modifyStake(stake, signer);
       const res = await tx.wait();
 
       if (res.status === 1)
@@ -148,7 +152,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
     }
 
     setStakePending(false);
-  }, [closingDisabled, row.original.id, snap.signer]);
+  }, [closingDisabled, row.original.id]);
 
   return (
     <Flex

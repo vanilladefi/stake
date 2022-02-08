@@ -95,7 +95,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       try {
         const amount = toJuice(juiceAmount).toString();
         const contract = getJuiceStakingContract({
-          signerOrProvider: state.signer || state.provider || undefined,
+          signerOrProvider: signer,
           optionalAddress:
             isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || undefined,
         });

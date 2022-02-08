@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
-import { useSnapshot } from "valtio";
+import { snapshot } from "valtio";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { state } from "../../state";
 import tokens from "../../tokensV2";
@@ -21,14 +21,14 @@ import Table from "../Table";
 import Text from "../Text";
 
 
-
 /**
  * Early rough implementation
  * Just a POC
  */
 export const MyStakes = () => {
-  // leaving `executQuery` to AvailableStakes component
+  // leaving `executeQuery` to AvailableStakes component
   const [{ fetching: _, data: _data }] = useGetAssetPairsQuery();
+  
   const priceData = useMemo(() => {
     return (
       _data?.assetPairs.filter((t) => {
@@ -38,8 +38,6 @@ export const MyStakes = () => {
       }) || []
     );
   }, [_data?.assetPairs]);
-
-  const snap = useSnapshot(state);
 
   const columns: Column<ColumnType>[] = useMemo(
     () => [
@@ -188,16 +186,21 @@ export const MyStakes = () => {
     ],
     []
   );
+
   const renderRowSubComponent = useCallback(
     ({ row }: { row: Row<ColumnType> }) => {
       return <StakeSubRow type="edit" row={row} />;
     },
     []
   );
+
   const [stakes, setStakes] = useState<any[] | null>(null);
   const [stakesLoading, setStakesLoading] = useState(true);
+
   const getStakes = useCallback(async () => {
-    if (!snap.walletAddress) return;
+    const {provider, signer, walletAddress} = snapshot(state);
+
+    if (!walletAddress) return;
 
     const _tokens: Token[] = tokens
       .filter((t) => t.enabled && t.address)
@@ -210,10 +213,12 @@ export const MyStakes = () => {
         logoColor: "",
       }));
 
+    console.log(walletAddress, signer, provider)
+
     const res = await getAllStakes(
-      snap.walletAddress,
+      walletAddress,
       _tokens,
-      snap.signer || (snap.provider as any)
+      provider as any
     );
     let stakes: any[] = [];
 
@@ -230,16 +235,18 @@ export const MyStakes = () => {
     setStakes(stakes);
 
     if (stakesLoading) setStakesLoading(false);
-  }, [snap.provider, snap.signer, snap.walletAddress, stakesLoading]);
+  }, [stakesLoading]);
 
   useEffect(() => {
     getStakes();
   }, [getStakes]);
 
   useEffect(() => {
-    if (!snap.walletAddress) return 
+    const {signer, provider, walletAddress} = snapshot(state);
+    if (!walletAddress) return 
+
     const contract = getJuiceStakingContract({
-      signerOrProvider: state.signer || state.provider || undefined,
+      signerOrProvider: signer || provider || undefined,
       optionalAddress:
       isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || undefined,
     });
@@ -251,11 +258,12 @@ export const MyStakes = () => {
 
     contract.on("StakeAdded", onStakesChanged);
     contract.on("StakeRemoved", onStakesChanged);
+    
     return () => {
       contract.off("StakeAdded", onStakesChanged);
       contract.off("StakeRemoved", onStakesChanged);
     };
-  }, [getStakes, snap.walletAddress]);
+  }, [getStakes]);
 
   const [tableData, setTableData] = useState<ColumnType[] | null>(null);
   useEffect(() => {
