@@ -198,7 +198,7 @@ export const MyStakes = () => {
   const [stakesLoading, setStakesLoading] = useState(true);
 
   const getStakes = useCallback(async () => {
-    const {provider, signer, walletAddress} = snapshot(state);
+    const { provider, signer, walletAddress } = snapshot(state);
 
     if (!walletAddress) return;
 
@@ -213,12 +213,10 @@ export const MyStakes = () => {
         logoColor: "",
       }));
 
-    console.log(walletAddress, signer, provider)
-
     const res = await getAllStakes(
       walletAddress,
       _tokens,
-      provider as any
+      { signerOrProvider: signer || provider as any },
     );
     let stakes: any[] = [];
 
