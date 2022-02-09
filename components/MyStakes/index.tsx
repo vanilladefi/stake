@@ -15,7 +15,6 @@ import Container from "../Container";
 import Flex from "../Flex";
 import Heading from "../Heading";
 import Link from "../Link";
-import Loader from "../Loader";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
@@ -243,10 +242,12 @@ export const MyStakes = () => {
     const {signer, provider, walletAddress} = snapshot(state);
     if (!walletAddress) return 
 
+    const contractAddress = isAddress(
+      process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+    );
     const contract = getJuiceStakingContract({
       signerOrProvider: signer || provider || undefined,
-      optionalAddress:
-      isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || undefined,
+      optionalAddress: contractAddress || undefined,
     });
     if (!contract) return
     
@@ -301,15 +302,7 @@ export const MyStakes = () => {
           Manage funds
         </Button>
       </Flex>
-      {stakesLoading ? (
-        <Flex
-          align="center"
-          justify="center"
-          css={{ mb: "$3", height: "92px" }}
-        >
-          <Loader />
-        </Flex>
-      ) : tableData ? (
+      {tableData ? (
         <Box
           css={{
             overflowX: "auto",
@@ -322,7 +315,7 @@ export const MyStakes = () => {
         >
           <Table
             columns={columns}
-            data={tableData}
+            data={!stakesLoading ? tableData : []}
             renderRowSubComponent={renderRowSubComponent}
           />
         </Box>

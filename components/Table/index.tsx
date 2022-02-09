@@ -1,20 +1,16 @@
 /* eslint-disable react/jsx-key */
-import React, { useCallback, useEffect } from "react";
-import {
-  useTable,
-  useGlobalFilter,
-  useSortBy,
-  useExpanded,
-  Column,
-  Row,
-  IdType,
-} from "react-table";
 import { matchSorter } from "match-sorter";
 import { ArrowDown, ArrowUp } from "phosphor-react";
-
-import Box from "../Box";
+import React, { useCallback, useEffect } from "react";
+import {
+  Column, IdType, Row, useExpanded, useGlobalFilter,
+  useSortBy, useTable
+} from "react-table";
 import { styled } from "../../stitches.config";
+import Box from "../Box";
 import Flex from "../Flex";
+import Loader from "../Loader";
+
 
 /**
  * There's some boilter plate here
@@ -181,7 +177,7 @@ function Table<T extends object>({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {rows.length > 0 ? rows.map((row, i) => {
             prepareRow(row);
             const { key, ...rowProps } = row.getRowProps();
             return (
@@ -224,7 +220,14 @@ function Table<T extends object>({
                 ) : null}
               </React.Fragment>
             );
-          })}
+          }) : <tr>{headerGroups[headerGroups.length - 1].headers.map((_column) => {
+            return (
+              <td>
+                <Loader/>
+              </td>
+            )
+          })}</tr>
+          }
         </tbody>
       </Box>
     </TableContainer>
