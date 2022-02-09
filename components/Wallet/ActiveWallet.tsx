@@ -10,7 +10,7 @@ import {
   connectWallet,
   disconnect
 } from "../../state/actions/wallet";
-import { toJuice } from "../../utils/helpers";
+import { parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Heading from "../Heading";
@@ -93,11 +93,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       setTxLoading(true);
       setMessage({ value: null, error: false });
       try {
-        const amount = toJuice(juiceAmount).toString();
+        const amount = parseJuice(juiceAmount).toString();
+        const contractAddress = isAddress(
+          process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+        );
         const contract = getJuiceStakingContract({
           signerOrProvider: signer,
           optionalAddress:
-            isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || undefined,
+            contractAddress || undefined,
         });
         if (!contract) throw Error("Cannot access contract ");
 

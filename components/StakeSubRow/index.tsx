@@ -2,12 +2,12 @@ import * as sdk from "@vanilladefi/stake-sdk";
 import Image from "next/image";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
-import { snapshot } from "valtio";
+import { useSnapshot } from "valtio";
 import { state } from "../../state";
 import { showDialog } from "../../state/actions/dialog";
 import { connectWallet } from "../../state/actions/wallet";
 import tokens from "../../tokensV2";
-import { toJuice } from "../../utils/helpers";
+import { parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Flex from "../Flex";
@@ -36,11 +36,15 @@ export type ColumnType = {
     timestamp: any;
   }>;
 };
+
 interface SubRowProps {
   row: Row<ColumnType>;
   type?: "edit" | "make";
 }
+
 const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
+  const { signer } = useSnapshot(state);
+
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
   const [stakePending, setStakePending] = useState(false);
@@ -60,14 +64,11 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   }, [stakePending, closingDisabled]);
 
   const modifyStake = useCallback(async () => {
-    const { signer } = snapshot(state);
-
     if (stakingDisabled) return;
 
     if (!signer) {
       return connectWallet();
     }
-
 
     const token = tokens
       // .filter((t) => t.enabled)
@@ -82,36 +83,36 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
     
     setStakePending(true);
     try {
-      const amount = toJuice(stakeAmount).toString();
+      const amount = parseJuice(stakeAmount).toString();
       const sentiment = stakePosition === "short" ? false : true;
 
       const stake = { token, amount, sentiment };
 
       const tx = await sdk.modifyStake(stake, signer);
       const res = await tx.wait();
-      if (res.status === 1)
+      
+      if (res.status === 1) {
         showDialog("Successs", {
           body: "Transaction was successful, [LINK]",
         });
-      else
+      } else {
         showDialog("Error", {
           body: "Transaction failed, [LINK]",
         });
+      }
     } catch (error) {
-      console.log("modifyStake error: ", error);
-      showDialog("Error", { body: "Something went wrong!" });
+      showDialog("Error", { body: error as any });
     }
     setStakePending(false);
   }, [
     stakingDisabled,
     row.original.id,
+    signer,
     stakeAmount,
     stakePosition,
   ]);
 
-  const closeStakePartition = useCallback(async () => {
-    const { signer } = snapshot(state);
-    
+  const closeStakePosition = useCallback(async () => {
     if (closingDisabled) return;
 
     if (!signer) {
@@ -145,14 +146,13 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
           body: "Transaction failed [LINK]",
         });
     } catch (error) {
-      console.warn("closeStakePartition erorr: ", error);
       showDialog("Error", {
-        body: "Something went wrong, try again later",
+        body: error as any,
       });
     }
 
     setStakePending(false);
-  }, [closingDisabled, row.original.id]);
+  }, [closingDisabled, signer, row.original.id]);
 
   return (
     <Flex
@@ -264,7 +264,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               ghost
               variant="primary"
               disabled={closingDisabled}
-              onClick={closeStakePartition}
+              onClick={closeStakePosition}
               css={{
                 color: "$red",
                 width: "120px",
@@ -280,7 +280,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
                 },
               }}
             >
-              Close partition
+              Close position
             </Button>
             <Button
               ghost

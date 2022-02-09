@@ -1,4 +1,7 @@
 import { state } from "..";
+import Button from "../../components/Button";
+import { correctNetwork } from "../../utils/helpers";
+import { switchToCorrectNetwork } from "./wallet";
 
 interface DialogOpts {
   body?: string;
@@ -13,5 +16,7 @@ const showDialog = (title: string, opts?: DialogOpts) => {
 };
 
 const closeDialog = () => (state.alert = null);
+
+export const NetworkSwitcherBody = () => (<Button onClick={() => switchToCorrectNetwork()}>Switch to {correctNetwork.chainName}</Button>)
 
 export { showDialog, closeDialog };

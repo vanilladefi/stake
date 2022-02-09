@@ -1,24 +1,33 @@
-import { providers, Signer } from 'ethers';
-import { proxy, ref, snapshot, subscribe, useSnapshot } from 'valtio';
-import { subscribeKey } from 'valtio/utils';
+import { providers, Signer } from "ethers";
+import { proxy, ref, snapshot, subscribe, useSnapshot } from "valtio";
+import { subscribeKey } from "valtio/utils";
 import Web3Modal from "web3modal";
-import { defaultProvider } from '../lib/config';
+import { defaultProvider } from "../lib/config";
 
-type BalanceTypes = 'eth' | 'vnl' | 'juice' | 'matic'
-export type Balances = Partial<Record<BalanceTypes, string>>
+type BalanceTypes = "eth" | "vnl" | "juice" | "matic";
+export type Balances = Partial<Record<BalanceTypes, string>>;
 
 type State = {
-  provider: providers.JsonRpcProvider | providers.Web3Provider | providers.WebSocketProvider | providers.Provider | providers.BaseProvider | null,
-  providerName: string | null,
-  signer: Signer | null,
-  balances: Balances,
-  walletAddress: string | null,
-  truncatedWalletAddress: string | null,
-  modal: Web3Modal | null,
-  alert: { title: string, body?: string } | null,
-  walletOpen: boolean,
-  unstakedBalance: string | null,
-}
+  provider:
+    | providers.JsonRpcProvider
+    | providers.Web3Provider
+    | providers.WebSocketProvider
+    | providers.Provider
+    | providers.BaseProvider
+    | null;
+  providerName: string | null;
+  signer: Signer | null;
+  balances: Balances;
+  walletAddress: string | null;
+  truncatedWalletAddress: string | null;
+  modal: Web3Modal | null;
+  alert: {
+    title: string;
+    body?: string;
+  } | null;
+  walletOpen: boolean;
+  unstakedBalance: string | null;
+};
 
 export const initialState: State = {
   provider: defaultProvider,
@@ -31,13 +40,20 @@ export const initialState: State = {
   alert: null,
   walletOpen: false,
   unstakedBalance: null,
-}
+};
 
 const persistedKeys = {
-  walletAddress: 'vanilla-walletAddress'
-}
+  walletAddress: "vanilla-walletAddress",
+};
 
-const state = proxy<State>(initialState)
+const state = proxy<State>(initialState);
 
-export { state, useSnapshot, subscribe, subscribeKey, snapshot, ref, persistedKeys };
-
+export {
+  state,
+  useSnapshot,
+  subscribe,
+  subscribeKey,
+  snapshot,
+  ref,
+  persistedKeys,
+};

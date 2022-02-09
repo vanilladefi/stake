@@ -1,13 +1,13 @@
 import { isAddress } from "@vanilladefi/core-sdk";
 import {
   getBasicWalletDetails,
-  getJuiceStakingContract,
+  getJuiceStakingContract
 } from "@vanilladefi/stake-sdk";
 import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
 import { persistedKeys, ref, state, subscribeKey } from "..";
-import { formatJuice } from "../../utils/helpers";
-import { showDialog } from "./dialog";
+import { correctNetwork, formatJuice } from "../../utils/helpers";
+import { closeDialog, showDialog } from "./dialog";
 
 export const connectWallet = async () => {
   const { modal } = snapshot(state);
@@ -26,18 +26,45 @@ export const connectWallet = async () => {
   }
 };
 
-export const disconnect = () => {
+export const disconnect = (soft?: boolean) => {
   const { modal } = snapshot(state);
-  modal?.clearCachedProvider();
+  !soft && modal?.clearCachedProvider();
 
   state.signer = null;
-  state.walletAddress = null;
+  if (!soft) state.walletAddress = null;
   state.walletOpen = false;
   state.truncatedWalletAddress = null;
 
-  localStorage.removeItem(persistedKeys.walletAddress);
+  !soft && localStorage.removeItem(persistedKeys.walletAddress);
   state.balances = {};
   state.unstakedBalance = null;
+};
+
+export const ensureCorrectChain = async () => {
+  try {
+    const { signer, walletAddress, modal } = snapshot(state)
+    if (window.ethereum.chainId !== correctNetwork.chainId && signer && walletAddress && modal?.cachedProvider === 'injected') {
+      showDialog("Wrong network", {
+        body: "Wrong network!",
+      });
+    }
+  } catch (_e) {
+    console.error(_e);
+  }
+};
+
+export const switchToCorrectNetwork = async () => {
+  try {
+    console.log(correctNetwork)
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [correctNetwork],
+    });
+    await connectWallet();
+    closeDialog();
+  } catch (_e) {
+    console.error(_e);
+  }
 };
 
 export const initWalletSubscriptions = () => {
@@ -59,11 +86,12 @@ export const initWalletSubscriptions = () => {
 
     // subscribe to juice transactions
     try {
+      const contractAddress = isAddress(
+        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+      );
       const contract = getJuiceStakingContract({
         signerOrProvider: signer || provider || undefined,
-        optionalAddress:
-          isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") ||
-          undefined,
+        optionalAddress: contractAddress || undefined,
       });
       if (address) {
         contract?.on("JUICEWithdrawn", onJuiceWithdrawn);
@@ -109,13 +137,15 @@ export const persistWalletAddress = () => {
 };
 
 export const updateBalances = async () => {
-  const { signer, provider, walletAddress } = snapshot(state);
+  const { provider, walletAddress } = snapshot(state);
 
   if (walletAddress && isAddress(walletAddress)) {
+    const contractAddress = isAddress(
+      process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+    );
     const walletBalances = await getBasicWalletDetails(walletAddress, {
-      provider: signer?.provider || provider || undefined,
-      optionalAddress:
-        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || undefined,
+      provider: provider || undefined,
+      optionalAddress: contractAddress || undefined,
     });
 
     if (walletBalances.vnlBalance && walletBalances.ethBalance) {
@@ -137,11 +167,12 @@ export const updateUnstakedAmount = async () => {
   }
 
   try {
+    const contractAddress = isAddress(
+      process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+    );
     const contract = getJuiceStakingContract({
       signerOrProvider: signer || provider || undefined,
-      optionalAddress:
-        isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") ||
-        undefined,
+      optionalAddress: contractAddress || undefined,
     });
     if (contract) {
       const unstaked = formatJuice(
@@ -156,6 +187,7 @@ export const updateUnstakedAmount = async () => {
 
 export const updateTruncatedAddress = () => {
   const { walletAddress } = snapshot(state);
+  ensureCorrectChain();
   state.truncatedWalletAddress = walletAddress
     ? `${walletAddress?.substring(0, 6)}…${walletAddress?.substring(
         walletAddress.length - 4
@@ -164,21 +196,27 @@ export const updateTruncatedAddress = () => {
 };
 
 async function onJuiceDeposited(depositor: string, amount: BigNumber) {
-  await updateUnstakedAmount();
-  const { walletOpen } = snapshot(state);
-  if (!walletOpen) {
-    showDialog("Juice deposited", {
-      body: `${formatJuice(amount)} JUICE deposited successfully!`,
-    });
+  const { walletOpen, walletAddress } = snapshot(state);
+  if (depositor === walletAddress) {
+    await updateUnstakedAmount();
+    await updateBalances();
+    if (!walletOpen) {
+      showDialog("Juice deposited", {
+        body: `${formatJuice(amount)} JUICE deposited successfully!`,
+      });
+    }
   }
 }
 
-async function onJuiceWithdrawn(depositor: string, amount: BigNumber) {
-  await updateUnstakedAmount();
-  const { walletOpen } = snapshot(state);
-  if (!walletOpen) {
-    showDialog("Juice withdrawn", {
-      body: `${formatJuice(amount)} JUICE withdrawn successfully!`,
-    });
+async function onJuiceWithdrawn(withdrawer: string, amount: BigNumber) {
+  const { walletOpen, walletAddress } = snapshot(state);
+  if (withdrawer === walletAddress) {
+    await updateUnstakedAmount();
+    await updateBalances();
+    if (!walletOpen) {
+      showDialog("Juice withdrawn", {
+        body: `${formatJuice(amount)} JUICE withdrawn successfully!`,
+      });
+    }
   }
 }
