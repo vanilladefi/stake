@@ -1,39 +1,35 @@
 import { useSnapshot } from "valtio";
 import { state } from "../../state";
-
 import Button from "../Button";
-import Flex from "../Flex";
 import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogTitle,
-  // AlertDialogPortal,
+  AlertDialogTitle
 } from "./primitive";
 
-const AlertDialogDemo = () => {
-  const snap = useSnapshot(state);
 
-  if (!snap.alert) return null;
+const AlertDialogDemo = () => {
+  const { alert } = useSnapshot(state);
+
+  if (!alert) return null;
   return (
     <AlertDialog
-      open={!!snap.alert}
+      open={!!alert}
       onOpenChange={(open) => !open && (state.alert = null)}
     >
       {/* <AlertDialogPortal container={container}> */}
       <AlertDialogContent>
-        <AlertDialogTitle>{snap.alert.title}</AlertDialogTitle>
-        {snap.alert.body && (
-          <AlertDialogDescription>{snap.alert.body}</AlertDialogDescription>
+        <AlertDialogTitle>{alert.title}</AlertDialogTitle>
+        {alert.body && (
+          <AlertDialogDescription>{alert.body}</AlertDialogDescription>
         )}
-        <Flex>
-          <AlertDialogCancel asChild>
+          <AlertDialogCancel>
             <Button fluid variant="primary">
               CLOSE
             </Button>
           </AlertDialogCancel>
-        </Flex>
       </AlertDialogContent>
       {/* </AlertDialogPortal> */}
     </AlertDialog>

@@ -1,5 +1,5 @@
-import { styled, keyframes } from "../../stitches.config";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { keyframes, styled } from "../../stitches.config";
 
 const overlayShow = keyframes({
   "0%": { opacity: 0 },
@@ -52,6 +52,7 @@ const StyledTitle = styled(AlertDialogPrimitive.Title, {
   margin: 0,
   fontWeight: 300,
   fontSize: "$md",
+  fontFamily: "$heading",
   textTransform: "uppercase",
   letterSpacing: "1px",
   borderBottom: "1px solid $extraMuted",
@@ -62,9 +63,25 @@ const StyledTitle = styled(AlertDialogPrimitive.Title, {
 const StyledDescription = styled(AlertDialogPrimitive.Description, {
   marginBottom: 20,
   px: "$5",
-  py: "$3",
+  py: "$2",
+  paddingBottom: "$1",
   fontSize: "$md",
+  fontFamily: "$body",
   lineHeight: 1.5,
+});
+
+const StyledCancel = styled(AlertDialogPrimitive.Cancel, {
+  background: "transparent",
+  border: 0,
+  margin: 0,
+  fontSize: "$md",
+  borderTop: "1px solid $extraMuted",
+  boxSizing: "border-box",
+  display: "flex",
+  position: "relative",
+  width: "100%",
+  outline: 0,
+  p: "$5",
 });
 
 // Exports
@@ -74,5 +91,5 @@ export const AlertDialogContent = Content;
 export const AlertDialogTitle = StyledTitle;
 export const AlertDialogDescription = StyledDescription;
 export const AlertDialogAction = AlertDialogPrimitive.Action;
-export const AlertDialogCancel = AlertDialogPrimitive.Cancel;
+export const AlertDialogCancel = StyledCancel;
 export const AlertDialogPortal = AlertDialogPrimitive.Portal;
