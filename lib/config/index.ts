@@ -1,47 +1,82 @@
+import { networks } from "@vanilladefi/stake-sdk";
 import { providers } from "ethers";
 import { apiKey, ssrApiKey } from "./secrets";
-
-// Specifies whether to use a Websocket provider for ETH RPC or not
-export const useWebsocketRpc: boolean =
-  process.env.NEXT_PUBLIC_USE_WEBSOCKETS === "true";
 
 // Configurable chain ID, 137 for Polygon/Matic
 export const chainId: number =
   (process.env.NEXT_PUBLIC_CHAIN_ID &&
     parseInt(process.env.NEXT_PUBLIC_CHAIN_ID)) ||
   137;
-export const hexaDecimalChainId = `0x${Number(chainId).toString(16)}`;
+export const getHexaDecimalChainId = (chainId: number) =>
+  `0x${chainId.toString(16)}`;
 
-// A Docker env variable for local testing purposes
-export const runsOnDocker: boolean = process.env.DOCKER === "true";
+export const getWeb3ModalNetworkName = (networkName: string) => {
+  let web3ModalNetworkName = "matic";
+  switch (networkName) {
+    case "maticmum": {
+      web3ModalNetworkName = "mumbai";
+    }
+    case "local": {
+      web3ModalNetworkName = "matic";
+    }
+    case "matic": {
+      web3ModalNetworkName = "matic";
+    }
+    default: {
+      web3ModalNetworkName = "matic";
+    }
+  }
+  return web3ModalNetworkName;
+};
+
+export const correctNetwork =
+  process.env.NEXT_PUBLIC_NETWORK === "local"
+    ? {
+        chainId: getHexaDecimalChainId(chainId),
+        chainName: "Local Polygon",
+        nativeCurrency: {
+          name: "MATIC",
+          symbol: "MATIC",
+          decimals: 18,
+        },
+        rpcUrls: ["https://localhost:8545"],
+        blockExplorerUrls: ["https://polygonscan.com/"],
+      }
+    : process.env.NEXT_PUBLIC_NETWORK === "maticmum"
+    ? {
+        chainId: getHexaDecimalChainId(networks.testnet.chainId),
+        chainName: "Polygon Mumbai Testnet",
+        nativeCurrency: {
+          name: "MATIC",
+          symbol: "MATIC",
+          decimals: 18,
+        },
+        rpcUrls: ["https://rpc-mumbai.maticvigil.com"],
+        blockExplorerUrls: ["https://polygonscan.com/"],
+      }
+    : {
+        chainId: getHexaDecimalChainId(networks.mainnet.chainId),
+        chainName: "Polygon Mainnet",
+        nativeCurrency: {
+          name: "MATIC",
+          symbol: "MATIC",
+          decimals: 18,
+        },
+        rpcUrls: ["https://polygon-rpc.com/"],
+        blockExplorerUrls: ["https://polygonscan.com/"],
+      };
 
 // Ethers network
 export const network: providers.Networkish = providers.getNetwork(chainId);
-
-// Protocol prefix for RPC URLs
-export const protocolPrefix: string = useWebsocketRpc ? "wss://" : "https://";
-
-// If ran with Docker / docker-compose, the local testnet url is not reachable by 'localhost'
-export const localHardhatUrl: string = runsOnDocker ? "hardhat" : "localhost";
 
 // RPC URL constructor
 export const rpcUrl: string =
   (ssrApiKey && `https://polygon-mainnet.g.alchemy.com/v2/${ssrApiKey}`) ||
   (apiKey && `https://polygon-mainnet.g.alchemy.com/v2/${apiKey}`) ||
-  `https://${localHardhatUrl}:8545`;
+  `https://localhost:8545`;
 
 // The default RPC provider based on config
 export const defaultProvider =
-  useWebsocketRpc && apiKey && !ssrApiKey
-    ? new providers.AlchemyWebSocketProvider(network, apiKey)
-    : useWebsocketRpc && !ssrApiKey && !apiKey
-    ? new providers.WebSocketProvider(`ws://${localHardhatUrl}:8545`, network)
-    : !ssrApiKey && apiKey
+  apiKey && !ssrApiKey
     ? new providers.AlchemyProvider(network, apiKey)
     : new providers.JsonRpcProvider(rpcUrl, network);
-// TODO: Check if this works in the future (reduces calls to API): new providers.JsonRpcBatchProvider(rpcUrl, network)
-
-// TODO: New values for Polygon/Matic
-export const conservativeGasLimit = 800_000;
-export const conservativeMigrationGasLimit = 120_000;
-export const ethersOverrides = { gasLimit: conservativeGasLimit };

@@ -1,6 +1,5 @@
 import { juiceDecimals } from "@vanilladefi/core-sdk";
 import { ethers } from "ethers";
-import { hexaDecimalChainId, rpcUrl } from "../lib/config";
 
 // RFC 2822 email spec
 export const EMAIL_REGEX =
@@ -14,28 +13,3 @@ export const formatJuice = (amount: ethers.BigNumberish) =>
 
 export const parseJuice = (amount: string | number) =>
   ethers.utils.parseUnits(amount.toString(), juiceDecimals);
-
-export const correctNetwork =
-  process.env.NODE_ENV === "development"
-    ? {
-        chainId: hexaDecimalChainId,
-        chainName: "Local Polygon",
-        nativeCurrency: {
-          name: "MATIC",
-          symbol: "MATIC",
-          decimals: 18,
-        },
-        rpcUrls: [rpcUrl],
-        blockExplorerUrls: ["https://polygonscan.com/"],
-      }
-    : {
-        chainId: hexaDecimalChainId,
-        chainName: "Polygon Mainnet",
-        nativeCurrency: {
-          name: "MATIC",
-          symbol: "MATIC",
-          decimals: 18,
-        },
-        rpcUrls: ["https://polygon-rpc.com/"],
-        blockExplorerUrls: ["https://polygonscan.com/"],
-      };
