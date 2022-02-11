@@ -1,6 +1,5 @@
 import { useSnapshot } from "valtio";
 import { state } from "../../state";
-import { NetworkSwitcherBody } from "../../state/actions/dialog";
 import Button from "../Button";
 import {
   AlertDialog,
@@ -24,7 +23,10 @@ const AlertDialogDemo = () => {
         {alert.body && (
           <AlertDialogDescription>{alert.body}</AlertDialogDescription>
         )}
-          <NetworkSwitcherBody/>
+        {/* TODO: Support passing child components as props to alert dialog to support buttons etc */}
+        {/* {alert.customBody && (
+          <AlertDialogDescription><alert.customBody /></AlertDialogDescription>
+        )} */}
           <AlertDialogCancel>
             <Button fluid variant="primary">
               CLOSE

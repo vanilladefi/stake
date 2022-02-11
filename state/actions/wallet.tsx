@@ -6,7 +6,8 @@ import {
 import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
 import { persistedKeys, ref, state, subscribeKey } from "..";
-import { correctNetwork, formatJuice } from "../../utils/helpers";
+import { correctNetwork } from "../../lib/config";
+import { formatJuice } from "../../utils/helpers";
 import { closeDialog, showDialog } from "./dialog";
 
 export const connectWallet = async () => {
@@ -40,12 +41,13 @@ export const disconnect = (soft?: boolean) => {
   state.unstakedBalance = null;
 };
 
+// TODO: Instead of prompting user to manually check their network, offer a button that changes/installs the used network to the user's wallet.
 export const ensureCorrectChain = async () => {
   try {
     const { signer, walletAddress, modal } = snapshot(state)
-    if (window.ethereum.chainId !== correctNetwork.chainId && signer && walletAddress && modal?.cachedProvider === 'injected') {
+    if (window.ethereum?.chainId !== correctNetwork.chainId && signer && walletAddress && modal?.cachedProvider === 'injected') {
       showDialog("Wrong network", {
-        body: "Wrong network!",
+        body: `Your wallet seems to have the wrong network enabled. Please check that you're using ${correctNetwork.chainName}.`
       });
     }
   } catch (_e) {

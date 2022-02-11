@@ -1,4 +1,5 @@
 import { providers, Signer } from "ethers";
+import React from "react";
 import { proxy, ref, snapshot, subscribe, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
 import Web3Modal from "web3modal";
@@ -24,6 +25,7 @@ type State = {
   alert: {
     title: string;
     body?: string;
+    customBody?: React.FC;
   } | null;
   walletOpen: boolean;
   unstakedBalance: string | null;
