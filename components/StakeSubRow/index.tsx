@@ -14,7 +14,6 @@ import Flex from "../Flex";
 import Input from "../Input";
 import Text from "../Text";
 
-
 export type ColumnType = {
   __typename?: "AssetPair";
   id: string;
@@ -80,7 +79,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         body: "Token is not available to stake yet",
       });
     }
-    
+
     setStakePending(true);
     try {
       const amount = parseJuice(stakeAmount).toString();
@@ -90,7 +89,6 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
       const tx = await sdk.modifyStake(stake, signer);
       const res = await tx.wait();
-      
       if (res.status === 1) {
         showDialog("Successs", {
           body: "Transaction was successful, [LINK]",
@@ -101,16 +99,12 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         });
       }
     } catch (error) {
-      showDialog("Error", { body: error as any });
+      console.warn(error);
+      let body = (error as any)?.data?.message || "Something went wrong!";
+      showDialog("Error", { body });
     }
     setStakePending(false);
-  }, [
-    stakingDisabled,
-    row.original.id,
-    signer,
-    stakeAmount,
-    stakePosition,
-  ]);
+  }, [stakingDisabled, row.original.id, signer, stakeAmount, stakePosition]);
 
   const closeStakePosition = useCallback(async () => {
     if (closingDisabled) return;
