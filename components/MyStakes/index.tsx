@@ -8,6 +8,7 @@ import { snapshot, useSnapshot } from "valtio";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { state } from "../../state";
 import tokens from "../../tokensV2";
+import { formatJuice } from "../../utils/helpers";
 import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
@@ -98,7 +99,7 @@ export const MyStakes = () => {
       },
       {
         Header: "Stake",
-        accessor: "stakedAmount",
+        accessor: "juiceValue",
         align: "right",
         width: "15%",
         minWidth: "100px",
@@ -187,7 +188,13 @@ export const MyStakes = () => {
 
   const renderRowSubComponent = useCallback(
     ({ row }: { row: Row<ColumnType> }) => {
-      return <StakeSubRow type="edit" row={row} />;
+      return (
+        <StakeSubRow
+          type="edit"
+          row={row}
+          defaultStake={row.original.juiceValue}
+        />
+      );
     },
     []
   );
@@ -213,15 +220,16 @@ export const MyStakes = () => {
       }));
 
     const res = await getAllStakes(walletAddress, _tokens, {
-      signerOrProvider: signer || (provider as any),
+      signerOrProvider: signer || provider || undefined,
     });
-    let stakes: any[] = [];
 
+    let stakes: any[] = [];
     _tokens.forEach((token, idx) => {
-      if (!res[idx].amount.isZero()) {
+      if (!res[idx].juiceStake.isZero()) {
         const stake = {
           id: token.pairId,
-          stakedAmount: res[idx].amount.toString(),
+          juiceStake: formatJuice(res[idx].juiceStake),
+          juiceValue: formatJuice(res[idx].juiceValue),
           sentiment: res[idx].sentiment === true ? "long" : "short",
         };
         stakes.push(stake);

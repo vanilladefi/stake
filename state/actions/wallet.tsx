@@ -146,7 +146,7 @@ export const updateBalances = async () => {
       process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
     );
     const walletBalances = await getBasicWalletDetails(walletAddress, {
-      provider: provider || undefined,
+      signerOrProvider: provider || undefined,
       optionalAddress: contractAddress || undefined,
     });
 

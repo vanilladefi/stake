@@ -18,7 +18,8 @@ export type ColumnType = {
   __typename?: "AssetPair";
   id: string;
   currentPrice: any;
-  stakedAmount?: string;
+  juiceStake?: string;
+  juiceValue?: string;
   sentiment?: "long" | "short";
   decimals: number;
   roundId: any;
@@ -38,13 +39,18 @@ export type ColumnType = {
 
 interface SubRowProps {
   row: Row<ColumnType>;
+  defaultStake?: string;
   type?: "edit" | "make";
 }
 
-const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
+const StakeSubRow: FC<SubRowProps> = ({
+  row,
+  type = "make",
+  defaultStake = "",
+}) => {
   const { signer } = useSnapshot(state);
 
-  const [stakeAmount, setStakeAmount] = useState("");
+  const [stakeAmount, setStakeAmount] = useState(defaultStake);
   const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
   const [stakePending, setStakePending] = useState(false);
   const [stakingDisabled, setStakingDisabled] = useState(true);
@@ -87,7 +93,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
       const stake = { token, amount, sentiment };
 
-      const tx = await sdk.modifyStake(stake, signer);
+      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer });
       const res = await tx.wait();
       if (res.status === 1) {
         showDialog("Successs", {
@@ -128,7 +134,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       const stake = { token, amount: 0, sentiment: false };
       console.log("Callin sdk with stake: ", stake);
 
-      const tx = await sdk.modifyStake(stake, signer);
+      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer });
       const res = await tx.wait();
 
       if (res.status === 1)
