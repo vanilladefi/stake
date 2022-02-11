@@ -27,7 +27,7 @@ const AlertDialogDemo = () => {
         {/* {alert.customBody && (
           <AlertDialogDescription><alert.customBody /></AlertDialogDescription>
         )} */}
-          <AlertDialogCancel>
+          <AlertDialogCancel as="div">
             <Button fluid variant="primary">
               CLOSE
             </Button>
