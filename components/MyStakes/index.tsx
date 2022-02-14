@@ -217,11 +217,17 @@ export const MyStakes = () => {
         chainId: "",
         logoColor: "",
       }));
+    
+    const contractAddress = isAddress(
+      process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+    );
+    const contract = getJuiceStakingContract({
+      signerOrProvider: signer || polygonProvider || undefined,
+      optionalAddress: contractAddress || undefined,
+    });
 
-    const res = await getAllStakes(
-      walletAddress,
-      _tokens,
-      { signerOrProvider: signer || polygonProvider as any },
+    const res = await Promise.all(
+      _tokens.map((token) => contract.currentStake(walletAddress, token.address))
     );
 
     let stakes: any[] = [];
@@ -305,7 +311,7 @@ export const MyStakes = () => {
           Manage funds
         </Button>
       </Flex>
-      {tableData ? (
+      {tableData || (!tableData && stakesLoading) ? (
         <Box
           css={{
             overflowX: "auto",
@@ -318,7 +324,8 @@ export const MyStakes = () => {
         >
           <Table
             columns={columns}
-            data={!stakesLoading ? tableData : []}
+            isLoading={stakesLoading}
+            data={tableData || []}
             renderRowSubComponent={renderRowSubComponent}
           />
         </Box>

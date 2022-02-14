@@ -67,6 +67,7 @@ interface TableProps<T extends object> {
   filters?: string[]; // columns names to filter
   filter?: string; // Filter text
   renderRowSubComponent?: (props: { row: Row<T> }) => any;
+  isLoading?: boolean
 }
 
 /**
@@ -80,6 +81,7 @@ function Table<T extends object>({
   filters,
   filter,
   renderRowSubComponent,
+  isLoading
 }: TableProps<T>): React.ReactElement {
   /**
    * Custom Filter Function ----
@@ -177,7 +179,7 @@ function Table<T extends object>({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.length > 0 ? rows.map((row, i) => {
+          {!isLoading ? rows.map((row, i) => {
             prepareRow(row);
             const { key, ...rowProps } = row.getRowProps();
             return (
@@ -222,7 +224,7 @@ function Table<T extends object>({
             );
           }) : <tr>{headerGroups[headerGroups.length - 1].headers.map((_column) => {
             return (
-              <td>
+              <td key={_column.id}>
                 <Loader/>
               </td>
             )
