@@ -218,10 +218,14 @@ export const MyStakes = () => {
         logoColor: "",
       }));
 
+      const contractAddress = isAddress(
+        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+      );
+
     const res = await getAllStakes(
       walletAddress,
       _tokens,
-      { signerOrProvider: signer || polygonProvider as any },
+      { signerOrProvider: signer || polygonProvider as any, optionalAddress: contractAddress || "" },
     );
 
     let stakes: any[] = [];
