@@ -373,7 +373,24 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                   </Button>
                 </>
               ) : (
-                <Loader css={{ height: "$10" }} />
+                <>
+                  <Button
+                    disabled={txDisabled}
+                    onClick={() => handleTx("withdraw")}
+                    variant="bordered"
+                    css={{ display: "flex", flex: "1 0" }}
+                  >
+                    <Loader />
+                  </Button>
+                  <Button
+                    disabled={txDisabled}
+                    onClick={() => handleTx("deposit")}
+                    variant="bordered"
+                    css={{ display: "flex", flex: "1 0" }}
+                  >
+                    <Loader />
+                  </Button>
+                </>
               )}
             </Box>
             <Text
