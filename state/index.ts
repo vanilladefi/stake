@@ -3,13 +3,20 @@ import React from "react";
 import { proxy, ref, snapshot, subscribe, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
 import Web3Modal from "web3modal";
-import { defaultProvider } from "../lib/config";
+import { defaultEthereumProvider, defaultPolygonProvider } from "../lib/config";
 
 type BalanceTypes = "eth" | "vnl" | "juice" | "matic";
 export type Balances = Partial<Record<BalanceTypes, string>>;
 
 type State = {
-  provider:
+  ethereumProvider:
+    | providers.JsonRpcProvider
+    | providers.Web3Provider
+    | providers.WebSocketProvider
+    | providers.Provider
+    | providers.BaseProvider
+    | null;
+  polygonProvider:
     | providers.JsonRpcProvider
     | providers.Web3Provider
     | providers.WebSocketProvider
@@ -32,7 +39,8 @@ type State = {
 };
 
 export const initialState: State = {
-  provider: defaultProvider,
+  ethereumProvider: defaultEthereumProvider,
+  polygonProvider: defaultPolygonProvider,
   providerName: null,
   signer: null,
   balances: {},

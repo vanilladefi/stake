@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
-import { snapshot, useSnapshot } from "valtio";
+import { useSnapshot } from "valtio";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { state } from "../../state";
 import tokens from "../../tokensV2";
@@ -197,15 +197,14 @@ export const MyStakes = () => {
       );
     },
     []
-  );
-
-  const [stakes, setStakes] = useState<any[] | null>(null);
-  const [stakesLoading, setStakesLoading] = useState(true);
+    );
+    
+    const [stakes, setStakes] = useState<any[] | null>(null);
+    const [stakesLoading, setStakesLoading] = useState(true);
+    
+    const { signer, polygonProvider, walletAddress } = useSnapshot(state);
 
   const getStakes = useCallback(async () => {
-    const { provider, signer, walletAddress } = snapshot(state);
-    console.log("Get stakes", { provider, signer, walletAddress });
-
     if (!walletAddress) return;
 
     const _tokens: Token[] = tokens
@@ -219,9 +218,11 @@ export const MyStakes = () => {
         logoColor: "",
       }));
 
-    const res = await getAllStakes(walletAddress, _tokens, {
-      signerOrProvider: signer || provider || undefined,
-    });
+    const res = await getAllStakes(
+      walletAddress,
+      _tokens,
+      { signerOrProvider: signer || polygonProvider as any },
+    );
 
     let stakes: any[] = [];
     _tokens.forEach((token, idx) => {
@@ -238,9 +239,7 @@ export const MyStakes = () => {
     setStakes(stakes);
 
     if (stakesLoading) setStakesLoading(false);
-  }, [stakesLoading]);
-
-  const { signer, provider, walletAddress } = useSnapshot(state);
+  }, [stakesLoading, polygonProvider, signer, walletAddress]);
 
   useEffect(() => {
     if (!walletAddress) return;
@@ -249,7 +248,7 @@ export const MyStakes = () => {
       process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
     );
     const contract = getJuiceStakingContract({
-      signerOrProvider: signer || provider || undefined,
+      signerOrProvider: signer || polygonProvider || undefined,
       optionalAddress: contractAddress || undefined,
     });
     if (!contract) return;
@@ -266,7 +265,7 @@ export const MyStakes = () => {
       contract.off("StakeAdded", onStakesChanged);
       contract.off("StakeRemoved", onStakesChanged);
     };
-  }, [getStakes, provider, signer, walletAddress]);
+  }, [getStakes, polygonProvider, signer, walletAddress]);
 
   const [tableData, setTableData] = useState<ColumnType[] | null>(null);
   useEffect(() => {

@@ -13,8 +13,8 @@ import { closeDialog, showDialog } from "./dialog";
 export const connectWallet = async () => {
   const { modal } = snapshot(state);
   try {
-    const provider = await modal?.connect();
-    const web3Provider = new providers.Web3Provider(provider);
+    const polygonProvider = await modal?.connect();
+    const web3Provider = new providers.Web3Provider(polygonProvider);
     const signer = ref(web3Provider.getSigner());
 
     state.signer = signer;
@@ -57,7 +57,6 @@ export const ensureCorrectChain = async () => {
 
 export const switchToCorrectNetwork = async () => {
   try {
-    console.log(correctNetwork)
     await window.ethereum.request({
       method: "wallet_addEthereumChain",
       params: [correctNetwork],
@@ -84,7 +83,7 @@ export const initWalletSubscriptions = () => {
 
     persistWalletAddress();
 
-    const { signer, provider } = snapshot(state);
+    const { signer, polygonProvider } = snapshot(state);
 
     // subscribe to juice transactions
     try {
@@ -92,7 +91,7 @@ export const initWalletSubscriptions = () => {
         process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
       );
       const contract = getJuiceStakingContract({
-        signerOrProvider: signer || provider || undefined,
+        signerOrProvider: signer || polygonProvider || undefined,
         optionalAddress: contractAddress || undefined,
       });
       if (address) {
@@ -139,14 +138,15 @@ export const persistWalletAddress = () => {
 };
 
 export const updateBalances = async () => {
-  const { provider, walletAddress } = snapshot(state);
+  const { polygonProvider, ethereumProvider, walletAddress } = snapshot(state);
 
   if (walletAddress && isAddress(walletAddress)) {
     const contractAddress = isAddress(
       process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
     );
     const walletBalances = await getBasicWalletDetails(walletAddress, {
-      polygonProvider: provider || undefined,
+      polygonProvider: polygonProvider || undefined,
+      ethereumProvider: ethereumProvider || undefined,
       optionalAddress: contractAddress || undefined,
     });
 
@@ -162,7 +162,7 @@ export const updateBalances = async () => {
 };
 
 export const updateUnstakedAmount = async () => {
-  const { signer, provider, walletAddress } = snapshot(state);
+  const { signer, polygonProvider, walletAddress } = snapshot(state);
   if (!walletAddress) {
     state.unstakedBalance = null;
     return;
@@ -173,7 +173,7 @@ export const updateUnstakedAmount = async () => {
       process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
     );
     const contract = getJuiceStakingContract({
-      signerOrProvider: signer || provider || undefined,
+      signerOrProvider: signer || polygonProvider || undefined,
       optionalAddress: contractAddress || undefined,
     });
     if (contract) {
