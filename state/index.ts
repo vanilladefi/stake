@@ -39,8 +39,8 @@ type State = {
 };
 
 export const initialState: State = {
-  ethereumProvider: defaultEthereumProvider,
-  polygonProvider: defaultPolygonProvider,
+  ethereumProvider: ref(defaultEthereumProvider),
+  polygonProvider: ref(defaultPolygonProvider),
   providerName: null,
   signer: null,
   balances: {},
