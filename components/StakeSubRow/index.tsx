@@ -1,8 +1,10 @@
+import { isAddress } from "@vanilladefi/core-sdk";
 import * as sdk from "@vanilladefi/stake-sdk";
 import Image from "next/image";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
 import { useSnapshot } from "valtio";
+import { correctNetwork } from "../../lib/config";
 import { state } from "../../state";
 import { showDialog } from "../../state/actions/dialog";
 import { connectWallet } from "../../state/actions/wallet";
@@ -93,15 +95,21 @@ const StakeSubRow: FC<SubRowProps> = ({
 
       const stake = { token, amount, sentiment };
 
-      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer });
+      const contractAddress = isAddress(
+        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+      );
+      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer, optionalAddress: contractAddress || "" });
       const res = await tx.wait();
+
+      const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${res.transactionHash}`
+
       if (res.status === 1) {
-        showDialog("Successs", {
-          body: "Transaction was successful, [LINK]",
+        showDialog("Success", {
+          body: `Transaction was successful, ${transactionLink}`, // TODO: Support custom React components in the dialog
         });
       } else {
         showDialog("Error", {
-          body: "Transaction failed, [LINK]",
+          body: `Transaction failed, ${transactionLink}`,
         });
       }
     } catch (error) {
@@ -132,9 +140,11 @@ const StakeSubRow: FC<SubRowProps> = ({
     setStakePending(true);
     try {
       const stake = { token, amount: 0, sentiment: false };
-      console.log("Callin sdk with stake: ", stake);
 
-      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer });
+      const contractAddress = isAddress(
+        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+      );
+      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer, optionalAddress: contractAddress || "" });
       const res = await tx.wait();
 
       if (res.status === 1)
