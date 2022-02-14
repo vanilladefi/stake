@@ -1,6 +1,6 @@
 import { networks } from "@vanilladefi/stake-sdk";
 import { providers } from "ethers";
-import { apiKey, ssrApiKey } from "./secrets";
+import { ethereumApiKey, polygonApiKey } from "./secrets";
 
 // Configurable chain ID, 137 for Polygon/Matic
 export const chainId: number =
@@ -66,17 +66,28 @@ export const correctNetwork =
         blockExplorerUrls: ["https://polygonscan.com/"],
       };
 
-// Ethers network
-export const network: providers.Networkish = providers.getNetwork(chainId);
+// Ethers networks
+export const ethereumNetwork: providers.Networkish =
+  providers.getNetwork("homestead");
 
-// RPC URL constructor
-export const rpcUrl: string =
-  (ssrApiKey && `https://polygon-mainnet.g.alchemy.com/v2/${ssrApiKey}`) ||
-  (apiKey && `https://polygon-mainnet.g.alchemy.com/v2/${apiKey}`) ||
+// RPC URL constructors
+export const ethereumRpcUrl: string =
+  (ethereumApiKey &&
+    `https://eth-mainnet.alchemyapi.io/v2/${ethereumApiKey}`) ||
+  `https://localhost:8545`;
+export const polygonRpcUrl: string =
+  (polygonApiKey &&
+    chainId === networks.mainnet.chainId &&
+    `https://polygon-mainnet.g.alchemy.com/v2/${polygonApiKey}`) ||
+  (polygonApiKey &&
+    chainId === networks.testnet.chainId &&
+    `https://polygon-mumbai.g.alchemy.com/v2/${polygonApiKey}`) ||
   `https://localhost:8545`;
 
-// The default RPC provider based on config
-export const defaultProvider =
-  apiKey && !ssrApiKey
-    ? new providers.AlchemyProvider(network, apiKey)
-    : new providers.JsonRpcProvider(rpcUrl, network);
+// The default RPC providers based on config
+export const defaultEthereumProvider = ethereumApiKey
+  ? new providers.AlchemyProvider(ethereumNetwork, ethereumApiKey)
+  : new providers.JsonRpcProvider(ethereumRpcUrl, ethereumNetwork);
+export const defaultPolygonProvider = polygonApiKey
+  ? new providers.AlchemyProvider(chainId, polygonApiKey)
+  : new providers.JsonRpcProvider(polygonRpcUrl, chainId);
