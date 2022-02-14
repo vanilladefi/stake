@@ -4,10 +4,11 @@ import { ethers } from "ethers";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
-import { snapshot } from "valtio";
+import { snapshot, useSnapshot } from "valtio";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { state } from "../../state";
 import tokens from "../../tokensV2";
+import { formatJuice } from "../../utils/helpers";
 import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
@@ -19,7 +20,6 @@ import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
 
-
 /**
  * Early rough implementation
  * Just a POC
@@ -27,7 +27,7 @@ import Text from "../Text";
 export const MyStakes = () => {
   // leaving `executeQuery` to AvailableStakes component
   const [{ fetching: _, data: _data }] = useGetAssetPairsQuery();
-  
+
   const priceData = useMemo(() => {
     return (
       _data?.assetPairs.filter((t) => {
@@ -99,7 +99,7 @@ export const MyStakes = () => {
       },
       {
         Header: "Stake",
-        accessor: "stakedAmount",
+        accessor: "juiceValue",
         align: "right",
         width: "15%",
         minWidth: "100px",
@@ -188,7 +188,13 @@ export const MyStakes = () => {
 
   const renderRowSubComponent = useCallback(
     ({ row }: { row: Row<ColumnType> }) => {
-      return <StakeSubRow type="edit" row={row} />;
+      return (
+        <StakeSubRow
+          type="edit"
+          row={row}
+          defaultStake={row.original.juiceValue}
+        />
+      );
     },
     []
   );
@@ -198,6 +204,7 @@ export const MyStakes = () => {
 
   const getStakes = useCallback(async () => {
     const { provider, signer, walletAddress } = snapshot(state);
+    console.log("Get stakes", { provider, signer, walletAddress });
 
     if (!walletAddress) return;
 
@@ -212,18 +219,17 @@ export const MyStakes = () => {
         logoColor: "",
       }));
 
-    const res = await getAllStakes(
-      walletAddress,
-      _tokens,
-      { signerOrProvider: signer || provider as any },
-    );
-    let stakes: any[] = [];
+    const res = await getAllStakes(walletAddress, _tokens, {
+      signerOrProvider: signer || provider || undefined,
+    });
 
+    let stakes: any[] = [];
     _tokens.forEach((token, idx) => {
-      if (!res[idx].amount.isZero()) {
+      if (!res[idx].juiceStake.isZero()) {
         const stake = {
           id: token.pairId,
-          stakedAmount: res[idx].amount.toString(),
+          juiceStake: formatJuice(res[idx].juiceStake),
+          juiceValue: formatJuice(res[idx].juiceValue),
           sentiment: res[idx].sentiment === true ? "long" : "short",
         };
         stakes.push(stake);
@@ -234,13 +240,10 @@ export const MyStakes = () => {
     if (stakesLoading) setStakesLoading(false);
   }, [stakesLoading]);
 
-  useEffect(() => {
-    getStakes();
-  }, [getStakes]);
+  const { signer, provider, walletAddress } = useSnapshot(state);
 
   useEffect(() => {
-    const {signer, provider, walletAddress} = snapshot(state);
-    if (!walletAddress) return 
+    if (!walletAddress) return;
 
     const contractAddress = isAddress(
       process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
@@ -249,20 +252,21 @@ export const MyStakes = () => {
       signerOrProvider: signer || provider || undefined,
       optionalAddress: contractAddress || undefined,
     });
-    if (!contract) return
-    
+    if (!contract) return;
+
+    getStakes();
     const onStakesChanged = () => {
       getStakes();
     };
 
     contract.on("StakeAdded", onStakesChanged);
     contract.on("StakeRemoved", onStakesChanged);
-    
+
     return () => {
       contract.off("StakeAdded", onStakesChanged);
       contract.off("StakeRemoved", onStakesChanged);
     };
-  }, [getStakes]);
+  }, [getStakes, provider, signer, walletAddress]);
 
   const [tableData, setTableData] = useState<ColumnType[] | null>(null);
   useEffect(() => {

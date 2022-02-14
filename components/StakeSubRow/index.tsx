@@ -14,12 +14,12 @@ import Flex from "../Flex";
 import Input from "../Input";
 import Text from "../Text";
 
-
 export type ColumnType = {
   __typename?: "AssetPair";
   id: string;
   currentPrice: any;
-  stakedAmount?: string;
+  juiceStake?: string;
+  juiceValue?: string;
   sentiment?: "long" | "short";
   decimals: number;
   roundId: any;
@@ -39,13 +39,18 @@ export type ColumnType = {
 
 interface SubRowProps {
   row: Row<ColumnType>;
+  defaultStake?: string;
   type?: "edit" | "make";
 }
 
-const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
+const StakeSubRow: FC<SubRowProps> = ({
+  row,
+  type = "make",
+  defaultStake = "",
+}) => {
   const { signer } = useSnapshot(state);
 
-  const [stakeAmount, setStakeAmount] = useState("");
+  const [stakeAmount, setStakeAmount] = useState(defaultStake);
   const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
   const [stakePending, setStakePending] = useState(false);
   const [stakingDisabled, setStakingDisabled] = useState(true);
@@ -80,7 +85,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         body: "Token is not available to stake yet",
       });
     }
-    
+
     setStakePending(true);
     try {
       const amount = parseJuice(stakeAmount).toString();
@@ -88,9 +93,8 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
       const stake = { token, amount, sentiment };
 
-      const tx = await sdk.modifyStake(stake, signer);
+      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer });
       const res = await tx.wait();
-      
       if (res.status === 1) {
         showDialog("Successs", {
           body: "Transaction was successful, [LINK]",
@@ -101,16 +105,12 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         });
       }
     } catch (error) {
-      showDialog("Error", { body: error as any });
+      console.warn(error);
+      let body = (error as any)?.data?.message || "Something went wrong!";
+      showDialog("Error", { body });
     }
     setStakePending(false);
-  }, [
-    stakingDisabled,
-    row.original.id,
-    signer,
-    stakeAmount,
-    stakePosition,
-  ]);
+  }, [stakingDisabled, row.original.id, signer, stakeAmount, stakePosition]);
 
   const closeStakePosition = useCallback(async () => {
     if (closingDisabled) return;
@@ -134,7 +134,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       const stake = { token, amount: 0, sentiment: false };
       console.log("Callin sdk with stake: ", stake);
 
-      const tx = await sdk.modifyStake(stake, signer);
+      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer });
       const res = await tx.wait();
 
       if (res.status === 1)

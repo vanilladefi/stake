@@ -4,9 +4,10 @@ import Button from "../Button";
 import {
   AlertDialog,
   AlertDialogCancel,
-  AlertDialogContent, AlertDialogDescription, AlertDialogTitle
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
 } from "./primitive";
-
 
 const AlertDialogDemo = () => {
   const { alert } = useSnapshot(state);
@@ -27,11 +28,17 @@ const AlertDialogDemo = () => {
         {/* {alert.customBody && (
           <AlertDialogDescription><alert.customBody /></AlertDialogDescription>
         )} */}
-          <AlertDialogCancel>
-            <Button fluid variant="primary">
-              CLOSE
-            </Button>
-          </AlertDialogCancel>
+        <AlertDialogCancel as="div">
+          <Button
+            onClick={() => {
+              state.alert = null;
+            }}
+            fluid
+            variant="primary"
+          >
+            CLOSE
+          </Button>
+        </AlertDialogCancel>
       </AlertDialogContent>
       {/* </AlertDialogPortal> */}
     </AlertDialog>
