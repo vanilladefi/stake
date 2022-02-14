@@ -88,45 +88,49 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       if (txDisabled) return;
       if (!signer) return connectWallet();
 
-      setTxDisabled(type);
-      setMessage({ value: null, error: false });
-      try {
-        const amount = parseJuice(juiceAmount).toString();
-        const contractAddress = isAddress(
-          process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
-        );
-        const contract = getJuiceStakingContract({
-          signerOrProvider: signer,
-          optionalAddress:
-            contractAddress || undefined,
-        });
-        if (!contract) throw Error("Cannot access contract ");
+      const _disabled = !(juiceAmount && +juiceAmount);
+      if (_disabled && !txDisabled) {
+        setTxDisabled(type)
+        setMessage({ value: null, error: false });
 
-        let tx: ContractTransaction;
-        if (type === TxTypes.deposit) {
-          tx = await contract.deposit(amount);
-        } else {
-          tx = await contract.withdraw(amount);
-        }
-        setMessage({
-          value: "Transaction pending...",
-          error: false,
-        });
-        setJuiceAmount("");
+        try {
+          const amount = parseJuice(juiceAmount).toString();
+          const contractAddress = isAddress(
+            process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+          );
+          const contract = getJuiceStakingContract({
+            signerOrProvider: signer,
+            optionalAddress:
+              contractAddress || undefined,
+          });
+          if (!contract) throw Error("Cannot access contract ");
 
-        const rec = await tx.wait();
-        if (rec.status === 1) {
+          let tx: ContractTransaction;
+          if (type === TxTypes.deposit) {
+            tx = await contract.deposit(amount);
+          } else {
+            tx = await contract.withdraw(amount);
+          }
           setMessage({
-            value: "Transaction successful",
+            value: "Transaction pending...",
             error: false,
           });
-        } else throw Error("reciept.status == 0"); //TODO we can do better
-      } catch (error) {
-        console.warn("Error depositing!, ", error);
-        setMessage({
-          value: "Tansaction failed!",
-          error: true,
-        });
+          setJuiceAmount("");
+
+          const rec = await tx.wait();
+          if (rec.status === 1) {
+            setMessage({
+              value: "Transaction successful",
+              error: false,
+            });
+          } else throw Error("reciept.status == 0"); //TODO we can do better
+        } catch (error) {
+          console.warn("Error depositing!, ", error);
+          setMessage({
+            value: "Tansaction failed!",
+            error: true,
+          });
+        }
       }
       setTxDisabled(false);
     },
