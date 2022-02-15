@@ -10,6 +10,32 @@ const tokens = [
   },
   {
     "enabled": true,
+    "id": "WMATIC",
+    "decimals": 18,
+    "priceFeed": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+    "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+    "imageUrl": null,
+    "name": "Wrapped Matic"
+  },
+  {
+    "enabled": true,
+    "id": "SAND",
+    "decimals": 8,
+    "priceFeed": "0x3D49406EDd4D52Fb7FFd25485f32E073b529C924",
+    "address": "0xBbba073C31bF03b8ACf7c28EF0738DeCF3695683",
+    "imageUrl": "SAND.png",
+    "name": "The Sandbox"
+  },
+  {
+    "enabled": true,
+    "id": "WBTC",
+    "decimals": 8,
+    "priceFeed": "0xDE31F8bFBD8c84b5360CFACCa3539B938dd78ae6",
+    "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
+    "imageUrl": "WBTC.png",
+    "name": "Wrapped Bitcoin"
+  },
+  {
     "id": "SHIB",
     "decimals": 8,
     "priceFeed": "0x3710abeb1A0Fc7C2EC59C26c8DAA7a448ff6125A",
@@ -31,7 +57,6 @@ const tokens = [
     "name": "Apple Inc"
   },
   {
-    "enabled": true,
     "id": "AAVE",
     "decimals": 8,
     "priceFeed": "0x72484B12719E23115761D5DA1646945632979bB6",
@@ -53,7 +78,6 @@ const tokens = [
     "imageUrl": null
   },
   {
-    "enabled": true,
     "id": "ALCX",
     "decimals": 8,
     "priceFeed": "0x5DB6e61B6159B20F068dc15A47dF2E5931b14f29",
@@ -89,7 +113,6 @@ const tokens = [
     "name": "Badger DAO"
   },
   {
-    "enabled": true,
     "id": "BAL",
     "decimals": 8,
     "priceFeed": "0xD106B538F2A868c28Ca1Ec7E298C3325E0251d66",
@@ -118,7 +141,6 @@ const tokens = [
     "name": "Bitcoin HD"
   },
   {
-    "enabled": true,
     "id": "BNB",
     "decimals": 8,
     "priceFeed": "0x82a6c4AF830caa6c97bb504425f6A66165C2c26e",
@@ -182,7 +204,6 @@ const tokens = [
     "name": "Candy Protocol"
   },
   {
-    "enabled": true,
     "id": "CEL",
     "decimals": 8,
     "priceFeed": "0xc9ECF45956f576681bDc01F79602A79bC2667B0c",
@@ -204,7 +225,6 @@ const tokens = [
     "imageUrl": null
   },
   {
-    "enabled": true,
     "id": "COMP",
     "decimals": 8,
     "priceFeed": "0x2A8758b7257102461BC958279054e372C2b1bDE6",
@@ -219,7 +239,6 @@ const tokens = [
     "name": "Copiosa"
   },
   {
-    "enabled": true,
     "id": "CRV",
     "decimals": 8,
     "priceFeed": "0x336584C8E6Dc19637A5b36206B1c79923111b405",
@@ -269,7 +288,6 @@ const tokens = [
     "name": "Polkadot"
   },
   {
-    "enabled": true,
     "id": "DPI",
     "decimals": 8,
     "priceFeed": "0x2e48b7924FBe04d575BA229A59b64547d9da16e9",
@@ -403,7 +421,6 @@ const tokens = [
     "imageUrl": null
   },
   {
-    "enabled": true,
     "id": "LINK",
     "decimals": 8,
     "priceFeed": "0xd9FFdb71EbE7496cC440152d43986Aae0AB76665",
@@ -425,7 +442,6 @@ const tokens = [
     "name": "Litecoin"
   },
   {
-    "enabled": true,
     "id": "LUNA",
     "decimals": 8,
     "priceFeed": "0x1248573D9B62AC86a3ca02aBC6Abe6d403Cd1034",
@@ -433,20 +449,11 @@ const tokens = [
     "name": "Terra"
   },
   {
-    "enabled": true,
     "id": "MANA",
     "decimals": 8,
     "priceFeed": "0xA1CbF3Fe43BC3501e3Fc4b573e822c70e76A7512",
     "imageUrl": "MANA.png",
     "name": "Decentraland"
-  },
-  {
-    "enabled": true,
-    "id": "WMATIC",
-    "decimals": 18,
-    "priceFeed": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
-    "imageUrl": null,
-    "name": "Wrapped Matic"
   },
   {
     "id": "MATIC",
@@ -477,7 +484,6 @@ const tokens = [
     "name": "IOTA"
   },
   {
-    "enabled": true,
     "id": "MKR",
     "decimals": 8,
     "priceFeed": "0xa070427bF5bA5709f70e98b94Cb2F435a242C46C",
@@ -513,7 +519,6 @@ const tokens = [
     "imageUrl": null
   },
   {
-    "enabled": true,
     "id": "OHM",
     "decimals": 8,
     "priceFeed": "0xa8B05B6337040c0529919BDB51f6B40A684eb08C",
@@ -542,7 +547,6 @@ const tokens = [
     "name": "Paxos Dollar (USDP)"
   },
   {
-    "enabled": true,
     "id": "PAXG",
     "decimals": 8,
     "priceFeed": "0x0f6914d8e7e1214CDb3A4C6fbf729b75C69DF608",
@@ -578,14 +582,6 @@ const tokens = [
     "name": "Augur"
   },
   {
-    "enabled": true,
-    "id": "SAND",
-    "decimals": 8,
-    "priceFeed": "0x3D49406EDd4D52Fb7FFd25485f32E073b529C924",
-    "imageUrl": "SAND.png",
-    "name": "The Sandbox"
-  },
-  {
     "id": "SAR",
     "decimals": 8,
     "priceFeed": "0x5047CdCf17AA5a0bb77217497142657B27a1e228",
@@ -600,7 +596,6 @@ const tokens = [
     "imageUrl": null
   },
   {
-    "enabled": true,
     "id": "SNX",
     "decimals": 8,
     "priceFeed": "0xbF90A5D9B6EE9019028dbFc2a9E50056d5252894",
@@ -608,7 +603,6 @@ const tokens = [
     "name": "Synthetix Network Token"
   },
   {
-    "enabled": true,
     "id": "SOL",
     "decimals": 8,
     "priceFeed": "0x10C8264C0935b3B9870013e057f330Ff3e9C56dC",
@@ -616,7 +610,6 @@ const tokens = [
     "name": "Solana"
   },
   {
-    "enabled": true,
     "id": "SUSHI",
     "decimals": 8,
     "priceFeed": "0x49B0c695039243BBfEb8EcD054EB70061fd54aa0",
@@ -659,7 +652,6 @@ const tokens = [
     "name": "TrueUSD"
   },
   {
-    "enabled": true,
     "id": "UMA",
     "decimals": 8,
     "priceFeed": "0x33D9B1BAaDcF4b26ab6F8E83e9cb8a611B2B3956",
@@ -667,7 +659,6 @@ const tokens = [
     "name": "UMA"
   },
   {
-    "enabled": true,
     "id": "UNI",
     "decimals": 8,
     "priceFeed": "0xdf0Fb4e4F928d2dCB76f438575fDD8682386e13C",
@@ -675,7 +666,6 @@ const tokens = [
     "name": "UNICORN Token"
   },
   {
-    "enabled": true,
     "id": "USDC",
     "decimals": 8,
     "priceFeed": "0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7",
@@ -695,15 +685,6 @@ const tokens = [
     "priceFeed": "0xD78bc11ef3256e3CE9dC0DF0fa7be9E9afc07f95",
     "imageUrl": "VET.png",
     "name": "VeChain"
-  },
-  {
-    "enabled": true,
-    "id": "WBTC",
-    "decimals": 8,
-    "priceFeed": "0xDE31F8bFBD8c84b5360CFACCa3539B938dd78ae6",
-    "address": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
-    "imageUrl": "WBTC.png",
-    "name": "Wrapped Bitcoin"
   },
   {
     "id": "XAG",
