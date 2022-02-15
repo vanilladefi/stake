@@ -35,12 +35,13 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
               color: "$text",
             },
             display: "flex",
+            fontSize: "$sm",
             alignItems: "center",
           }}
         >
           {children}
-          <Box css={{ marginLeft: "$space$1", height: "24px" }}>
-            <ArrowCircleUpRight size={"24px"} />
+          <Box css={{ marginLeft: "$space$1", height: "20px" }}>
+            <ArrowCircleUpRight size={"20px"} />
           </Box>
         </Text>
       ) : (
@@ -189,7 +190,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               flexDirection: "row",
               alignItems: "baseline",
               justifyContent: "space-between",
-              mb: "$space$5",
+              mb: "$space$4",
             }}
           >
             <Heading>WALLET</Heading>
@@ -202,18 +203,21 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             css={{
               display: "flex",
               flexDirection: "row",
-              alignItems: "baseline",
+              alignItems: "center",
               justifyContent: "space-between",
-              mb: "$space$5",
-              pb: "$space$5",
-              borderBottom: "1px $extraMuted solid",
+              pb: "$space$4",
             }}
           >
-            <Text css={{ fontFamily: "$monospace", fontSize: "$xl" }}>
+            <Text
+              css={{
+                fontFamily: "$monospace",
+                fontSize: "$xl",
+              }}
+            >
               {truncatedWalletAddress}
             </Text>
             <Button
-              variant="primary"
+              variant="bordered"
               size="sm"
               css={{
                 borderRadius: "999px",
@@ -230,10 +234,62 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           <Box
             css={{
               display: "flex",
-              flexDirection: "column",
-              mb: "$space$5",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
               pb: "$space$5",
+              mb: "$space$5",
               borderBottom: "1px $extraMuted solid",
+            }}
+          >
+            {copied ? (
+              <Text
+                css={{
+                  color: "$green",
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  fontSize: "$sm",
+                }}
+                onClick={() => copyToClipboard(walletAddress)}
+              >
+                <Box css={{ marginRight: "$space$1", height: "20px" }}>
+                  <Check size={"20px"} style={{ color: "$primary" }} />
+                </Box>{" "}
+                Copied to clipboard
+              </Text>
+            ) : (
+              <Text
+                css={{
+                  color: "$primary",
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  fontSize: "$sm",
+                  "&:hover": {
+                    color: "$text",
+                  },
+                }}
+                onClick={() => copyToClipboard(walletAddress)}
+              >
+                <Box css={{ marginRight: "$space$1", height: "20px" }}>
+                  <Copy size={"20px"} style={{ color: "$primary" }} />
+                </Box>{" "}
+                Copy address
+              </Text>
+            )}
+
+            <TradeLink href={`https://etherscan.io/address/${walletAddress}`}>
+              View on Etherscan
+            </TradeLink>
+          </Box>
+
+          <Box
+            css={{
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <Box
@@ -277,57 +333,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 <Loader />
               )}
             </Box>
-          </Box>
-
-          <Box
-            css={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              mb: "$space$1",
-            }}
-          >
-            {copied ? (
-              <Text
-                css={{
-                  color: "$green",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-                onClick={() => copyToClipboard(walletAddress)}
-              >
-                <Box css={{ marginRight: "$space$1", height: "24px" }}>
-                  <Check size={"24px"} style={{ color: "$primary" }} />
-                </Box>{" "}
-                Copied to clipboard
-              </Text>
-            ) : (
-              <Text
-                css={{
-                  color: "$primary",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  "&:hover": {
-                    color: "$text",
-                  },
-                }}
-                onClick={() => copyToClipboard(walletAddress)}
-              >
-                <Box css={{ marginRight: "$space$1", height: "24px" }}>
-                  <Copy size={"24px"} style={{ color: "$primary" }} />
-                </Box>{" "}
-                Copy address
-              </Text>
-            )}
-
-            <TradeLink href={`https://etherscan.io/address/${walletAddress}`}>
-              View on Etherscan
-            </TradeLink>
           </Box>
         </Box>
 
