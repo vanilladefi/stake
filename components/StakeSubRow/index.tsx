@@ -78,13 +78,12 @@ const StakeSubRow: FC<SubRowProps> = ({
     }
 
     const token = tokens
-      // .filter((t) => t.enabled)
+      .filter((t) => t.enabled)
       .find((t) => t.id === row.original.id.split("/")[0])?.address;
 
     if (!token) {
-      // TODO Something better
       return showDialog("Invalid operation", {
-        body: "Token is not available to stake yet",
+        body: "Error: Token is not available to stake",
       });
     }
 
@@ -98,10 +97,13 @@ const StakeSubRow: FC<SubRowProps> = ({
       const contractAddress = isAddress(
         process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
       );
-      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer, optionalAddress: contractAddress || "" });
+      const tx = await sdk.modifyStake(stake, {
+        signerOrProvider: signer,
+        optionalAddress: contractAddress || "",
+      });
       const res = await tx.wait();
 
-      const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${res.transactionHash}`
+      const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${res.transactionHash}`;
 
       if (res.status === 1) {
         showDialog("Success", {
@@ -114,7 +116,10 @@ const StakeSubRow: FC<SubRowProps> = ({
       }
     } catch (error) {
       console.warn(error);
-      let body = (error as any)?.data?.message || "Something went wrong!";
+      let body = "Something went wrong!";
+      if ((error as any)?.code === 4001) {
+        body = "The request was rejected by the user";
+      }
       showDialog("Error", { body });
     }
     setStakePending(false);
@@ -128,13 +133,12 @@ const StakeSubRow: FC<SubRowProps> = ({
     }
 
     const token = tokens
-      // .filter((t) => t.enabled)
+      .filter((t) => t.enabled)
       .find((t) => t.id === row.original.id.split("/")[0])?.address;
 
     if (!token) {
-      // TODO Something better
-      return showDialog("Error", {
-        body: "Not allowed as of now!",
+      return showDialog("Invalid operation", {
+        body: "Error: Token is not available to stake",
       });
     }
     setStakePending(true);
@@ -144,20 +148,28 @@ const StakeSubRow: FC<SubRowProps> = ({
       const contractAddress = isAddress(
         process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
       );
-      const tx = await sdk.modifyStake(stake, { signerOrProvider: signer, optionalAddress: contractAddress || "" });
+      const tx = await sdk.modifyStake(stake, {
+        signerOrProvider: signer,
+        optionalAddress: contractAddress || "",
+      });
       const res = await tx.wait();
 
       if (res.status === 1)
         showDialog("Success", {
-          body: "Stake position closed",
+          body: "Stake position closed [LINK]",
         });
       else
         showDialog("Error", {
           body: "Transaction failed [LINK]",
         });
     } catch (error) {
+      console.warn(error);
+      let body = "Something went wrong!";
+      if ((error as any)?.code === 4001) {
+        body = "The request was rejected by the user";
+      }
       showDialog("Error", {
-        body: error as any,
+        body,
       });
     }
 

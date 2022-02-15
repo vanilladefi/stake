@@ -4,12 +4,9 @@ import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { state, useSnapshot } from "../../state";
-import {
-  connectWallet,
-  disconnect
-} from "../../state/actions/wallet";
+import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
@@ -67,9 +64,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const [juiceAmount, setJuiceAmount] = useState("");
   const [txDisabled, setTxDisabled] = useState<false | TxTypes>(false);
   const [message, setMessage] = useState({
-    value: null as string | null,
-    error: false,
-  });
+    value: null,
+    error: undefined,
+  } as { value: string | null; error?: boolean });
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard.writeText(text).then(
@@ -83,55 +80,67 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     );
   }, []);
 
+  useEffect(() => {
+    setMessage({ value: null });
+  }, [walletOpen]);
+
   const handleTx = useCallback(
     async (type: TxTypes) => {
       if (txDisabled) return;
       if (!signer) return connectWallet();
 
       const _disabled = !(juiceAmount && +juiceAmount);
-      if (!_disabled && !txDisabled) {
-        console.log("is not disabled")
-        setTxDisabled(type)
-        setMessage({ value: null, error: false });
+      if (_disabled) {
+        setMessage({ value: "Please enter some amount!" });
+        return;
+      }
 
-        try {
-          const amount = parseJuice(juiceAmount).toString();
-          const contractAddress = isAddress(
-            process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
-          );
-          const contract = getJuiceStakingContract({
-            signerOrProvider: signer,
-            optionalAddress:
-              contractAddress || undefined,
-          });
-          if (!contract) throw Error("Cannot access contract ");
+      setTxDisabled(type);
+      setMessage({ value: null });
 
-          let tx: ContractTransaction;
-          if (type === TxTypes.deposit) {
-            tx = await contract.deposit(amount);
-          } else {
-            tx = await contract.withdraw(amount);
-          }
+      try {
+        const amount = parseJuice(juiceAmount).toString();
+        const contractAddress = isAddress(
+          process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+        );
+        const contract = getJuiceStakingContract({
+          signerOrProvider: signer,
+          optionalAddress: contractAddress || undefined,
+        });
+        if (!contract) throw Error("Cannot access contract ");
+
+        let tx: ContractTransaction;
+        if (type === TxTypes.deposit) {
+          tx = await contract.deposit(amount);
+        } else {
+          tx = await contract.withdraw(amount);
+        }
+        setMessage({
+          value: "Transaction pending...",
+        });
+        setJuiceAmount("");
+
+        const rec = await tx.wait();
+        if (rec.status === 1) {
           setMessage({
-            value: "Transaction pending...",
-            error: false,
+            value: "Transaction successful [LINK]",
           });
-          setJuiceAmount("");
-
-          const rec = await tx.wait();
-          if (rec.status === 1) {
-            setMessage({
-              value: "Transaction successful",
-              error: false,
-            });
-          } else throw Error("reciept.status == 0"); //TODO we can do better
-        } catch (error) {
-          console.warn("Error depositing!, ", error);
+        } else {
           setMessage({
-            value: "Tansaction failed!",
+            value: "Transaction failed! [LINK]",
             error: true,
           });
         }
+      } catch (error) {
+        console.warn("Error depositing!, ", error);
+        let msg = "Some error occured, try again later!";
+        if ((error as any)?.code === 4001) {
+          msg = "The request was rejected by the user";
+        }
+        setMessage({
+          value: msg,
+          error: true,
+        });
       }
       setTxDisabled(false);
     },
@@ -356,25 +365,32 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               variant="bordered"
             ></Input>
             <Box css={{ display: "flex", flexDirection: "row", mt: "1px" }}>
-              
-                <>
-                  <Button
-                    disabled={txDisabled === TxTypes.withdraw}
-                    onClick={() => handleTx(TxTypes.withdraw)}
-                    variant="bordered"
-                    css={{ display: "flex", flex: "1 0" }}
-                  >
-                    {txDisabled === TxTypes.withdraw ? <Loader css={{ height: "$1" }} /> : 'Withdraw'}
-                  </Button>
-                  <Button
-                    disabled={txDisabled === TxTypes.deposit}
-                    onClick={() => handleTx(TxTypes.deposit)}
-                    variant="bordered"
-                    css={{ display: "flex", flex: "1 0" }}
-                  >
-                    {txDisabled === TxTypes.deposit ? <Loader css={{ height: "$1" }} /> : 'Deposit'}
-                  </Button>
-                </>
+              <>
+                <Button
+                  disabled={txDisabled === TxTypes.withdraw}
+                  onClick={() => handleTx(TxTypes.withdraw)}
+                  variant="bordered"
+                  css={{ display: "flex", flex: "1 0" }}
+                >
+                  {txDisabled === TxTypes.withdraw ? (
+                    <Loader css={{ height: "$1" }} />
+                  ) : (
+                    "Withdraw"
+                  )}
+                </Button>
+                <Button
+                  disabled={txDisabled === TxTypes.deposit}
+                  onClick={() => handleTx(TxTypes.deposit)}
+                  variant="bordered"
+                  css={{ display: "flex", flex: "1 0" }}
+                >
+                  {txDisabled === TxTypes.deposit ? (
+                    <Loader css={{ height: "$1" }} />
+                  ) : (
+                    "Deposit"
+                  )}
+                </Button>
+              </>
             </Box>
             <Text
               size="small"

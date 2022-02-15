@@ -18,16 +18,11 @@ const AlertDialogDemo = () => {
       open={!!alert}
       onOpenChange={(open) => !open && (state.alert = null)}
     >
-      {/* <AlertDialogPortal container={container}> */}
       <AlertDialogContent>
         <AlertDialogTitle>{alert.title}</AlertDialogTitle>
         {alert.body && (
           <AlertDialogDescription>{alert.body}</AlertDialogDescription>
         )}
-        {/* TODO: Support passing child components as props to alert dialog to support buttons etc */}
-        {/* {alert.customBody && (
-          <AlertDialogDescription><alert.customBody /></AlertDialogDescription>
-        )} */}
         <AlertDialogCancel as="div">
           <Button
             onClick={() => {
@@ -40,7 +35,6 @@ const AlertDialogDemo = () => {
           </Button>
         </AlertDialogCancel>
       </AlertDialogContent>
-      {/* </AlertDialogPortal> */}
     </AlertDialog>
   );
 };

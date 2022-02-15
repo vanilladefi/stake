@@ -197,12 +197,12 @@ export const MyStakes = () => {
       );
     },
     []
-    );
-    
-    const [stakes, setStakes] = useState<any[] | null>(null);
-    const [stakesLoading, setStakesLoading] = useState(true);
-    
-    const { signer, polygonProvider, walletAddress } = useSnapshot(state);
+  );
+
+  const [stakes, setStakes] = useState<any[] | null>(null);
+  const [stakesLoading, setStakesLoading] = useState(true);
+
+  const { signer, polygonProvider, walletAddress } = useSnapshot(state);
 
   const getStakes = useCallback(async () => {
     if (!walletAddress) return;
@@ -218,15 +218,14 @@ export const MyStakes = () => {
         logoColor: "",
       }));
 
-      const contractAddress = isAddress(
-        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
-      );
-
-    const res = await getAllStakes(
-      walletAddress,
-      _tokens,
-      { signerOrProvider: signer || polygonProvider as any, optionalAddress: contractAddress || "" },
+    const contractAddress = isAddress(
+      process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
     );
+
+    const res = await getAllStakes(walletAddress, _tokens, {
+      signerOrProvider: signer || (polygonProvider as any),
+      optionalAddress: contractAddress || "",
+    });
 
     let stakes: any[] = [];
     _tokens.forEach((token, idx) => {
@@ -309,7 +308,7 @@ export const MyStakes = () => {
           Manage funds
         </Button>
       </Flex>
-      {tableData ? (
+      {tableData || (!tableData && stakesLoading) ? (
         <Box
           css={{
             overflowX: "auto",
@@ -322,7 +321,8 @@ export const MyStakes = () => {
         >
           <Table
             columns={columns}
-            data={!stakesLoading ? tableData : []}
+            isLoading={stakesLoading}
+            data={tableData || []}
             renderRowSubComponent={renderRowSubComponent}
           />
         </Box>
