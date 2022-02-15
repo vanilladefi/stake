@@ -52,7 +52,7 @@ export const correctNetwork =
           decimals: 18,
         },
         rpcUrls: ["https://rpc-mumbai.maticvigil.com"],
-        blockExplorerUrls: ["https://polygonscan.com/"],
+        blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
       }
     : {
         chainId: getHexaDecimalChainId(networks.mainnet.chainId),
