@@ -1,14 +1,11 @@
 import type * as Stitches from "@stitches/react";
-import * as sdk from '@vanilladefi/sdk';
-import { state, useSnapshot } from '../../state';
-import { connectToCachedProvider, connectWallet } from "../../state/actions/wallet";
+import { state, useSnapshot } from "../../state";
+import { connectWallet } from "../../state/actions/wallet";
 import Box from "../Box";
 import Loader from "../Loader";
 
 const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  connectToCachedProvider()
-  
-  const { walletAddress, balances, walletOpen } = useSnapshot(state)
+  const { walletAddress, balances, walletOpen } = useSnapshot(state);
 
   const buttonStyles = {
     display: "flex",
@@ -22,29 +19,32 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     py: "$4",
     px: "$3",
     ...css,
-  }
+  };
 
   return (
-    <Box css={{ display: "flex", cursor: "pointer", ...css }} onClick={() => {
-      if (walletAddress) {
-        state.walletOpen = !walletOpen
-      }
-    }}>{
-      walletAddress ? (<>
-      <Box
-        css={buttonStyles}
-      >
-        {balances[sdk.vnl.address] ? (`${balances[sdk.vnl.address]} VNL`) : <Loader />}
-      </Box>
-      <Box
-        css={buttonStyles}
-      >
-        {balances['0'] ? (`${balances['0']} MATIC`) : <Loader />}
-      </Box></>
-    ) : (<Box css={buttonStyles} onClick={() => connectWallet()}>
-      Connect
-    </Box>)
-} </Box>
+    <Box
+      css={{ display: "flex", cursor: "pointer", ...css }}
+      onClick={() => {
+        if (walletAddress) {
+          state.walletOpen = !walletOpen;
+        }
+      }}
+    >
+      {walletAddress ? (
+        <>
+          <Box css={buttonStyles}>
+            {balances.vnl ? `${balances.vnl} VNL` : <Loader />}
+          </Box>
+          <Box css={buttonStyles}>
+            {balances.matic ? `${balances.matic} MATIC` : <Loader />}
+          </Box>
+        </>
+      ) : (
+        <Box css={buttonStyles} onClick={() => connectWallet()}>
+          Connect
+        </Box>
+      )}{" "}
+    </Box>
   );
 };
 

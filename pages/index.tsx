@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import {
-  ArrowRight,
   CommunityIcon,
   Diamond,
   Divider as _Divider,
@@ -16,12 +15,15 @@ import Box from "../components/Box";
 import Container from "../components/Container";
 import Flex from "../components/Flex";
 import Heading from "../components/Heading";
-import Link from "../components/Link";
 import Text from "../components/Text";
 import EmailForm from "../components/EmailForm";
 import { styled } from "../stitches.config";
+import { ArrowLink } from "../components/ArrowLink";
 
-const ActiveWallet = dynamic(() => import("../components/Wallet/ActiveWallet"), { ssr: false });
+const ActiveWallet = dynamic(
+  () => import("../components/Wallet/ActiveWallet"),
+  { ssr: false }
+);
 const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
   ssr: false,
 });
@@ -41,54 +43,6 @@ const StyledDiamond = styled(Diamond, {
     width: "300px",
   },
 });
-
-const StyledArrow = styled(ArrowRight, {
-  width: "40px",
-  height: "40px",
-  padding: "5px",
-  boxSizing: "border-box",
-});
-
-export const ArrowLink = ({
-  text = "",
-  href = "#",
-  onClick,
-}: {
-  text?: string;
-  href?: string;
-  onClick?: () => void;
-}) => (
-  <Link
-    css={{
-      textDecoration: "underline",
-      textUnderlineOffset: "2px",
-      textDecorationColor: "$primary",
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      mb: "$1",
-    }}
-    as="a"
-    href={href}
-    onClick={onClick}
-  >
-    <StyledArrow />
-    <Text
-      css={{
-        color: "$primary",
-        fontSize: "$xl",
-        pb: "5px",
-        ml: "$5",
-        "@md": {
-          ml: "$5",
-          fontSize: "$xxl",
-        },
-      }}
-    >
-      {text}
-    </Text>
-  </Link>
-);
 
 const SectionHeading = ({
   text = "",
@@ -119,7 +73,13 @@ const SectionHeading = ({
   </Heading>
 );
 
-const SectionDescription = ({ text = "", muted = false }: { text?: string; muted?: boolean }) => (
+const SectionDescription = ({
+  text = "",
+  muted = false,
+}: {
+  text?: string;
+  muted?: boolean;
+}) => (
   <Text
     as="div"
     css={{
@@ -223,7 +183,9 @@ const Home: NextPage = () => {
         </Flex>
       </Container>
 
-      <Flex css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}>
+      <Flex
+        css={{ py: "$10", width: "100%", borderTop: "1px solid $extraMuted" }}
+      >
         <Container>
           <Flex
             css={{
@@ -318,11 +280,15 @@ const Home: NextPage = () => {
                 <StyledOne css={{ mr: "$5" }} />
                 <SectionDescription text="Juicers create investment portfolios." />
               </Flex>
-              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
+              <Flex
+                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
+              >
                 <StyledTwo css={{ mr: "$5" }} />
                 <SectionDescription text="Vanilla Pool invests in line with the best performing Juicers." />
               </Flex>
-              <Flex css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}>
+              <Flex
+                css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
+              >
                 <StyledThree css={{ mr: "$5" }} />
                 <SectionDescription text="VanillaDAO channels a share of returns back to Juicers." />
               </Flex>

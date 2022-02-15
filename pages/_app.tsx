@@ -3,16 +3,21 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { Provider } from "urql";
-
-import Navigation from "../components/Navigation";
-import Footer from "../components/Footer";
 import Box from "../components/Box";
+import Footer from "../components/Footer";
+import Navigation from "../components/Navigation";
+import useOrigin from "../lib/hooks/useOrigin";
+import { connectWallet, ensureCorrectChain, initWalletSubscriptions } from "../state/actions/wallet";
 import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
 import client, { ssrCache } from "../urql";
-import useOrigin from "../lib/hooks/useOrigin";
 
+
+const AlertDialog = dynamic(() => import("../components/AlertDialog"), {
+  ssr: false,
+});
 const ActiveWallet = dynamic(
   () => import("../components/Wallet/ActiveWallet"),
   { ssr: false }
@@ -28,6 +33,21 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const origin = useOrigin();
   const shareImg = "/images/share-image.png";
+
+  // One time initializations
+  useEffect(() => {
+    initWalletSubscriptions();
+    ensureCorrectChain();
+    
+    window.ethereum.on('accountsChanged', connectWallet);
+    window.ethereum.on('chainChanged', ensureCorrectChain);
+
+    return () => {
+      window.ethereum.removeListener('accountsChanged', connectWallet);
+      window.ethereum.removeListener('chainChanged', ensureCorrectChain);
+    }
+  }, []);
+
   return (
     <>
       <Head>
@@ -117,6 +137,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         >
           <Box>
+            <AlertDialog />
             <WalletModal />
             <ActiveWallet />
             <Navigation />

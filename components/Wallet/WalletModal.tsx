@@ -3,14 +3,11 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import Web3Modal, { IProviderOptions } from "web3modal";
-import { rpcUrl } from "../../lib/config";
+import { polygonRpcUrl } from "../../lib/config";
 import { ref, state } from "../../state";
-import { persistWalletAddress } from "../../state/actions/wallet";
 import { darkTheme, theme } from "../../stitches.config";
 
-const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  persistWalletAddress()
-  
+const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {  
   const { resolvedTheme } = useTheme()
 
   useEffect(() => {
@@ -19,7 +16,8 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         package: WalletConnectProvider,
         options: {
           rpc: {
-            137: rpcUrl,
+            137: polygonRpcUrl,
+            80001: polygonRpcUrl,
           },
         },
       }

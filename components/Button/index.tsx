@@ -23,16 +23,24 @@ const StyledButton = styled(
     "&:disabled": {
       opacity: 0.5, // maybe some better design
       cursor: "auto",
+      "&:hover": {
+        backgroundColor: "unset",
+      },
     },
     "&:focus-visible": {
       outline: "$outline auto 1px",
-      outlineOffset: '1px'
+      outlineOffset: "1px",
     },
     variants: {
       muted: {
         true: {
           opacity: 0.5,
         },
+      },
+      fluid: {
+        true: {
+          width: '100%'
+        }
       },
       variant: {
         default: {
