@@ -89,7 +89,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       if (!signer) return connectWallet();
 
       const _disabled = !(juiceAmount && +juiceAmount);
-      if (_disabled && !txDisabled) {
+      if (!_disabled && !txDisabled) {
+        console.log("is not disabled")
         setTxDisabled(type)
         setMessage({ value: null, error: false });
 
