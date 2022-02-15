@@ -1,3 +1,4 @@
+import { BlockForkEvent } from "@ethersproject/abstract-provider";
 import type * as Stitches from "@stitches/react";
 import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
@@ -355,46 +356,80 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           </Box>
 
           <Box
-            css={{ display: "flex", flexDirection: "column", mb: "$space$5" }}
+            css={{
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+              mb: "$space$5",
+            }}
           >
-            <Input
-              type="number"
-              value={juiceAmount}
-              onChange={(e) => setJuiceAmount(e.target.value)}
-              size="xl"
-              variant="bordered"
-            ></Input>
+            {Number(unstakedBalance) <= 0 && Number(balances.juice) <= 0 ? (
+              <Text muted>
+                You need to get some $JUICE first, before you can add it to your
+                staking account and start making stakes.
+              </Text>
+            ) : (
+              <Box
+                css={{
+                  "&::after": {
+                    display: "inline-block",
+                    content: "JUICE",
+                    color: "$muted",
+                    position: "absolute",
+                    top: 0,
+                    lineHeight: "3.5rem",
+                    right: "1rem",
+                  },
+                }}
+              >
+                <Input
+                  type="number"
+                  value={juiceAmount}
+                  onChange={(e) => setJuiceAmount(e.target.value)}
+                  size="xl"
+                  placeholder="0.0"
+                  css={{
+                    padding: "1rem 1.5rem",
+                  }}
+                  variant="bordered"
+                ></Input>
+              </Box>
+            )}
             <Box css={{ display: "flex", flexDirection: "row", mt: "1px" }}>
               <>
-                <Button
-                  disabled={txDisabled === TxTypes.withdraw}
-                  onClick={() => handleTx(TxTypes.withdraw)}
-                  variant="bordered"
-                  css={{ display: "flex", flex: "1 0" }}
-                >
-                  {txDisabled === TxTypes.withdraw ? (
-                    <Loader css={{ height: "$1" }} />
-                  ) : (
-                    "Withdraw"
-                  )}
-                </Button>
-                <Button
-                  disabled={txDisabled === TxTypes.deposit}
-                  onClick={() => handleTx(TxTypes.deposit)}
-                  variant="bordered"
-                  css={{ display: "flex", flex: "1 0" }}
-                >
-                  {txDisabled === TxTypes.deposit ? (
-                    <Loader css={{ height: "$1" }} />
-                  ) : (
-                    "Deposit"
-                  )}
-                </Button>
+                {Number(unstakedBalance) > 0 && (
+                  <Button
+                    disabled={txDisabled === TxTypes.withdraw}
+                    onClick={() => handleTx(TxTypes.withdraw)}
+                    variant="bordered"
+                    css={{ display: "flex", fontSize: "$sm", flex: "1 0" }}
+                  >
+                    {txDisabled === TxTypes.withdraw ? (
+                      <Loader css={{ height: "$1" }} />
+                    ) : (
+                      `Withdraw ${juiceAmount} JUICE`
+                    )}
+                  </Button>
+                )}
+                {Number(balances.juice) > 0 && (
+                  <Button
+                    disabled={txDisabled === TxTypes.deposit}
+                    onClick={() => handleTx(TxTypes.deposit)}
+                    variant="bordered"
+                    css={{ display: "flex", fontSize: "$sm", flex: "1 0" }}
+                  >
+                    {txDisabled === TxTypes.deposit ? (
+                      <Loader css={{ height: "$1" }} />
+                    ) : (
+                      `Deposit ${juiceAmount} JUICE`
+                    )}
+                  </Button>
+                )}
               </>
             </Box>
             <Text
               size="small"
-              css={{ mt: "$1", color: message.error ? "$red" : "$primary" }}
+              css={{ mt: "$4", color: message.error ? "$red" : "$primary" }}
             >
               {message.value}
             </Text>

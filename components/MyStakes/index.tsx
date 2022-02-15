@@ -351,7 +351,7 @@ export const MyStakes = () => {
                   },
                 }}
               >
-                <a>deposit $JUICE to your staking balance</a>
+                deposit $JUICE to your staking balance
               </Link>
             </Text>
           </Flex>
