@@ -1,4 +1,3 @@
-import { BlockForkEvent } from "@ethersproject/abstract-provider";
 import type * as Stitches from "@stitches/react";
 import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
