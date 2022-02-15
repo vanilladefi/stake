@@ -205,7 +205,7 @@ export const MyStakes = () => {
   const { signer, polygonProvider, walletAddress } = useSnapshot(state);
 
   const getStakes = useCallback(async () => {
-    if (!walletAddress) return;
+    if (!walletAddress || !signer) return;
 
     const _tokens: Token[] = tokens
       .filter((t) => t.enabled && t.address)

@@ -16,6 +16,8 @@ export const connectWallet = async () => {
     const polygonProvider = await modal?.connect();
     const web3Provider = new providers.Web3Provider(polygonProvider);
     const signer = ref(web3Provider.getSigner());
+    const isCorrectChain = ensureCorrectChain(true)
+    if (!isCorrectChain) return
 
     state.signer = signer;
     state.walletAddress = await signer?.getAddress();
@@ -42,16 +44,26 @@ export const disconnect = (soft?: boolean) => {
 };
 
 // TODO: Instead of prompting user to manually check their network, offer a button that changes/installs the used network to the user's wallet.
-export const ensureCorrectChain = async () => {
+export const ensureCorrectChain = (force?: true): boolean => {
+  const abort = () => {
+    disconnect()
+    showDialog("Wrong network", {
+      body: `Your wallet seems to have the wrong network enabled. Please check that you're using ${correctNetwork.chainName}.`
+    });
+  }
   try {
     const { signer, walletAddress, modal } = snapshot(state)
-    if (window.ethereum?.chainId !== correctNetwork.chainId && signer && walletAddress && modal?.cachedProvider === 'injected') {
-      showDialog("Wrong network", {
-        body: `Your wallet seems to have the wrong network enabled. Please check that you're using ${correctNetwork.chainName}.`
-      });
-    }
+    if (window.ethereum?.chainId !== correctNetwork.chainId && modal?.cachedProvider === 'injected') {
+      if ((signer && walletAddress) || force) {
+        abort()
+      } 
+
+      return false
+    } 
+    return true
   } catch (_e) {
     console.error(_e);
+    return false
   }
 };
 
