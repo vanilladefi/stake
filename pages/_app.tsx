@@ -9,11 +9,15 @@ import Box from "../components/Box";
 import Footer from "../components/Footer";
 import Navigation from "../components/Navigation";
 import useOrigin from "../lib/hooks/useOrigin";
-import { connectWallet, ensureCorrectChain, initWalletSubscriptions } from "../state/actions/wallet";
+import { state, useSnapshot } from "../state";
+import {
+  connectWallet,
+  ensureCorrectChain,
+  initWalletSubscriptions,
+} from "../state/actions/wallet";
 import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
 import client, { ssrCache } from "../urql";
-
 
 const AlertDialog = dynamic(() => import("../components/AlertDialog"), {
   ssr: false,
@@ -37,16 +41,22 @@ function MyApp({ Component, pageProps }: AppProps) {
   // One time initializations
   useEffect(() => {
     initWalletSubscriptions();
+  }, []);
+
+  const { signer } = useSnapshot(state);
+  useEffect(() => {
+    if (!signer || !window.ethereum) return;
+
     ensureCorrectChain();
-    
-    window.ethereum.on('accountsChanged', connectWallet);
-    window.ethereum.on('chainChanged', ensureCorrectChain);
+
+    window.ethereum.on("accountsChanged", connectWallet);
+    window.ethereum.on("chainChanged", ensureCorrectChain);
 
     return () => {
-      window.ethereum.removeListener('accountsChanged', connectWallet);
-      window.ethereum.removeListener('chainChanged', ensureCorrectChain);
-    }
-  }, []);
+      window.ethereum.removeListener("accountsChanged", connectWallet);
+      window.ethereum.removeListener("chainChanged", ensureCorrectChain);
+    };
+  }, [signer]);
 
   return (
     <>
