@@ -1,14 +1,14 @@
 import { isAddress } from "@vanilladefi/core-sdk";
 import {
   getBasicWalletDetails,
-  getJuiceStakingContract
+  getJuiceStakingContract,
 } from "@vanilladefi/stake-sdk";
 import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
 import { persistedKeys, ref, state, subscribeKey } from "..";
 import { correctNetwork } from "../../lib/config";
 import { formatJuice } from "../../utils/helpers";
-import { closeDialog, showDialog } from "./dialog";
+import { showDialog } from "./dialog";
 
 export const connectWallet = async () => {
   const { modal } = snapshot(state);
@@ -16,8 +16,8 @@ export const connectWallet = async () => {
     const polygonProvider = await modal?.connect();
     const web3Provider = new providers.Web3Provider(polygonProvider);
     const signer = ref(web3Provider.getSigner());
-    const isCorrectChain = ensureCorrectChain(true)
-    if (!isCorrectChain) return
+    const isCorrectChain = ensureCorrectChain(true);
+    if (!isCorrectChain) return;
 
     state.signer = signer;
     state.walletAddress = await signer?.getAddress();
@@ -43,38 +43,46 @@ export const disconnect = (soft?: boolean) => {
   state.unstakedBalance = null;
 };
 
-// TODO: Instead of prompting user to manually check their network, offer a button that changes/installs the used network to the user's wallet.
 export const ensureCorrectChain = (force?: true): boolean => {
   const abort = () => {
-    disconnect()
+    disconnect();
     showDialog("Wrong network", {
-      body: `Your wallet seems to have the wrong network enabled. Please check that you're using ${correctNetwork.chainName}.`
+      body: `Your wallet seems to have the wrong network enabled. You will need to switch to ${correctNetwork.chainName}.`,
+      onConfirm: async () => {
+        await switchToCorrectNetwork();
+        await connectWallet()
+      },
+      confirmText: 'Switch',
+      cancelText: 'Cancel'
     });
-  }
+  };
   try {
-    const { signer, walletAddress, modal } = snapshot(state)
-    if (window.ethereum?.chainId !== correctNetwork.chainId && modal?.cachedProvider === 'injected') {
+    const { signer, walletAddress, modal } = snapshot(state);
+    if (
+      window.ethereum?.chainId !== correctNetwork.chainId &&
+      modal?.cachedProvider === "injected"
+    ) {
       if ((signer && walletAddress) || force) {
-        abort()
-      } 
+        abort();
+      }
 
-      return false
-    } 
-    return true
+      return false;
+    }
+    return true;
   } catch (_e) {
     console.error(_e);
-    return false
+    return false;
   }
 };
 
 export const switchToCorrectNetwork = async () => {
+  if (!window.ethereum) return;
+
   try {
     await window.ethereum.request({
       method: "wallet_addEthereumChain",
       params: [correctNetwork],
     });
-    await connectWallet();
-    closeDialog();
   } catch (_e) {
     console.error(_e);
   }

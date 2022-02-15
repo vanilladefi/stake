@@ -61,7 +61,7 @@ const StyledTitle = styled(AlertDialogPrimitive.Title, {
 });
 
 const StyledDescription = styled(AlertDialogPrimitive.Description, {
-  wordBreak: 'break-all',
+  wordBreak: 'break-word',
   marginBottom: 20,
   px: "$5",
   py: "$2",
