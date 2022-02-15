@@ -182,6 +182,20 @@ const StakeSubRow: FC<SubRowProps> = ({
         flex: 1,
         boxShadow: "inset 0px 0px 0px 1px $colors$extraMuted",
         background: "$background",
+        position: "relative",
+        "&::before": {
+          display: "block",
+          content: "",
+          width: "10px",
+          height: "10px",
+          borderTop: "1px solid $colors$extraMuted",
+          borderLeft: "1px solid $colors$extraMuted",
+          position: "absolute",
+          top: "-5px",
+          transform: "rotate(45deg)",
+          backgroundColor: "$background",
+          left: "1.55rem",
+        },
       }}
     >
       <Flex
@@ -196,7 +210,7 @@ const StakeSubRow: FC<SubRowProps> = ({
           disabled={stakePending}
           size="lg"
           type="number"
-          placeholder="100"
+          placeholder="0.0"
           value={stakeAmount}
           onChange={(e) => setStakeAmount(e.target.value)}
           css={{ width: "200px", textAlign: "right", mx: "$3" }}

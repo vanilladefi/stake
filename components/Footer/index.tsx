@@ -112,11 +112,15 @@ const Footer = () => {
               },
             }}
           >
-            <EtherScanLink href="/">
+            <EtherScanLink href="https://etherscan.io/token/0xbf900809f4C73e5a3476eb183d8b06a27e61F8E5">
               $VNL ERC-20 Contract on Etherscan
             </EtherScanLink>
-            <EtherScanLink href="/">Vanilla Router on Etherscan</EtherScanLink>
-            <EtherScanLink href="/">VanillaDAO on Etherscan</EtherScanLink>
+            <EtherScanLink href="https://etherscan.io/address/0x72C8B3aA6eD2fF68022691ecD21AEb1517CfAEa6">
+              Vanilla Router on Etherscan
+            </EtherScanLink>
+            <EtherScanLink href="https://etherscan.io/address/0xa135f339B5acd1f4eCB1C6eEd69a31482f878545">
+              VanillaDAO on Etherscan
+            </EtherScanLink>
           </Stack>
           <Stack
             css={{
@@ -131,9 +135,6 @@ const Footer = () => {
               },
             }}
           >
-            <RegularLink css={{ justifyContent: "flex-end" }} href="/">
-              Bug bounty
-            </RegularLink>
             <RegularLink css={{ justifyContent: "flex-end" }} href="/">
               Terms of Use
             </RegularLink>
@@ -177,11 +178,14 @@ const Footer = () => {
               </Flex>
               Discord
             </RegularLink>
-            <RegularLink href="/" css={{ mr: "$3" }}>
+            <RegularLink
+              href="https://community.vanilladefi.com/"
+              css={{ mr: "$3" }}
+            >
               <Flex color="text" css={{ mr: "$2" }}>
                 <Notebook size="24px" weight="fill" />
               </Flex>
-              Blog
+              Forum
             </RegularLink>
             <RegularLink href="https://t.me/vanilladefi" css={{ mr: "$3" }}>
               <Flex color="text" css={{ mr: "$2" }}>

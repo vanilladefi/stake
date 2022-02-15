@@ -177,8 +177,11 @@ const Home: NextPage = () => {
               },
             }}
           >
-            <ArrowLink text="Stake $JUICE to earn rewards" />
-            <ArrowLink text="Invest in Vanilla Pool" />
+            <ArrowLink href="/stake" text="Stake $JUICE to earn rewards" />
+            <div style={{ opacity: 0.2 }}>
+              {" "}
+              <ArrowLink text="Invest in Vanilla Pool" />
+            </div>
           </Flex>
         </Flex>
       </Container>
@@ -206,7 +209,7 @@ const Home: NextPage = () => {
                 },
               }}
             >
-              <SectionHeading text="GET INFORMED, win $JUICE" />
+              <SectionHeading text="Stay informed, get $JUICE" />
               {/* <Divider /> */}
               <SectionDescription
                 muted
@@ -278,7 +281,9 @@ const Home: NextPage = () => {
                 }}
               >
                 <StyledOne css={{ mr: "$5" }} />
-                <SectionDescription text="Juicers create investment portfolios." />
+                <SectionDescription
+                  text={'"Juicers" create investment portfolios.'}
+                />
               </Flex>
               <Flex
                 css={{ flexDirection: "row", alignItems: "center", mb: "$4" }}
@@ -301,7 +306,7 @@ const Home: NextPage = () => {
                   },
                 }}
               >
-                <ArrowLink text="Read the FAQ" />
+                <ArrowLink href="/litepaper" text="Read the Litepaper" />
               </Box>
             </Flex>
             <Flex
@@ -381,8 +386,7 @@ const Home: NextPage = () => {
                 </Box>
               </Flex>
               <Flex css={{ flexDirection: "column" }}>
-                <ArrowLink text="Read more" />
-                <ArrowLink text="Start staking" />
+                <ArrowLink href="/stake" text="Start staking" />
               </Flex>
             </Flex>
           </Container>
@@ -435,8 +439,10 @@ const Home: NextPage = () => {
               </Flex>
 
               <Flex css={{ flexDirection: "column" }}>
-                <ArrowLink text="Read more" />
-                <ArrowLink text="Invest in pool" />
+                <div style={{ opacity: 0.3 }}>
+                  <ArrowLink text="Read more" />
+                  <ArrowLink text="Invest in pool" />
+                </div>
               </Flex>
             </Flex>
           </Container>
@@ -498,7 +504,7 @@ const Home: NextPage = () => {
               >
                 <SectionHeading text="JOIN" muted topSegment />
                 <SectionHeading text="THE COMMUNITY" />
-                <SectionDescription text="$VNL holders direct the development through VanillaDAO" />
+                <SectionDescription text="$VNL holders direct the development of Vanilla via VanillaDAO" />
               </Flex>
             </Box>
             <Flex
@@ -514,8 +520,14 @@ const Home: NextPage = () => {
                 },
               }}
             >
-              <ArrowLink text="Join the discussion" />
-              <ArrowLink text="Read about VanillaDAO" />
+              <ArrowLink
+                href="https://discord.gg/CnPuf2cGQ3"
+                text="Join the discussion"
+              />
+              <ArrowLink
+                href="/litepaper#2-3-vanilladao"
+                text="Read about VanillaDAO"
+              />
             </Flex>
           </Flex>
         </Container>

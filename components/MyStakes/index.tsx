@@ -329,23 +329,31 @@ export const MyStakes = () => {
       ) : (
         <Container>
           <Flex column align="center" css={{ mb: "$8" }}>
-            <Text muted>
-              Start by adding JUICE and then making your first stake.
-            </Text>
-            <Link
-              href="/faq"
-              as="a"
+            <Text
               css={{
-                color: "$primary",
-                // fontSize: "$lg",
+                fontSize: "$xl",
                 p: "$2 0",
-                "@md": {
-                  // fontSize: "$xl",
-                },
               }}
+              muted
             >
-              View FAQ for more info
-            </Link>
+              To start staking,{" "}
+              <Link
+                onClick={() => (state.walletOpen = true)}
+                as="a"
+                css={{
+                  color: "$primary",
+                  display: "inline",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+
+                  "@md": {
+                    // fontSize: "$xl",
+                  },
+                }}
+              >
+                <a>deposit $JUICE to your staking balance</a>
+              </Link>
+            </Text>
           </Flex>
         </Container>
       )}
