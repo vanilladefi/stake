@@ -3,6 +3,7 @@ import * as sdk from "@vanilladefi/stake-sdk";
 import Image from "next/image";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
+import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
 import { correctNetwork } from "../../lib/config";
 import { state } from "../../state";
@@ -82,8 +83,11 @@ const StakeSubRow: FC<SubRowProps> = ({
       .find((t) => t.id === row.original.id.split("/")[0])?.address;
 
     if (!token) {
-      return showDialog("Invalid operation", {
+      /*return showDialog("Invalid operation", {
         body: "Error: Token is not available to stake",
+      });*/
+      toast.error("Error: Token is not available to stake", {
+        position: toast.POSITION.TOP_CENTER,
       });
     }
 
@@ -106,12 +110,18 @@ const StakeSubRow: FC<SubRowProps> = ({
       const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${res.transactionHash}`;
 
       if (res.status === 1) {
-        showDialog("Success", {
+        /*showDialog("Success", {
           body: `Transaction was successful, ${transactionLink}`, // TODO: Support custom React components in the dialog
+        });*/
+        toast.success(`Transaction was successful, ${transactionLink}`, {
+          position: toast.POSITION.BOTTOM_CENTER,
         });
       } else {
-        showDialog("Error", {
+        /*showDialog("Error", {
           body: `Transaction failed, ${transactionLink}`,
+        });*/
+        toast.error(`Transaction failed, ${transactionLink}`, {
+          position: toast.POSITION.BOTTOM_CENTER,
         });
       }
     } catch (error) {
@@ -120,7 +130,10 @@ const StakeSubRow: FC<SubRowProps> = ({
       if ((error as any)?.code === 4001) {
         body = "The request was rejected by the user";
       }
-      showDialog("Error", { body });
+      //showDialog("Error", { body });
+      toast.error(body, {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
     }
     setStakePending(false);
   }, [stakingDisabled, row.original.id, signer, stakeAmount, stakePosition]);
