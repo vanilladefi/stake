@@ -197,12 +197,12 @@ export const MyStakes = () => {
       );
     },
     []
-    );
-    
-    const [stakes, setStakes] = useState<any[] | null>(null);
-    const [stakesLoading, setStakesLoading] = useState(true);
-    
-    const { signer, polygonProvider, walletAddress } = useSnapshot(state);
+  );
+
+  const [stakes, setStakes] = useState<any[] | null>(null);
+  const [stakesLoading, setStakesLoading] = useState(true);
+
+  const { signer, polygonProvider, walletAddress } = useSnapshot(state);
 
   const getStakes = useCallback(async () => {
     if (!walletAddress) return;
@@ -217,18 +217,15 @@ export const MyStakes = () => {
         chainId: "",
         logoColor: "",
       }));
-    
+
     const contractAddress = isAddress(
       process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
     );
-    const contract = getJuiceStakingContract({
-      signerOrProvider: signer || polygonProvider || undefined,
-      optionalAddress: contractAddress || undefined,
-    });
 
-    const res = await Promise.all(
-      _tokens.map((token) => contract.currentStake(walletAddress, token.address))
-    );
+    const res = await getAllStakes(walletAddress, _tokens, {
+      signerOrProvider: signer || (polygonProvider as any),
+      optionalAddress: contractAddress || "",
+    });
 
     let stakes: any[] = [];
     _tokens.forEach((token, idx) => {
