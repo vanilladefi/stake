@@ -199,7 +199,7 @@ export const updateTruncatedAddress = () => {
 
 async function onJuiceDeposited(depositor: string, amount: BigNumber) {
   const { walletOpen, walletAddress } = snapshot(state);
-  if (depositor === walletAddress) {
+  if (depositor.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
     await updateUnstakedAmount();
     await updateBalances();
     if (!walletOpen) {
@@ -212,7 +212,7 @@ async function onJuiceDeposited(depositor: string, amount: BigNumber) {
 
 async function onJuiceWithdrawn(withdrawer: string, amount: BigNumber) {
   const { walletOpen, walletAddress } = snapshot(state);
-  if (withdrawer === walletAddress) {
+  if (withdrawer.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
     await updateUnstakedAmount();
     await updateBalances();
     if (!walletOpen) {

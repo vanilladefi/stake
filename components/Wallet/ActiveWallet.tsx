@@ -4,7 +4,7 @@ import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { state, useSnapshot } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { parseJuice } from "../../utils/helpers";
@@ -64,9 +64,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const [juiceAmount, setJuiceAmount] = useState("");
   const [txDisabled, setTxDisabled] = useState<false | TxTypes>(false);
   const [message, setMessage] = useState({
-    value: null as string | null,
-    error: false,
-  });
+    value: null,
+    error: undefined,
+  } as { value: string | null; error?: boolean });
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard.writeText(text).then(
@@ -80,6 +80,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     );
   }, []);
 
+  useEffect(() => {
+    setMessage({ value: null });
+  }, [walletOpen]);
+
   const handleTx = useCallback(
     async (type: TxTypes) => {
       if (txDisabled) return;
@@ -87,12 +91,12 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
       const _disabled = !(juiceAmount && +juiceAmount);
       if (_disabled) {
-        setMessage({ value: "Please enter some amount!", error: false });
+        setMessage({ value: "Please enter some amount!" });
         return;
       }
 
       setTxDisabled(type);
-      setMessage({ value: null, error: false });
+      setMessage({ value: null });
 
       try {
         const amount = parseJuice(juiceAmount).toString();
@@ -113,19 +117,17 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         }
         setMessage({
           value: "Transaction pending...",
-          error: false,
         });
         setJuiceAmount("");
 
         const rec = await tx.wait();
         if (rec.status === 1) {
           setMessage({
-            value: "Transaction successful",
-            error: false,
+            value: "Transaction successful [LINK]",
           });
         } else {
           setMessage({
-            value: "Transaction failed!",
+            value: "Transaction failed! [LINK]",
             error: true,
           });
         }
