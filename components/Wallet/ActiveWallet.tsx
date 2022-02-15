@@ -5,6 +5,7 @@ import { ContractTransaction } from "ethers";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { state, useSnapshot } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { parseJuice } from "../../utils/helpers";
@@ -73,6 +74,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     navigator.clipboard.writeText(text).then(
       () => {
         setCopied(true);
+        toast.success(`Address copied to clipboard`, {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
         setTimeout(() => setCopied(false), 3000);
       },
       () => {
@@ -207,14 +211,31 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               pb: "$space$4",
             }}
           >
-            <Text
-              css={{
-                fontFamily: "$monospace",
-                fontSize: "$xl",
-              }}
-            >
-              {truncatedWalletAddress}
-            </Text>
+            <Box>
+              {" "}
+              <Text
+                css={{
+                  fontFamily: "$monospace",
+                  fontSize: "$xl",
+                }}
+              >
+                {truncatedWalletAddress}
+              </Text>
+              <Box
+                css={{
+                  display: "inline-block",
+                  marginRight: "$space$1",
+                  height: "30px",
+                  cursor: "pointer",
+                  pl: "$3",
+                  color: "$primary",
+                }}
+                onClick={() => copyToClipboard(walletAddress)}
+              >
+                <Copy size={"22px"} style={{ color: "$primary" }} />
+              </Box>
+            </Box>
+
             <Button
               variant="bordered"
               size="sm"
@@ -241,45 +262,11 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               borderBottom: "1px $extraMuted solid",
             }}
           >
-            {copied ? (
-              <Text
-                css={{
-                  color: "$green",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  fontSize: "$sm",
-                }}
-                onClick={() => copyToClipboard(walletAddress)}
-              >
-                <Box css={{ marginRight: "$space$1", height: "20px" }}>
-                  <Check size={"20px"} style={{ color: "$primary" }} />
-                </Box>{" "}
-                Copied to clipboard
-              </Text>
-            ) : (
-              <Text
-                css={{
-                  color: "$primary",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  fontSize: "$sm",
-                  "&:hover": {
-                    color: "$text",
-                  },
-                }}
-                onClick={() => copyToClipboard(walletAddress)}
-              >
-                <Box css={{ marginRight: "$space$1", height: "20px" }}>
-                  <Copy size={"20px"} style={{ color: "$primary" }} />
-                </Box>{" "}
-                Copy address
-              </Text>
-            )}
-
+            <TradeLink
+              href={`https://polygonscan.com/address/${walletAddress}`}
+            >
+              View on Polygonscan
+            </TradeLink>
             <TradeLink href={`https://etherscan.io/address/${walletAddress}`}>
               View on Etherscan
             </TradeLink>
