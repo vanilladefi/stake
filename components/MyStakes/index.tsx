@@ -323,6 +323,7 @@ export const MyStakes = () => {
             columns={columns}
             isLoading={stakesLoading}
             data={tableData || []}
+            myStakes
             renderRowSubComponent={renderRowSubComponent}
           />
         </Box>

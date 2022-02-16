@@ -350,6 +350,30 @@ export const globalStyles = globalCss({
     fontSize: "$md",
     "-webkit-font-smoothing": "antialiased",
     "-moz-osx-font-smoothing": "grayscale",
+
+    "--toastify-color-light": "$colors$background",
+    "--toastify-color-dark": "$colors$text",
+    "--toastify-color-info": "$colors$text",
+    "--toastify-color-success": "$colors$green",
+    "--toastify-color-warning": "$colors$primary",
+    "--toastify-color-error": "$colors$red",
+    "--toastify-color-transparent": "rgba(255, 255, 255, 0.7)",
+    "--toastify-icon-color-info": "$colors$text",
+    "--toastify-icon-color-success": "$colors$green",
+    "--toastify-icon-color-warning": "$colors$primary",
+    "--toastify-icon-color-error": "$colors$red",
+    "--toastify-toast-width": "320px",
+    "--toastify-toast-background": "$colors$background",
+    "--toastify-text-color-light": "$colors$text",
+    "--toastify-text-color-dark": "$colors$text",
+    ".Toastify__toast": {
+      borderRadius: 0,
+      border: "1px solid $colors$extraMuted",
+    },
+    ".Toastify__close-button--light": {
+      color: "$colors$text",
+      opacity: 1,
+    },
     ".dark &": {
       backgroundImage:
         "radial-gradient(50.04% 28.4% at 6.4% -3.32%, #231308 0%, #10070F 100%)",
