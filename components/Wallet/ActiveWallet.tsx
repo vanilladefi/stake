@@ -4,7 +4,7 @@ import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "next/link";
 import { ArrowCircleUpRight, Copy } from "phosphor-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import { state, useSnapshot } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
@@ -66,10 +66,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
   const [juiceAmount, setJuiceAmount] = useState("");
   const [txDisabled, setTxDisabled] = useState<false | TxTypes>(false);
-  const [message, setMessage] = useState({
-    value: null,
-    error: undefined,
-  } as { value: string | null; error?: boolean });
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard.writeText(text);
@@ -78,10 +74,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     });
   }, []);
 
-  useEffect(() => {
-    setMessage({ value: null });
-  }, [walletOpen]);
-
   const handleTx = useCallback(
     async (type: TxTypes) => {
       if (txDisabled) return;
@@ -89,12 +81,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
       const _disabled = !(juiceAmount && +juiceAmount);
       if (_disabled) {
-        setMessage({ value: "Please enter some amount!" });
         return;
       }
 
       setTxDisabled(type);
-      setMessage({ value: null });
 
       const waitingToast = toast.loading("Transaction pending user...", {
         position: toast.POSITION.BOTTOM_CENTER,
