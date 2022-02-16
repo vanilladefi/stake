@@ -104,7 +104,7 @@ const StakeSubRow: FC<SubRowProps> = ({
 
       if (res.status === 1) {
         showDialog("Success", {
-          body: `Transaction was successful, ${transactionLink}`, // TODO: Support custom React components in the dialog
+          body: `Transaction was successful, ${transactionLink}`, // TODO: Support links in dialog
         });
       } else {
         showDialog("Error", {
