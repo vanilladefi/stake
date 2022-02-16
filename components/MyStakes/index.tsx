@@ -271,9 +271,11 @@ export const MyStakes = () => {
   }, [getStakes, polygonProvider, signer, walletAddress]);
 
   const [tableData, setTableData] = useState<ColumnType[] | null>(null);
+  const [stakedTotal, setStakedTotal] = useState(0);
   useEffect(() => {
     if (stakes && stakes.length) {
       let _tableData: ColumnType[] = [];
+      let _stakedTotal = 0;
       priceData.forEach((pd, idx) => {
         const s = stakes.find((stake) => stake.id === pd.id.split("/")[0]);
         if (s) {
@@ -283,6 +285,11 @@ export const MyStakes = () => {
           });
         }
       });
+      stakes.forEach((sd) => {
+        _stakedTotal += Number(sd.juiceValue);
+      });
+      console.log(_stakedTotal);
+      setStakedTotal(_stakedTotal);
       setTableData(_tableData);
     } else {
       setTableData(null);
@@ -297,6 +304,9 @@ export const MyStakes = () => {
         justify="space-between"
         css={{
           mb: "$5",
+          mt: "$2",
+          pb: "$2",
+          borderBottom: "1px solid $extraMuted",
           "@md": {
             flexDirection: "row",
             alignItems: "center",
@@ -304,9 +314,46 @@ export const MyStakes = () => {
         }}
       >
         <Heading as="h1">My Stakes</Heading>
-        <Button variant="primary" onClick={() => (state.walletOpen = true)}>
-          Manage funds
-        </Button>
+        <Box
+          css={{ textAlign: "right" }}
+          onClick={() => (state.walletOpen = true)}
+        >
+          {(Number(state?.unstakedBalance) > 0 || stakedTotal > 0) && (
+            <Box>
+              <Box
+                as="a"
+                css={{
+                  fontSize: "$lg",
+                  cursor: "pointer",
+                  color: "$link",
+                  display: "inline-block",
+                  mb: "$1",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                {(Number(state?.unstakedBalance) + Number(stakedTotal)).toFixed(
+                  3
+                ) + " JUICE"}
+              </Box>
+              <Box
+                css={{
+                  fontSize: "$sm",
+                  color: "$muted",
+                  textTransform: "uppercase",
+                }}
+              >{`${Number(stakedTotal)} Staked  /  ${Number(
+                state?.unstakedBalance
+              )} Unstaked`}</Box>
+            </Box>
+          )}
+        </Box>
+        {Number(state?.unstakedBalance) == 0 && stakedTotal == 0 && (
+          <Button variant="primary" onClick={() => (state.walletOpen = true)}>
+            Manage funds
+          </Button>
+        )}
       </Flex>
       {tableData || (!tableData && stakesLoading) ? (
         <Box

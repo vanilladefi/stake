@@ -374,6 +374,14 @@ export const globalStyles = globalCss({
       color: "$colors$text",
       opacity: 1,
     },
+    ".Toastify__toast-container": {
+      minWidth: "320px",
+      width: "100%",
+      maxWidth: "780px",
+    },
+    ".Toastify__progress-bar": {
+      height: "2px",
+    },
     ".dark &": {
       backgroundImage:
         "radial-gradient(50.04% 28.4% at 6.4% -3.32%, #231308 0%, #10070F 100%)",

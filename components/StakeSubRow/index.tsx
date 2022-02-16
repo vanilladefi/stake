@@ -356,8 +356,9 @@ const StakeSubRow: FC<SubRowProps> = ({
                 width: "120px",
                 marginRight: "1px",
                 height: "auto",
-                px: "0",
-                fontSize: "15px",
+                px: "$2",
+                fontSize: "$md",
+                maxWidth: "80px",
                 fontWeight: 300,
                 textAlign: "center",
                 borderRight: "1px solid $extraMuted",
@@ -375,11 +376,12 @@ const StakeSubRow: FC<SubRowProps> = ({
               disabled={stakingDisabled}
               onClick={modifyStake}
               css={{
-                width: "100px",
                 marginRight: "1px",
                 height: "auto",
-                px: "0",
-                fontSize: "15px",
+                px: "$8",
+                width: "auto",
+                maxWidth: "100px",
+                fontSize: "$md",
                 fontWeight: 300,
                 textAlign: "center",
                 "&:hover": {
@@ -398,11 +400,12 @@ const StakeSubRow: FC<SubRowProps> = ({
           disabled={stakingDisabled}
           onClick={modifyStake}
           css={{
-            width: "140px",
+            width: "auto",
             marginRight: "1px",
             height: "auto",
-            px: "0",
-            fontSize: "18px",
+            px: "$6",
+            fontSize: "$md",
+            maxWidth: "100px",
             fontWeight: 300,
             textAlign: "center",
             "&:hover": {
