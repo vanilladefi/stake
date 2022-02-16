@@ -118,11 +118,8 @@ const Footer = () => {
               },
             }}
           >
-            <EtherScanLink href="https://etherscan.io/token/0xbf900809f4C73e5a3476eb183d8b06a27e61F8E5">
-              $VNL ERC-20 Contract on Etherscan
-            </EtherScanLink>
-            <EtherScanLink href="https://etherscan.io/address/0x72C8B3aA6eD2fF68022691ecD21AEb1517CfAEa6">
-              Vanilla Router on Etherscan
+            <EtherScanLink href="https://mumbai.polygonscan.com/token/0xa652dd22ad2059c31ee27a7a5eb9399c7336dad7">
+              $JUICE ERC-20 Contract on Polygonscan
             </EtherScanLink>
             <EtherScanLink href="https://etherscan.io/address/0xa135f339B5acd1f4eCB1C6eEd69a31482f878545">
               VanillaDAO on Etherscan

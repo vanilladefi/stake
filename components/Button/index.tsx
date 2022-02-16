@@ -39,8 +39,8 @@ const StyledButton = styled(
       },
       fluid: {
         true: {
-          width: '100%'
-        }
+          width: "100%",
+        },
       },
       variant: {
         default: {
@@ -66,7 +66,8 @@ const StyledButton = styled(
         },
         md: {
           height: "$10",
-          px: "$8",
+          px: "$5",
+          lineHeight: "$5",
         },
         lg: {
           height: "$12",

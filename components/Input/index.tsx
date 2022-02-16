@@ -83,7 +83,7 @@ export const Input = styled("input", {
         },
       },
       lg: {
-        height: "$10",
+        height: "$8",
         fontSize: "$xl",
         lineHeight: "$sizes$6",
         "&:-webkit-autofill::first-line": {

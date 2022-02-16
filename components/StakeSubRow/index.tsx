@@ -178,6 +178,17 @@ const StakeSubRow: FC<SubRowProps> = ({
     setStakePending(false);
   }, [closingDisabled, signer, row.original.id]);
 
+  const stakeDifferenceNumber = -(
+    Number(defaultStake) - Number(stakeAmount)
+  ).toFixed(3);
+  const stakeDifference =
+    stakeDifferenceNumber != 0 &&
+    `${
+      stakeDifferenceNumber > 0
+        ? "+" + stakeDifferenceNumber
+        : stakeDifferenceNumber
+    }`;
+
   return (
     <Flex
       css={{
@@ -207,16 +218,53 @@ const StakeSubRow: FC<SubRowProps> = ({
           alignItems: "center",
         }}
       >
-        <Text css={{ color: "$muted", fontSize: "$xl", mr: "$2" }}>Stake</Text>
-        <Input
-          disabled={stakePending}
-          size="lg"
-          type="number"
-          placeholder="0.0"
-          value={stakeAmount}
-          onChange={(e) => setStakeAmount(e.target.value)}
-          css={{ width: "200px", textAlign: "right", mx: "$3" }}
-        />{" "}
+        <Box
+          css={{
+            position: "relative",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            css={{
+              color: "$muted",
+              fontSize: "$xl",
+              marginBottom: type === "edit" && stakeDifference ? "1rem" : 0,
+              mr: "$2",
+            }}
+          >
+            Stake
+          </Text>{" "}
+          <Input
+            disabled={stakePending}
+            size="lg"
+            type="number"
+            placeholder="0.0"
+            value={stakeAmount}
+            onChange={(e) => setStakeAmount(e.target.value)}
+            css={{
+              width: "140px",
+              textAlign: "right",
+              mx: "$3",
+            }}
+          />{" "}
+          {type === "edit" && (
+            <Text
+              css={{
+                fontSize: "$s",
+                color: "$muted",
+                position: "absolute",
+                paddingRight: ".4rem",
+                background: "$background",
+                left: "0",
+                bottom: ".9rem",
+              }}
+            >
+              {stakeDifference}
+            </Text>
+          )}
+        </Box>
         <Image
           alt="Vanilla drop icon"
           width="20px"
@@ -231,9 +279,9 @@ const StakeSubRow: FC<SubRowProps> = ({
           outline
           disabled={stakePending}
           uppercase
-          size="sm"
+          size="md"
           css={{
-            width: "90px",
+            width: "80px",
           }}
           active={stakePosition === "long"}
         >
@@ -244,9 +292,9 @@ const StakeSubRow: FC<SubRowProps> = ({
           outline
           uppercase
           disabled={stakePending}
-          size="sm"
+          size="md"
           css={{
-            width: "90px",
+            width: "80px",
           }}
           active={stakePosition === "short"}
         >
@@ -320,6 +368,7 @@ const StakeSubRow: FC<SubRowProps> = ({
             >
               Close position
             </Button>
+
             <Button
               ghost
               variant="primary"
@@ -361,7 +410,7 @@ const StakeSubRow: FC<SubRowProps> = ({
             },
           }}
         >
-          {stakePending ? "Pending..." : "Make stake"}
+          {stakePending ? "Pending..." : "Add Stake"}
         </Button>
       )}
     </Flex>

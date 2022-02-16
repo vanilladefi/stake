@@ -338,7 +338,7 @@ export const MyStakes = () => {
                 }}
                 muted
               >
-                You have not added any stakes yet. Make your first stake below.
+                You have no active stakes yet.
               </Text>
             ) : (
               <Text
