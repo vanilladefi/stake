@@ -343,9 +343,9 @@ export const MyStakes = () => {
                   color: "$muted",
                   textTransform: "uppercase",
                 }}
-              >{`${Number(stakedTotal)} Staked  /  ${Number(
+              >{`${Number(stakedTotal).toFixed(3)} Staked  /  ${Number(
                 state?.unstakedBalance
-              )} Unstaked`}</Box>
+              ).toFixed(3)} Unstaked`}</Box>
             </Box>
           )}
         </Box>
