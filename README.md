@@ -1,34 +1,27 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Vanilla Juicenet (Stake) UI
 
-## Getting Started
-
-First, run the development server:
-
+## Installing
 ```bash
-npm run dev
-# or
-yarn dev
+git clone git@github.com:vanilladefi/stake.git
+cd stake
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Development
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+To get the Vanilla Juicenet UI running, you must first copy & define the environment variables in `.env.example` to `.env`. The UI is currently by default configured to run on the **Polygon Mumbai public testnet**.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+cp .env.example .env
+```
+### Polygon Mainnet
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+After that's done, you can customize the environment variables to use your own Alchemy API keys or run the UI on top of a different deployed contract address and network. For example, to run the UI on the Polygon mainnet, you must change the `NEXT_PUBLIC_NETWORK` to equal `matic` and the `NEXT_PUBLIC_CHAIN_ID` to equal `137`. Together with this, you must get a Polygon mainnet API key to set in `NEXT_PUBLIC_ALCHEMY_POLYGON_API_KEY`.
 
-## Learn More
+NOTE: **The `NEXT_PUBLIC_ALCHEMY_ETHEREUM_API_KEY` can be left as-is, but if you run into rate limiting issues, we recommend you get your own API key for the Ethereum mainnet too.** The Ethereum mainnet is _only_ used for fetching the user's VNL balance.
 
-To learn more about Next.js, take a look at the following resources:
+### Local Polygon Mainnet Fork
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+For new feature development it's good to use a local network rather than a public testnet. To enable this, `NEXT_PUBLIC_ALCHEMY_POLYGON_API_KEY` must be removed, the `NEXT_PUBLIC_CHAIN_ID` set to your local testnet's chain ID (`137` for https://github.com/vanilladefi/juicenet-contracts right now.), and `NEXT_PUBLIC_NETWORK` set to `local`. If you want to use something else than the deployed & forked contract, for example a new, strictly local deployment, be sure to set your contract address to `NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Remember to use the correct network with your wallets and use test accounts for testing!
