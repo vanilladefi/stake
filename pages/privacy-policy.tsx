@@ -200,7 +200,7 @@ const Litepaper = () => {
           </Paragraph>
           <Paragraph>
             Legal basis for processing means the legal ground on which the
-            controller processes the data subject's personal data. The
+            controller processes the data subject&rsquo;s personal data. The
             lawfulness of processing is described in Article 6 of the GDPR.{" "}
           </Paragraph>
           <Paragraph>
@@ -214,7 +214,7 @@ const Litepaper = () => {
           </Paragraph>
           <Paragraph>
             The purpose for processing means the reason why the controller
-            processes the data subject's personal data.{" "}
+            processes the data subject&rsquo;s personal data.{" "}
           </Paragraph>
           <Paragraph>
             Service means our decentralized trading platform on the Ethereum
@@ -278,68 +278,12 @@ const Litepaper = () => {
             <ThemeLink href="#2-1-1-synthetic-long-short">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            Juicers take synthetic long and short positions in JUICE
+            5. DO WE TRANSFER YOUR PERSONAL DATA?
           </Heading>
           <Paragraph>
-            Juicers take synthetic long and short positions on tokens with JUICE
-            - similar to traders who buy and sell in the market. A position is
-            opened by staking JUICE, and it is closed by unstaking. Like
-            investing in real tokens, profit and loss - measured in USDC - are
-            calculated continuously for all open positions based on the price
-            movement of the underlying token. Upon withdrawal, JUICE is
-            minted/burned according to profit/loss made.
-          </Paragraph>
-          <Paragraph>
-            For a position on a token <TeX math="x" />
-            opened at a time <TeX math="t_{open}" />, the return at a time{" "}
-            <TeX math="t_{close}" />
-            is calculated as:
-          </Paragraph>
-          <OrderedList>
-            <ListItemFlex>
-              <FlexWrap>
-                <FormulaText>Value:</FormulaText>
-                <Formula>
-                  <TeX math="Value_{x,t} =  Oracle_{t}(x, USD) * Q_{t})" />{" "}
-                  <br />
-                  <br />
-                  where <TeX math="Q_{t}" /> is the size of the position
-                </Formula>
-              </FlexWrap>
-            </ListItemFlex>
-            <ListItemFlex>
-              <FlexWrap>
-                <FormulaText>Return:</FormulaText>
-
-                <Formula>
-                  <TeX math="Return_{x,t_{open},t_{close}} = Value_{x,t_{close}}-Value_{x, t_{open}}" />{" "}
-                  <br />
-                  <br />
-                  if the position is long, or
-                  <br />
-                  <br />
-                  <TeX math="Return_{x,t_{open},t_{close}} = max((Value_{x,t_{open}}-Value_{x, t_{close}}),-Value_{x,t_{open}})" />
-                  <br />
-                  <br />
-                  if short
-                </Formula>
-              </FlexWrap>
-            </ListItemFlex>
-          </OrderedList>
-          <Paragraph>
-            For example, a juicer might stake LONG UNI with 100 JUICE. When the
-            price of UNI subsequently increases 50%, the user’s stake is now
-            worth 150 JUICE.
-          </Paragraph>
-          <Paragraph>
-            For short positions, return is calculated as an inverse: Let’s
-            assume the juicer has staked SHORT UNI with 100 JUICE. If the price
-            of UNI increases 50%, the juicer’s stake is worth 50 JUICE. If the
-            price increases 100%, the juicer has lost the entire stake. In
-            traditional markets, short positions can theoretically have an
-            unlimited downside if the trader keeps adding collateral. In
-            Juicenet, juicers cannot add collateral, and thus the maximum that a
-            short position can lose is 100% of the initial JUICE stake.
+            We do not transfer your personal data. If you choose to use our
+            service, you are able to transfer your own personal data to your
+            trading partner.{" "}
           </Paragraph>
         </Box>
         <Box>
@@ -347,7 +291,7 @@ const Litepaper = () => {
             <ThemeLink href="#2-1-2-token-weighted-portfolio">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
-            2.1.2. Juicers’ aggregate positions form a token-weighted portfolio
+            2.1.2. Juicers aggregate positions form a token-weighted portfolio
           </Heading>
           <Paragraph>
             The purpose of Juicenet is to generate target portfolio weights for
