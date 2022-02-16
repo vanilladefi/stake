@@ -1,6 +1,6 @@
 # Vanilla Juicenet (Stake) UI
 
-## Installing Dependencies
+## Installing
 ```bash
 git clone git@github.com:vanilladefi/stake.git
 cd stake
@@ -22,6 +22,6 @@ NOTE: **The `NEXT_PUBLIC_ALCHEMY_ETHEREUM_API_KEY` can be left as-is, but if you
 
 ### Local Polygon Mainnet Fork
 
-For new feature development it's good to use a local network rather than a public testnet. To enable this, `NEXT_PUBLIC_ALCHEMY_POLYGON_API_KEY` must be removed, the `NEXT_PUBLIC_CHAIN_ID` set to your local testnet's chain ID (`137` for https://github.com/vanilladefi/juicenet-contracts right now.), and `NEXT_PUBLIC_NETWORK` set to `local`.
+For new feature development it's good to use a local network rather than a public testnet. To enable this, `NEXT_PUBLIC_ALCHEMY_POLYGON_API_KEY` must be removed, the `NEXT_PUBLIC_CHAIN_ID` set to your local testnet's chain ID (`137` for https://github.com/vanilladefi/juicenet-contracts right now.), and `NEXT_PUBLIC_NETWORK` set to `local`. If you want to use something else than the deployed & forked contract, for example a new, strictly local deployment, be sure to set your contract address to `NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS`.
 
 Remember to use the correct network with your wallets and use test accounts for testing!
