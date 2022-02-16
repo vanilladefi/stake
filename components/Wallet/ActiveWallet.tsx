@@ -28,6 +28,8 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
       {typeof children === "string" ? (
         <Text
           as="a"
+          target="_blank"
+          rel="noopener noreferrer"
           css={{
             color: "$primary",
             textDecoration: "none",
