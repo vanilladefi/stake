@@ -2,19 +2,21 @@ const tokens = [
   {
     "enabled": true,
     "id": "WETH",
+    "alias": "ETH",
     "decimals": 18,
     "priceFeed": "0xB4D962106206D88372C542C8ffeCACaefb728A60",
     "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-    "imageUrl": null,
+    "imageUrl": "WETH.png",
     "name": "Wrapped ETH"
   },
   {
     "enabled": true,
     "id": "WMATIC",
+    "alias": "MATIC",
     "decimals": 18,
     "priceFeed": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
     "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-    "imageUrl": null,
+    "imageUrl": "WMATIC.png",
     "name": "Wrapped Matic"
   },
   {

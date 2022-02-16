@@ -8,8 +8,7 @@ import { correctNetwork } from "../../lib/config";
 import { state } from "../../state";
 import { showDialog } from "../../state/actions/dialog";
 import { connectWallet } from "../../state/actions/wallet";
-import tokens from "../../tokensV2";
-import { parseJuice } from "../../utils/helpers";
+import { findToken, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Flex from "../Flex";
@@ -77,9 +76,7 @@ const StakeSubRow: FC<SubRowProps> = ({
       return connectWallet();
     }
 
-    const token = tokens
-      .filter((t) => t.enabled)
-      .find((t) => t.id === row.original.id.split("/")[0])?.address;
+    const token = findToken(row.original.id)?.address;
 
     if (!token) {
       return showDialog("Invalid operation", {
@@ -132,9 +129,7 @@ const StakeSubRow: FC<SubRowProps> = ({
       return connectWallet();
     }
 
-    const token = tokens
-      .filter((t) => t.enabled)
-      .find((t) => t.id === row.original.id.split("/")[0])?.address;
+    const token = findToken(row.original.id)?.address;
 
     if (!token) {
       return showDialog("Invalid operation", {
@@ -256,24 +251,18 @@ const StakeSubRow: FC<SubRowProps> = ({
             padding: "3px",
           }}
         >
-          {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
-            ?.imageUrl ? (
+          {findToken(row.original.id)?.imageUrl ? (
             <Image
               width="18px"
               height="18px"
               layout="fixed"
               objectFit="cover"
-              src={`/token-assets/${row.original.id.split("/")[0]}.png`}
+              src={`/token-assets/${findToken(row.original.id)?.imageUrl}`}
               alt="Token icon"
             />
           ) : null}
         </Box>
-        <Box css={{ ml: "10px" }}>
-          {
-            tokens.find((token) => token.id === row.original.id.split("/")[0])
-              ?.name
-          }
-        </Box>
+        <Box css={{ ml: "10px" }}>{findToken(row.original.id)?.name}</Box>
       </Flex>
       {type === "edit" ? (
         stakePending ? (
