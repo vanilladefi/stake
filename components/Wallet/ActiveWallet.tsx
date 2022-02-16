@@ -312,6 +312,27 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 <Loader />
               )}
             </Box>
+
+            <Box
+              css={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                mb: "$space$1",
+              }}
+            >
+              {balances.matic ? (
+                <>
+                  <Text css={{ color: "$textA", fontSize: "$xl" }}>
+                    {balances.matic} MATIC
+                  </Text>
+                  <TradeLink href="">Buy MATIC</TradeLink>
+                </>
+              ) : (
+                <Loader />
+              )}
+            </Box>
           </Box>
         </Box>
 
@@ -333,10 +354,12 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               mb: "$space$5",
             }}
           >
-            <Heading>STAKING BALANCE</Heading>
-            <Text css={{ color: "$muted", fontSize: "$sm" }}>
-              {unstakedBalance} JUICE
-            </Text>
+            <Heading>STAKING ACCOUNT</Heading>
+            <Box>
+              <Text css={{ color: "$muted", fontSize: "$sm" }}>
+                Unstaked JUICE: {unstakedBalance}
+              </Text>
+            </Box>
           </Box>
 
           <Box
