@@ -30,7 +30,7 @@ type State = {
   modal: Web3Modal | null;
   alert: {
     title: string;
-    body?: string;
+    body?: string | JSX.Element;
     onConfirm?: () => void,
     confirmText?: string
     cancelText?: string

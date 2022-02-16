@@ -1,15 +1,16 @@
 import { state } from "..";
+import { ref } from "valtio";
 
 interface DialogOpts {
-  body?: string;
+  body?: string | JSX.Element;
   onConfirm?: () => any;
   confirmText?: string;
   cancelText?: string;
-  link?: { text: string; href: string };
 }
 
 const showDialog = (title: string, opts?: DialogOpts) => {
-  const { body, onConfirm, confirmText, cancelText } = opts || {};
+  const { body: _body, onConfirm, confirmText, cancelText } = opts || {};
+  const body = typeof _body === "string" || !_body ? _body : ref(_body)
   state.alert = {
     title,
     body,
