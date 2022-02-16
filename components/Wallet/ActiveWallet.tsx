@@ -3,7 +3,7 @@ import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "next/link";
-import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
+import { ArrowCircleUpRight, Copy } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { state, useSnapshot } from "../../state";
@@ -62,7 +62,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     signer,
   } = useSnapshot(state);
 
-  const [copied, setCopied] = useState(false);
   const [juiceAmount, setJuiceAmount] = useState("");
   const [txDisabled, setTxDisabled] = useState<false | TxTypes>(false);
   const [message, setMessage] = useState({
@@ -71,18 +70,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   } as { value: string | null; error?: boolean });
 
   const copyToClipboard = useCallback((text) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
-        setCopied(true);
-        toast.success(`Address copied to clipboard`, {
-          position: toast.POSITION.BOTTOM_CENTER,
-        });
-        setTimeout(() => setCopied(false), 3000);
-      },
-      () => {
-        setCopied(false);
-      }
-    );
+    navigator.clipboard.writeText(text);
+    toast.success(`Address copied to clipboard`, {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
   }, []);
 
   useEffect(() => {

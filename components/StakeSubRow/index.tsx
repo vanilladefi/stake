@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
 import { correctNetwork } from "../../lib/config";
 import { state } from "../../state";
-import { showDialog } from "../../state/actions/dialog";
 import { connectWallet } from "../../state/actions/wallet";
 import tokens from "../../tokensV2";
 import { parseJuice } from "../../utils/helpers";
@@ -83,10 +82,7 @@ const StakeSubRow: FC<SubRowProps> = ({
       .find((t) => t.id === row.original.id.split("/")[0])?.address;
 
     if (!token) {
-      /*return showDialog("Invalid operation", {
-        body: "Error: Token is not available to stake",
-      });*/
-      toast.error("Error: Token is not available to stake", {
+      return toast.error("Error: Token is not available to stake", {
         position: toast.POSITION.TOP_CENTER,
       });
     }
@@ -110,16 +106,10 @@ const StakeSubRow: FC<SubRowProps> = ({
       const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${res.transactionHash}`;
 
       if (res.status === 1) {
-        /*showDialog("Success", {
-          body: `Transaction was successful, ${transactionLink}`, // TODO: Support custom React components in the dialog
-        });*/
         toast.success(`Transaction was successful, ${transactionLink}`, {
           position: toast.POSITION.BOTTOM_CENTER,
         });
       } else {
-        /*showDialog("Error", {
-          body: `Transaction failed, ${transactionLink}`,
-        });*/
         toast.error(`Transaction failed, ${transactionLink}`, {
           position: toast.POSITION.BOTTOM_CENTER,
         });
@@ -130,7 +120,6 @@ const StakeSubRow: FC<SubRowProps> = ({
       if ((error as any)?.code === 4001) {
         body = "The request was rejected by the user";
       }
-      //showDialog("Error", { body });
       toast.error(body, {
         position: toast.POSITION.BOTTOM_CENTER,
       });
@@ -150,8 +139,8 @@ const StakeSubRow: FC<SubRowProps> = ({
       .find((t) => t.id === row.original.id.split("/")[0])?.address;
 
     if (!token) {
-      return showDialog("Invalid operation", {
-        body: "Error: Token is not available to stake",
+      return toast.error("Error: Token is not available to stake", {
+        position: toast.POSITION.BOTTOM_CENTER,
       });
     }
     setStakePending(true);
@@ -168,12 +157,12 @@ const StakeSubRow: FC<SubRowProps> = ({
       const res = await tx.wait();
 
       if (res.status === 1)
-        showDialog("Success", {
-          body: "Stake position closed [LINK]",
+        toast.success("Stake position closed [LINK]", {
+          position: toast.POSITION.BOTTOM_CENTER,
         });
       else
-        showDialog("Error", {
-          body: "Transaction failed [LINK]",
+        toast.error("Transaction failed [LINK]", {
+          position: toast.POSITION.BOTTOM_CENTER,
         });
     } catch (error) {
       console.warn(error);
@@ -181,8 +170,8 @@ const StakeSubRow: FC<SubRowProps> = ({
       if ((error as any)?.code === 4001) {
         body = "The request was rejected by the user";
       }
-      showDialog("Error", {
-        body,
+      toast.error(body, {
+        position: toast.POSITION.BOTTOM_CENTER,
       });
     }
 
