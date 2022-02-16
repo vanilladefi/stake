@@ -21,6 +21,8 @@ const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
       {typeof children === "string" ? (
         <Text
           as="a"
+          target="_blank"
+          rel="noopener noreferrer"
           css={{
             color: "$primary",
             textDecoration: "none",
@@ -43,16 +45,18 @@ const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
   );
 };
 
-const RegularLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
-  href,
-  children,
-  css,
-}) => {
+const RegularLink: React.FC<{
+  href: string;
+  newWindow?: boolean;
+  css?: Stitches.CSS;
+}> = ({ href, children, css, newWindow }) => {
   return (
     <Link href={href} passHref>
       {typeof children === "string" ? (
         <Text
           as="a"
+          target={newWindow ? "_blank" : "_self"}
+          rel={newWindow ? "noopener noreferrer" : ""}
           css={{
             color: "$text",
             textDecoration: "none",
@@ -69,6 +73,8 @@ const RegularLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
       ) : (
         <Box
           as="a"
+          target={newWindow ? "_blank" : "_self"}
+          rel={newWindow ? "noopener noreferrer" : ""}
           css={{
             display: "flex",
             color: "$text",
@@ -171,6 +177,7 @@ const Footer = () => {
           >
             <RegularLink
               href="https://discord.gg/CnPuf2cGQ3"
+              newWindow
               css={{ mr: "$3" }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
@@ -180,6 +187,7 @@ const Footer = () => {
             </RegularLink>
             <RegularLink
               href="https://community.vanilladefi.com/"
+              newWindow
               css={{ mr: "$3" }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
@@ -187,7 +195,11 @@ const Footer = () => {
               </Flex>
               Forum
             </RegularLink>
-            <RegularLink href="https://t.me/vanilladefi" css={{ mr: "$3" }}>
+            <RegularLink
+              href="https://t.me/vanilladefi"
+              newWindow
+              css={{ mr: "$3" }}
+            >
               <Flex color="text" css={{ mr: "$2" }}>
                 <TelegramLogo size="24px" weight="fill" />
               </Flex>
@@ -195,6 +207,7 @@ const Footer = () => {
             </RegularLink>
             <RegularLink
               href="https://www.twitter.com/vanilladefi"
+              newWindow
               css={{ mr: "$3" }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
@@ -204,6 +217,7 @@ const Footer = () => {
             </RegularLink>
             <RegularLink
               href="https://www.github.com/vanilladefi"
+              newWindow
               css={{ mr: "$3" }}
             >
               <Flex color="text" css={{ mr: "$2" }}>

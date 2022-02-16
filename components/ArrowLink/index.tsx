@@ -14,9 +14,11 @@ export const ArrowLink = ({
   text = "",
   href = "#",
   onClick,
+  newWindow = false,
 }: {
   text?: string;
   href?: string;
+  newWindow?: boolean;
   onClick?: () => void;
 }) => (
   <Link
@@ -31,6 +33,8 @@ export const ArrowLink = ({
     }}
     as="a"
     href={href}
+    target={newWindow ? "_blank" : "_self"}
+    rel={newWindow ? "noopener noreferrer" : ""}
     onClick={onClick}
   >
     <StyledArrow />

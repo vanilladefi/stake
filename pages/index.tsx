@@ -521,6 +521,7 @@ const Home: NextPage = () => {
               }}
             >
               <ArrowLink
+                newWindow
                 href="https://discord.gg/CnPuf2cGQ3"
                 text="Join the discussion"
               />
