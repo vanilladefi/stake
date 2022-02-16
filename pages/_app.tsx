@@ -47,7 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (!signer || !window.ethereum) return;
 
-    ensureCorrectChain();
+    // ensureCorrectChain(); called initially on wallet connect
 
     window.ethereum.on("accountsChanged", connectWallet);
     window.ethereum.on("chainChanged", ensureCorrectChain);

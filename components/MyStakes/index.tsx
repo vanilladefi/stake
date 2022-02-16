@@ -7,8 +7,8 @@ import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { state } from "../../state";
-import tokens from "../../tokensV2";
-import { formatJuice } from "../../utils/helpers";
+import tokens from "../../tokens";
+import { findToken, formatJuice } from "../../utils/helpers";
 import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
@@ -29,25 +29,14 @@ export const MyStakes = () => {
   const [{ fetching: _, data: _data }] = useGetAssetPairsQuery();
 
   const priceData = useMemo(() => {
-    return (
-      _data?.assetPairs.filter((t) => {
-        const id = t.id.split("/")[0];
-        const isEnabled = tokens.find((ot) => ot.id === id)?.enabled;
-        return isEnabled;
-      }) || []
-    );
+    return _data?.assetPairs.filter((t) => findToken(t.id)?.enabled) || [];
   }, [_data?.assetPairs]);
 
   const columns: Column<ColumnType>[] = useMemo(
     () => [
       {
         Header: "Token",
-        accessor: (row): string | undefined => {
-          const name = tokens.find(
-            (token) => token.id === row.id.split("/")[0]
-          )?.name;
-          return name;
-        },
+        accessor: (row): string | undefined => findToken(row.id)?.name,
         id: "tokenIcon",
         width: "15%",
         minWidth: "250px",
@@ -72,14 +61,15 @@ export const MyStakes = () => {
                   p: "3px",
                 }}
               >
-                {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
-                  ?.imageUrl ? (
+                {findToken(row.original.id)?.imageUrl ? (
                   <Image
                     width="24px"
                     height="24px"
                     layout="fixed"
                     objectFit="cover"
-                    src={`/token-assets/${row.original.id.split("/")[0]}.png`}
+                    src={`/token-assets/${
+                      findToken(row.original.id)?.imageUrl
+                    }`}
                     alt="Token icon"
                   />
                 ) : null}
@@ -107,7 +97,6 @@ export const MyStakes = () => {
           return (
             <Box>
               {value}
-              {/* {valueUSD(ethers.utils.formatUnits(value, row.original.decimals))} */}
             </Box>
           );
         },
@@ -205,7 +194,7 @@ export const MyStakes = () => {
   const { signer, polygonProvider, walletAddress } = useSnapshot(state);
 
   const getStakes = useCallback(async () => {
-    if (!walletAddress) return;
+    if (!walletAddress || !signer) return;
 
     const _tokens: Token[] = tokens
       .filter((t) => t.enabled && t.address)
@@ -227,7 +216,7 @@ export const MyStakes = () => {
       optionalAddress: contractAddress || "",
     });
 
-    let stakes: any[] = [];
+    let _stakes: any[] = [];
     _tokens.forEach((token, idx) => {
       if (!res[idx].juiceStake.isZero()) {
         const stake = {
@@ -236,10 +225,10 @@ export const MyStakes = () => {
           juiceValue: formatJuice(res[idx].juiceValue),
           sentiment: res[idx].sentiment === true ? "long" : "short",
         };
-        stakes.push(stake);
+        _stakes.push(stake);
       }
     });
-    setStakes(stakes);
+    setStakes(_stakes);
 
     if (stakesLoading) setStakesLoading(false);
   }, [stakesLoading, polygonProvider, signer, walletAddress]);
@@ -275,7 +264,7 @@ export const MyStakes = () => {
     if (stakes && stakes.length) {
       let _tableData: ColumnType[] = [];
       priceData.forEach((pd, idx) => {
-        const s = stakes.find((stake) => stake.id === pd.id.split("/")[0]);
+        const s = stakes.find((stake) => stake.id === findToken(pd.id)?.id);
         if (s) {
           _tableData.push({
             ...pd,
