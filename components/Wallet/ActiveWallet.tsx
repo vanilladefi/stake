@@ -96,6 +96,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       setTxDisabled(type);
       setMessage({ value: null });
 
+      const waitingToast = toast.loading("Transaction pending user...", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+
       try {
         const amount = parseJuice(juiceAmount).toString();
         const contractAddress = isAddress(
@@ -113,20 +117,26 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         } else {
           tx = await contract.withdraw(amount);
         }
-        setMessage({
-          value: "Transaction pending...",
+
+        toast.update(waitingToast, {
+          render: "Waiting for transaction to go through",
         });
-        setJuiceAmount("");
 
         const rec = await tx.wait();
         if (rec.status === 1) {
-          setMessage({
-            value: "Transaction successful [LINK]",
+          toast.update(waitingToast, {
+            render: "Transaction successful [LINK]",
+            type: "success",
+            isLoading: false,
+            closeButton: true,
+            autoClose: 7000,
           });
         } else {
-          setMessage({
-            value: "Transaction failed! [LINK]",
-            error: true,
+          toast.update(waitingToast, {
+            render: "Transaction failed! [LINK]",
+            type: "error",
+            isLoading: false,
+            closeButton: true,
           });
         }
       } catch (error) {
@@ -135,11 +145,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         if ((error as any)?.code === 4001) {
           msg = "The request was rejected by the user";
         }
-        setMessage({
-          value: msg,
-          error: true,
+        toast.update(waitingToast, {
+          render: msg,
+          type: "error",
+          isLoading: false,
+          closeButton: true,
         });
       }
+      setJuiceAmount("");
       setTxDisabled(false);
     },
     [juiceAmount, signer, txDisabled]
@@ -392,6 +405,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               >
                 <Input
                   type="number"
+                  disabled={txDisabled == false ? false : true}
                   value={juiceAmount}
                   onChange={(e) => setJuiceAmount(e.target.value)}
                   size="xl"
@@ -407,40 +421,26 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               <>
                 {Number(unstakedBalance) > 0 && (
                   <Button
-                    disabled={txDisabled === TxTypes.withdraw}
+                    disabled={txDisabled == false ? false : true}
                     onClick={() => handleTx(TxTypes.withdraw)}
                     variant="bordered"
                     css={{ display: "flex", fontSize: "$sm", flex: "1 0" }}
                   >
-                    {txDisabled === TxTypes.withdraw ? (
-                      <Loader css={{ height: "$1" }} />
-                    ) : (
-                      `Withdraw ${juiceAmount} JUICE`
-                    )}
+                    Withdraw {juiceAmount} JUICE
                   </Button>
                 )}
                 {Number(balances.juice) > 0 && (
                   <Button
-                    disabled={txDisabled === TxTypes.deposit}
+                    disabled={txDisabled == false ? false : true}
                     onClick={() => handleTx(TxTypes.deposit)}
                     variant="bordered"
                     css={{ display: "flex", fontSize: "$sm", flex: "1 0" }}
                   >
-                    {txDisabled === TxTypes.deposit ? (
-                      <Loader css={{ height: "$1" }} />
-                    ) : (
-                      `Deposit ${juiceAmount} JUICE`
-                    )}
+                    Deposit {juiceAmount} JUICE
                   </Button>
                 )}
               </>
             </Box>
-            <Text
-              size="small"
-              css={{ mt: "$4", color: message.error ? "$red" : "$primary" }}
-            >
-              {message.value}
-            </Text>
           </Box>
           <Button
             variant="primary"

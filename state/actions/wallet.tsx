@@ -1,10 +1,11 @@
 import { isAddress } from "@vanilladefi/core-sdk";
 import {
   getBasicWalletDetails,
-  getJuiceStakingContract
+  getJuiceStakingContract,
 } from "@vanilladefi/stake-sdk";
 import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
+import { toast } from "react-toastify";
 import { persistedKeys, ref, state, subscribeKey } from "..";
 import { correctNetwork } from "../../lib/config";
 import { formatJuice } from "../../utils/helpers";
@@ -44,11 +45,19 @@ export const disconnect = (soft?: boolean) => {
 // TODO: Instead of prompting user to manually check their network, offer a button that changes/installs the used network to the user's wallet.
 export const ensureCorrectChain = async () => {
   try {
-    const { signer, walletAddress, modal } = snapshot(state)
-    if (window.ethereum?.chainId !== correctNetwork.chainId && signer && walletAddress && modal?.cachedProvider === 'injected') {
-      showDialog("Wrong network", {
-        body: `Your wallet seems to have the wrong network enabled. Please check that you're using ${correctNetwork.chainName}.`
-      });
+    const { signer, walletAddress, modal } = snapshot(state);
+    if (
+      window.ethereum?.chainId !== correctNetwork.chainId &&
+      signer &&
+      walletAddress &&
+      modal?.cachedProvider === "injected"
+    ) {
+      return toast.error(
+        `Your wallet seems to have the wrong network enabled. Please check that you're using ${correctNetwork.chainName}.`,
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
     }
   } catch (_e) {
     console.error(_e);
@@ -203,8 +212,8 @@ async function onJuiceDeposited(depositor: string, amount: BigNumber) {
     await updateUnstakedAmount();
     await updateBalances();
     if (!walletOpen) {
-      showDialog("Juice deposited", {
-        body: `${formatJuice(amount)} JUICE deposited successfully!`,
+      toast.success(`${formatJuice(amount)} JUICE deposited successfully!`, {
+        position: toast.POSITION.BOTTOM_CENTER,
       });
     }
   }
@@ -216,8 +225,8 @@ async function onJuiceWithdrawn(withdrawer: string, amount: BigNumber) {
     await updateUnstakedAmount();
     await updateBalances();
     if (!walletOpen) {
-      showDialog("Juice withdrawn", {
-        body: `${formatJuice(amount)} JUICE withdrawn successfully!`,
+      toast.success(`${formatJuice(amount)} JUICE withdrawn successfully!`, {
+        position: toast.POSITION.BOTTOM_CENTER,
       });
     }
   }
