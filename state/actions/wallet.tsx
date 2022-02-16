@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { persistedKeys, ref, state, subscribeKey } from "..";
 import { correctNetwork } from "../../lib/config";
 import { formatJuice } from "../../utils/helpers";
-import { closeDialog, showDialog } from "./dialog";
+import { closeDialog } from "./dialog";
 
 export const connectWallet = async () => {
   const { modal } = snapshot(state);
