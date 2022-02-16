@@ -244,7 +244,9 @@ const StakeSubRow: FC<SubRowProps> = ({
             value={stakeAmount}
             onChange={(e) => setStakeAmount(e.target.value)}
             css={{
-              width: "140px",
+              width: "100%",
+              minWidth: "40px",
+              maxWidth: "140px",
               textAlign: "right",
               mx: "$3",
             }}
@@ -281,7 +283,8 @@ const StakeSubRow: FC<SubRowProps> = ({
           uppercase
           size="md"
           css={{
-            width: "80px",
+            width: "20%",
+            maxWidth: "80px",
           }}
           active={stakePosition === "long"}
         >
@@ -294,7 +297,8 @@ const StakeSubRow: FC<SubRowProps> = ({
           disabled={stakePending}
           size="md"
           css={{
-            width: "80px",
+            width: "20%",
+            maxWidth: "80px",
           }}
           active={stakePosition === "short"}
         >
@@ -305,8 +309,8 @@ const StakeSubRow: FC<SubRowProps> = ({
         css={{
           p: "$5",
           alignItems: "center",
-          borderRight: "1px solid $colors$extraMuted",
           flex: 1,
+          borderRight: "1px solid $colors$extraMuted",
         }}
       >
         <Box

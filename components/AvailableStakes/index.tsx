@@ -46,8 +46,8 @@ export const AvailableStakes = () => {
           return name;
         },
         id: "tokenIcon",
-        width: "20%",
-        minWidth: "320px",
+        width: "25%",
+        minWidth: "120px",
         align: "left",
         Cell: ({
           value,
@@ -67,6 +67,7 @@ export const AvailableStakes = () => {
                   position: "relative",
                   overflow: "hidden",
                   p: "3px",
+                  flexShrink: 0,
                 }}
               >
                 {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
@@ -90,7 +91,7 @@ export const AvailableStakes = () => {
         Header: "Ticker",
         accessor: "id",
         align: "left",
-        width: "10%",
+        width: "15%",
         minWidth: "50px",
         Cell: ({ value }) => value.split("/")[0],
       },
@@ -99,7 +100,7 @@ export const AvailableStakes = () => {
         accessor: "currentPrice",
         align: "right",
         width: "20%",
-        minWidth: "150px",
+        minWidth: "100px",
         Cell: ({ value, row }) => {
           return (
             <Box>
@@ -112,7 +113,7 @@ export const AvailableStakes = () => {
         accessor: "hourlyHistory",
         Header: "24H %",
         align: "right",
-        minWidth: "100px",
+        minWidth: "80px",
         Cell: ({ value }) => {
           const oldPrice = value[0].closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
@@ -148,7 +149,7 @@ export const AvailableStakes = () => {
               variant="primary"
               size="sm"
               active={row.isExpanded}
-              css={{ width: "70px", borderRadius: "$sm", fontSize: "13px" }}
+              css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
               {...row.getToggleRowExpandedProps()}
             >
               {row.isExpanded ? "Cancel" : "Stake"}

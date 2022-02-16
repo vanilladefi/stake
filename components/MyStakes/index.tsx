@@ -49,8 +49,8 @@ export const MyStakes = () => {
           return name;
         },
         id: "tokenIcon",
-        width: "15%",
-        minWidth: "250px",
+        width: "25%",
+        minWidth: "40px",
         align: "left",
         Cell: ({
           value,
@@ -70,6 +70,7 @@ export const MyStakes = () => {
                   position: "relative",
                   overflow: "hidden",
                   p: "3px",
+                  flexShrink: 0,
                 }}
               >
                 {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
@@ -102,7 +103,7 @@ export const MyStakes = () => {
         accessor: "juiceValue",
         align: "right",
         width: "15%",
-        minWidth: "100px",
+        minWidth: "80px",
         Cell: ({ value = 0 }) => {
           return (
             <Box>
@@ -117,15 +118,21 @@ export const MyStakes = () => {
         accessor: "sentiment",
         align: "right",
         width: "15%",
-        minWidth: "100px",
-        Cell: ({ value = "xxxx" }) => value,
+        minWidth: "80px",
+        Cell: ({ value = "xxxx" }) => {
+          return (
+            <Text css={{ textTransform: "capitalize", color: "$muted" }}>
+              {value}
+            </Text>
+          );
+        },
       },
       {
         Header: "Price",
         accessor: "currentPrice",
         align: "right",
         width: "15%",
-        minWidth: "100px",
+        minWidth: "80px",
         Cell: ({ value, row }) => {
           return (
             <Box>
@@ -138,7 +145,7 @@ export const MyStakes = () => {
         accessor: "hourlyHistory",
         Header: "7D%",
         align: "right",
-        minWidth: "100px",
+        minWidth: "75px",
         Cell: ({ value }) => {
           const oldPrice = value[0].closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
@@ -165,7 +172,7 @@ export const MyStakes = () => {
         Header: "",
         align: "right",
         width: "10%",
-        minWidth: "100px",
+        minWidth: "50px",
         Cell: ({ value, row }) => {
           return (
             <Button
@@ -174,7 +181,7 @@ export const MyStakes = () => {
               variant="primary"
               size="sm"
               active={row.isExpanded}
-              css={{ width: "70px", borderRadius: "$sm", fontSize: "13px" }}
+              css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
               {...row.getToggleRowExpandedProps()}
             >
               {row.isExpanded ? "Cancel" : "Edit"}
