@@ -54,7 +54,7 @@ const StyledButton = styled(
           boxShadow: "0px 0px 0px 1px $colors$primary",
         },
         bordered: {
-          color: "$primary",
+          color: "$link",
           backgroundColor: "$background",
           boxShadow: "0px 0px 0px 1px $colors$extraMuted",
         },
@@ -99,7 +99,7 @@ const StyledButton = styled(
         outline: true,
         variant: "primary",
         css: {
-          color: "$primary",
+          color: "$link",
           boxShadow: "0px 0px 0px 1px $colors$primary",
           backgroundColor: "transparent",
         },
@@ -134,7 +134,7 @@ const StyledButton = styled(
         variant: "primary",
         ghost: true,
         css: {
-          color: "$primary",
+          color: "$link",
           "&:hover": {
             backgroundColor: "rgba(255,255,255,.1)",
             boxShadow: "none",

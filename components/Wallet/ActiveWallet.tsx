@@ -31,7 +31,7 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
           target="_blank"
           rel="noopener noreferrer"
           css={{
-            color: "$primary",
+            color: "$link",
             textDecoration: "none",
             "&:hover": {
               color: "$text",
@@ -372,6 +372,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           >
             {Number(unstakedBalance) <= 0 && Number(balances.juice) <= 0 ? (
               <Text muted>
+                {/* TODO: don't show this message if user has active positions */}
                 You need to get some $JUICE first, before you can add it to your
                 staking account and start making stakes.
               </Text>

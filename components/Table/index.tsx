@@ -37,7 +37,7 @@ const TableContainer = styled(Box, {
     tr: {
       "&:nth-child(odd)": {
         "& td": {
-          backgroundColor: "rgba(255, 199, 148, 0.07)",
+          backgroundColor: "$tableZebra",
         },
       },
       "&:last-child": {
