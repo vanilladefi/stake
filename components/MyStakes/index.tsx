@@ -181,7 +181,10 @@ export const MyStakes = () => {
         <StakeSubRow
           type="edit"
           row={row}
-          defaultStake={row.original.juiceValue}
+          defaultStake={{
+            amount: row.original.juiceValue,
+            position: row.original.sentiment,
+          }}
         />
       );
     },

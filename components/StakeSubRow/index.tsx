@@ -40,19 +40,22 @@ export type ColumnType = {
 
 interface SubRowProps {
   row: Row<ColumnType>;
-  defaultStake?: string;
+  defaultStake?: {
+    amount?: string;
+    position?: "long" | "short";
+  };
   type?: "edit" | "make";
 }
 
 const StakeSubRow: FC<SubRowProps> = ({
   row,
   type = "make",
-  defaultStake = "",
+  defaultStake,
 }) => {
   const { signer } = useSnapshot(state);
 
-  const [stakeAmount, setStakeAmount] = useState(defaultStake);
-  const [stakePosition, setStakePosition] = useState<"long" | "short">("long");
+  const [stakeAmount, setStakeAmount] = useState(defaultStake?.amount || "");
+  const [stakePosition, setStakePosition] = useState<"long" | "short">(defaultStake?.position || "long");
   const [stakePending, setStakePending] = useState(false);
   const [stakingDisabled, setStakingDisabled] = useState(true);
   const [closingDisabled, setClosingDisabled] = useState(true);
