@@ -65,16 +65,16 @@ const EmailForm: FC = () => {
           },
         });
 
-        const { error } = await res.json();
+        const { error }: { error?: string; done?: boolean } = await res.json();
 
+        // error returned by api responce should be safe to show on client side directly
         if (error) {
-          throw error;
+          setError(error);
+        } else {
+          setIsDone(true);
+          setEmail("");
         }
-
-        setIsDone(true);
-        setEmail("");
       } catch (error) {
-        // maybe do something with it
         setError("Something went wrong, try again later!");
       } finally {
         setIsLoading(false);
@@ -94,7 +94,7 @@ const EmailForm: FC = () => {
               <Input
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.currentTarget.value)}
+                onChange={(e) => setEmail(e.currentTarget.value)}
                 autoCapitalize="off"
                 autoCorrect="off"
                 size="lg"
@@ -104,11 +104,16 @@ const EmailForm: FC = () => {
                   px: "$3",
                   width: "100%",
                   mb: "$1",
-                  mr: '1px'
+                  mr: "1px",
                 }}
                 placeholder="Email address"
               />
-              <SendButton disabled={isLoading} muted={!isValid} type="submit" variant="primary">
+              <SendButton
+                disabled={isLoading}
+                muted={!isValid}
+                type="submit"
+                variant="primary"
+              >
                 <StyledArrow />
               </SendButton>
             </Flex>
