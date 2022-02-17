@@ -57,6 +57,11 @@ const persistedKeys = {
   walletAddress: "vanilla-walletAddress",
 };
 
+enum VanillaEvents {
+  stakesChanged = 'vanilla-StakesChanged',
+  balancesChanged = 'vanilla-BalancesChanged',
+}
+
 const state = proxy<State>(initialState);
 
 export {
@@ -67,4 +72,5 @@ export {
   snapshot,
   ref,
   persistedKeys,
+  VanillaEvents
 };

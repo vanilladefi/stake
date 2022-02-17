@@ -6,9 +6,9 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
-import { state } from "../../state";
+import { state, VanillaEvents } from "../../state";
 import tokens from "../../tokens";
-import { findToken, formatJuice } from "../../utils/helpers";
+import { emitEvent, findToken, formatJuice } from "../../utils/helpers";
 import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
@@ -234,6 +234,17 @@ export const MyStakes = () => {
   }, [stakesLoading, polygonProvider, signer, walletAddress]);
 
   useEffect(() => {
+    const onStakesChange = () => {
+      getStakes();
+    };
+    getStakes()
+    window.addEventListener(VanillaEvents.stakesChanged, onStakesChange);
+    return () => {
+      window.removeEventListener(VanillaEvents.stakesChanged, onStakesChange);
+    }
+  }, [getStakes]);
+
+  useEffect(() => {
     if (!walletAddress) return;
 
     const contractAddress = isAddress(
@@ -245,17 +256,16 @@ export const MyStakes = () => {
     });
     if (!contract) return;
 
-    getStakes();
-    const onStakesChanged = () => {
-      getStakes();
-    };
+    const onStakesChange = () => {
+      emitEvent(VanillaEvents.stakesChanged);
+    }
 
-    contract.on("StakeAdded", onStakesChanged);
-    contract.on("StakeRemoved", onStakesChanged);
+    contract.on("StakeAdded", onStakesChange);
+    contract.on("StakeRemoved", onStakesChange);
 
     return () => {
-      contract.off("StakeAdded", onStakesChanged);
-      contract.off("StakeRemoved", onStakesChanged);
+      contract.off("StakeAdded", onStakesChange);
+      contract.off("StakeRemoved", onStakesChange);
     };
   }, [getStakes, polygonProvider, signer, walletAddress]);
 

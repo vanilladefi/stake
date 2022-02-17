@@ -5,10 +5,10 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
 import { useSnapshot } from "valtio";
 import { correctNetwork } from "../../lib/config";
-import { state } from "../../state";
+import { state, VanillaEvents } from "../../state";
 import { showDialog } from "../../state/actions/dialog";
 import { connectWallet } from "../../state/actions/wallet";
-import { findToken, parseJuice } from "../../utils/helpers";
+import { emitEvent, findToken, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Flex from "../Flex";
@@ -104,8 +104,10 @@ const StakeSubRow: FC<SubRowProps> = ({
 
       if (res.status === 1) {
         showDialog("Success", {
-          body: `Transaction was successful, ${transactionLink}`, // TODO: Support links in dialog
+          body: `Transaction was successful, ${transactionLink}`,
         });
+
+        emitEvent(VanillaEvents.stakesChanged);
       } else {
         showDialog("Error", {
           body: `Transaction failed, ${transactionLink}`,
@@ -149,14 +151,17 @@ const StakeSubRow: FC<SubRowProps> = ({
       });
       const res = await tx.wait();
 
-      if (res.status === 1)
+      if (res.status === 1) {
         showDialog("Success", {
           body: "Stake position closed [LINK]",
         });
-      else
+
+        emitEvent(VanillaEvents.stakesChanged);
+      } else {
         showDialog("Error", {
           body: "Transaction failed [LINK]",
         });
+      }
     } catch (error) {
       console.warn(error);
       let body = "Something went wrong!";

@@ -1,5 +1,6 @@
 import { juiceDecimals } from "@vanilladefi/core-sdk";
 import { ethers } from "ethers";
+import { VanillaEvents } from '../state';
 import tokens from "../tokens";
 
 // RFC 2822 email spec
@@ -18,4 +19,9 @@ export const parseJuice = (amount: string | number) =>
 export const findToken = (nameOrId: string): typeof tokens[0] | undefined => {
   const id = nameOrId.split('/')[0].trim()
   return tokens.find(token => token.id === id || token.alias === id)
+}
+
+export const emitEvent = (eventType: VanillaEvents) => {
+  const event = new Event(eventType)
+  window.dispatchEvent(event)
 }
