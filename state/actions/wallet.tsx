@@ -5,7 +5,7 @@ import {
 } from "@vanilladefi/stake-sdk";
 import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
-import { persistedKeys, ref, state, subscribeKey } from "..";
+import { persistedKeys, ref, state, subscribeKey, VanillaEvents } from "..";
 import { correctNetwork } from "../../lib/config";
 import { formatJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
@@ -50,10 +50,10 @@ export const ensureCorrectChain = (force?: true): boolean => {
       body: `Your wallet seems to have the wrong network enabled. You will need to switch to ${correctNetwork.chainName}.`,
       onConfirm: async () => {
         await switchToCorrectNetwork();
-        await connectWallet()
+        await connectWallet();
       },
-      confirmText: 'Switch',
-      cancelText: 'Cancel'
+      confirmText: "Switch",
+      cancelText: "Cancel",
     });
   };
   try {
@@ -124,6 +124,12 @@ export const initWalletSubscriptions = () => {
     } catch (error) {
       console.log(error);
     }
+  });
+
+  // subscribe to balance changes custom events
+  window.addEventListener(VanillaEvents.balancesChanged, () => {
+    updateBalances();
+    updateUnstakedAmount();
   });
 
   subscribeKey(state, "modal", (modal) => {

@@ -5,9 +5,9 @@ import { ContractTransaction } from "ethers";
 import Link from "next/link";
 import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
-import { state, useSnapshot } from "../../state";
+import { state, useSnapshot, VanillaEvents } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
-import { parseJuice } from "../../utils/helpers";
+import { emitEvent, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Heading from "../Heading";
@@ -125,6 +125,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           setMessage({
             value: "Transaction successful [LINK]",
           });
+
+          emitEvent(VanillaEvents.balancesChanged)
         } else {
           setMessage({
             value: "Transaction failed! [LINK]",
