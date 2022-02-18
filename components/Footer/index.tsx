@@ -138,11 +138,17 @@ const Footer = () => {
               },
             }}
           >
-            <RegularLink css={{ justifyContent: "flex-end" }} href="/">
-              Terms of Use
-            </RegularLink>
-            <RegularLink css={{ justifyContent: "flex-end" }} href="/">
+            <RegularLink
+              css={{ justifyContent: "flex-end" }}
+              href="/privacy-policy"
+            >
               Privacy Policy
+            </RegularLink>
+            <RegularLink
+              css={{ justifyContent: "flex-end" }}
+              href="/terms-of-use"
+            >
+              Terms of Use
             </RegularLink>
           </Stack>
 
