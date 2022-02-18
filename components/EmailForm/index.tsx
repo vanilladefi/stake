@@ -21,10 +21,6 @@ const StyledArrow = styled(ArrowRight, {
   },
 });
 
-const SendButton = styled(Button, {
-  padding: "0 $3 !important",
-});
-
 const EmailForm: FC = () => {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(false);
@@ -90,7 +86,7 @@ const EmailForm: FC = () => {
       ) : (
         <fieldset disabled={isLoading}>
           <form noValidate onSubmit={onSubmit}>
-            <Flex>
+            <Flex css={{ height: "$10", position: "relative" }}>
               <Input
                 type="email"
                 value={email}
@@ -100,6 +96,7 @@ const EmailForm: FC = () => {
                 size="lg"
                 variant="bordered"
                 css={{
+                  height: "100%",
                   fontSize: "$lg",
                   px: "$3",
                   width: "100%",
@@ -108,14 +105,15 @@ const EmailForm: FC = () => {
                 }}
                 placeholder="Email address"
               />
-              <SendButton
+              <Button
+                css={{ padding: "0 $3 !important", height: "100%" }}
                 disabled={isLoading}
                 muted={!isValid}
                 type="submit"
                 variant="primary"
               >
                 <StyledArrow />
-              </SendButton>
+              </Button>
             </Flex>
             <ErrorText>{error}</ErrorText>
           </form>
