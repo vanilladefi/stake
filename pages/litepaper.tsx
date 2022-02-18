@@ -7,7 +7,7 @@ import type * as Stitches from "@stitches/react";
 import Box from "../components/Box";
 import Text from "../components/Text";
 import Paragraph from "../components/Paragraph";
-import Link from "../components/Link";
+import Link from "next/link";
 
 import ThemeHeading from "../components/Heading";
 import Container from "../components/Container";

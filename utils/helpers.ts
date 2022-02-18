@@ -1,5 +1,6 @@
 import { juiceDecimals } from "@vanilladefi/core-sdk";
 import { ethers } from "ethers";
+import { correctNetwork } from '../lib/config';
 import { VanillaEvents } from '../state';
 import tokens from "../tokens";
 
@@ -24,4 +25,13 @@ export const findToken = (nameOrId: string): typeof tokens[0] | undefined => {
 export const emitEvent = (eventType: VanillaEvents) => {
   const event = new Event(eventType)
   window.dispatchEvent(event)
+}
+
+export const getTransactionLink = (txHash: string) => {
+  let explorerUrl = correctNetwork.blockExplorerUrls[0]
+  if (explorerUrl.endsWith('/')) {
+    explorerUrl = explorerUrl.slice(0, -1)
+  }
+  const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${txHash}`
+  return transactionLink;
 }

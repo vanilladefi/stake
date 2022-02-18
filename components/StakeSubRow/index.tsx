@@ -5,15 +5,22 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
 import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
-import { correctNetwork } from "../../lib/config";
 import { state, VanillaEvents } from "../../state";
 import { connectWallet } from "../../state/actions/wallet";
-import { emitEvent, findToken, parseJuice } from "../../utils/helpers";
+import {
+  emitEvent,
+  findToken,
+  getTransactionLink,
+  parseJuice,
+} from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Flex from "../Flex";
 import Input from "../Input";
+import Link from "../Link";
 import Text from "../Text";
+
+import { PolygonScanIcon } from "../../assets";
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -57,6 +64,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
   const [stakePending, setStakePending] = useState(false);
   const [stakingDisabled, setStakingDisabled] = useState(true);
   const [closingDisabled, setClosingDisabled] = useState(true);
+  const [txLink, setTxLink] = useState<string>();
 
   useEffect(() => {
     const _disabled = !(stakeAmount && +stakeAmount) || stakePending;
@@ -84,7 +92,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
         position: toast.POSITION.TOP_CENTER,
       });
     }
-
+    setTxLink(undefined);
     setStakePending(true);
     try {
       const amount = parseJuice(stakeAmount).toString();
@@ -99,30 +107,39 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
         signerOrProvider: signer,
         optionalAddress: contractAddress || "",
       });
-      const res = await tx.wait();
 
-      const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${res.transactionHash}`;
+      const _txLink = getTransactionLink(tx.hash);
+      setTxLink(_txLink);
 
-      if (res.status === 1) {
-        toast.success(`Transaction was successful, ${transactionLink}`, {
-          position: toast.POSITION.BOTTOM_CENTER,
-        });
+      const rec = await tx.wait();
+
+      const transactionLink = getTransactionLink(rec.transactionHash);
+      if (rec.status === 1) {
+        toast.success(
+          <>
+            Transaction was successful.{" "}
+            <Link href={transactionLink} external text="View on explorer" />{" "}
+          </>
+        );
 
         emitEvent(VanillaEvents.stakesChanged);
       } else {
-        toast.error(`Transaction failed, ${transactionLink}`, {
-          position: toast.POSITION.BOTTOM_CENTER,
-        });
+        toast.error(
+          <>
+            Transaction failed!{" "}
+            <Link href={transactionLink} external text="View on explorer" />{" "}
+          </>
+        );
       }
     } catch (error) {
       console.warn(error);
+
       let body = "Something went wrong!";
       if ((error as any)?.code === 4001) {
-        body = "The request was rejected by the user";
+        body = "Request was rejected by the user";
       }
-      toast.error(body, {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
+
+      toast.error(body);
     }
     setStakePending(false);
   }, [stakingDisabled, row.original.id, signer, stakeAmount, stakePosition]);
@@ -138,9 +155,10 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
 
     if (!token) {
       return toast.error("Error: Token is not available to stake", {
-        position: toast.POSITION.BOTTOM_CENTER,
+        position: toast.POSITION.TOP_CENTER,
       });
     }
+    setTxLink(undefined);
     setStakePending(true);
     try {
       const stake = { token, amount: 0, sentiment: false };
@@ -152,27 +170,37 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
         signerOrProvider: signer,
         optionalAddress: contractAddress || "",
       });
+      const _txLink = getTransactionLink(tx.hash);
+      setTxLink(_txLink);
+
       const res = await tx.wait();
 
+      const transactionLink = getTransactionLink(res.transactionHash);
       if (res.status === 1) {
-        toast.success("Stake position closed [LINK]", {
-          position: toast.POSITION.BOTTOM_CENTER,
-        });
+        toast.success(
+          <>
+            Stake position closed.{" "}
+            <Link href={transactionLink} external text="View on explorer" />{" "}
+          </>
+        );
 
         emitEvent(VanillaEvents.stakesChanged);
       } else
-        toast.error("Transaction failed [LINK]", {
-          position: toast.POSITION.BOTTOM_CENTER,
-        });
+        toast.error(
+          <>
+            Transaction failed!{" "}
+            <Link href={transactionLink} external text="View on explorer" />{" "}
+          </>
+        );
     } catch (error) {
       console.warn(error);
+
       let body = "Something went wrong!";
       if ((error as any)?.code === 4001) {
         body = "The request was rejected by the user";
       }
-      toast.error(body, {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
+
+      toast.error(body);
     }
 
     setStakePending(false);
@@ -340,7 +368,10 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
       {type === "edit" ? (
         stakePending ? (
           <Flex justify="center" align="center" css={{ width: "220px" }}>
-            Pending...
+            <Link external variant={txLink ? "default" : "subtle"} href={txLink}>
+              {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
+              Pending...
+            </Link>
           </Flex>
         ) : (
           <>
@@ -391,6 +422,13 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
             </Button>
           </>
         )
+      ) : stakePending ? (
+        <Flex row align="center" justify="center" css={{ width: "135px" }}>
+          <Link external variant={txLink ? "default" : "subtle"} href={txLink}>
+            {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
+            Pending...
+          </Link>
+        </Flex>
       ) : (
         <Button
           ghost
@@ -411,7 +449,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
             },
           }}
         >
-          {stakePending ? "Pending..." : "Add Stake"}
+          Add Stake
         </Button>
       )}
     </Flex>

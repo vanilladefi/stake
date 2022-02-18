@@ -143,7 +143,7 @@ export const AvailableStakes = () => {
               css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
               {...row.getToggleRowExpandedProps()}
             >
-              {row.isExpanded ? "Cancel" : "Stake"}
+              {row.isExpanded ? "Collapse" : "Stake"}
             </Button>
           );
         },

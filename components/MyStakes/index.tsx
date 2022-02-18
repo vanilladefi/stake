@@ -20,10 +20,6 @@ import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
 
-/**
- * Early rough implementation
- * Just a POC
- */
 export const MyStakes = () => {
   // leaving `executeQuery` to AvailableStakes component
   const [{ fetching: _, data: _data }] = useGetAssetPairsQuery();
@@ -95,11 +91,7 @@ export const MyStakes = () => {
         width: "15%",
         minWidth: "80px",
         Cell: ({ value = 0 }) => {
-          return (
-            <Box>
-              {value}
-            </Box>
-          );
+          return <Box>{value}</Box>;
         },
       },
       {
@@ -173,7 +165,7 @@ export const MyStakes = () => {
               css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
               {...row.getToggleRowExpandedProps()}
             >
-              {row.isExpanded ? "Cancel" : "Edit"}
+              {row.isExpanded ? "Collapse" : "Edit"}
             </Button>
           );
         },
@@ -201,7 +193,8 @@ export const MyStakes = () => {
   const [stakes, setStakes] = useState<any[] | null>(null);
   const [stakesLoading, setStakesLoading] = useState(true);
 
-  const { signer, polygonProvider, walletAddress } = useSnapshot(state);
+  const { signer, polygonProvider, walletAddress, unstakedBalance } =
+    useSnapshot(state);
 
   const getStakes = useCallback(async () => {
     if (!walletAddress || !signer) return;
@@ -247,11 +240,11 @@ export const MyStakes = () => {
     const onStakesChange = () => {
       getStakes();
     };
-    getStakes()
+    getStakes();
     window.addEventListener(VanillaEvents.stakesChanged, onStakesChange);
     return () => {
       window.removeEventListener(VanillaEvents.stakesChanged, onStakesChange);
-    }
+    };
   }, [getStakes]);
 
   useEffect(() => {
@@ -268,7 +261,7 @@ export const MyStakes = () => {
 
     const onStakesChange = () => {
       emitEvent(VanillaEvents.stakesChanged);
-    }
+    };
 
     contract.on("StakeAdded", onStakesChange);
     contract.on("StakeRemoved", onStakesChange);
@@ -297,9 +290,9 @@ export const MyStakes = () => {
       stakes.forEach((sd) => {
         _stakedTotal += Number(sd.juiceValue);
       });
-      console.log(_stakedTotal);
-      setStakedTotal(_stakedTotal);
       setTableData(_tableData);
+
+      setStakedTotal(_stakedTotal);
     } else {
       setTableData(null);
     }
@@ -327,7 +320,7 @@ export const MyStakes = () => {
           css={{ textAlign: "right" }}
           onClick={() => (state.walletOpen = true)}
         >
-          {(Number(state?.unstakedBalance) > 0 || stakedTotal > 0) && (
+          {(Number(unstakedBalance) > 0 || stakedTotal > 0) && (
             <Box>
               <Box
                 as="a"
@@ -342,9 +335,8 @@ export const MyStakes = () => {
                   },
                 }}
               >
-                {(Number(state?.unstakedBalance) + Number(stakedTotal)).toFixed(
-                  3
-                ) + " JUICE"}
+                {(Number(unstakedBalance) + Number(stakedTotal)).toFixed(3) +
+                  " JUICE"}
               </Box>
               <Box
                 css={{
@@ -353,12 +345,12 @@ export const MyStakes = () => {
                   textTransform: "uppercase",
                 }}
               >{`${Number(stakedTotal).toFixed(3)} Staked  /  ${Number(
-                state?.unstakedBalance
+                unstakedBalance
               ).toFixed(3)} Unstaked`}</Box>
             </Box>
           )}
         </Box>
-        {Number(state?.unstakedBalance) == 0 && stakedTotal == 0 && (
+        {Number(unstakedBalance) == 0 && stakedTotal == 0 && (
           <Button variant="primary" onClick={() => (state.walletOpen = true)}>
             Manage funds
           </Button>
@@ -386,7 +378,7 @@ export const MyStakes = () => {
       ) : (
         <Container>
           <Flex column align="center" css={{ mb: "$8" }}>
-            {Number(state?.balances?.juice) > 0 ? (
+            {Number(unstakedBalance) > 0 ? (
               <Text
                 css={{
                   fontSize: "$xl",

@@ -225,27 +225,28 @@ export const updateTruncatedAddress = () => {
 };
 
 async function onJuiceDeposited(depositor: string, amount: BigNumber) {
-  const { walletOpen, walletAddress } = snapshot(state);
+  const { walletAddress } = snapshot(state);
   if (depositor.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
     await updateUnstakedAmount();
     await updateBalances();
-    if (!walletOpen) {
-      toast.success(`${formatJuice(amount)} JUICE deposited successfully!`, {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
-    }
+    
+    // TODO discuss if we need this as we already have transaction confirmation toast
+    toast.success(`${formatJuice(amount)} JUICE deposited successfully!`, {
+      autoClose: 2000,
+      hideProgressBar: true
+    });
   }
 }
 
 async function onJuiceWithdrawn(withdrawer: string, amount: BigNumber) {
-  const { walletOpen, walletAddress } = snapshot(state);
+  const { walletAddress } = snapshot(state);
   if (withdrawer.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
     await updateUnstakedAmount();
     await updateBalances();
-    if (!walletOpen) {
-      toast.success(`${formatJuice(amount)} JUICE withdrawn successfully!`, {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
-    }
+    
+    toast.success(`${formatJuice(amount)} JUICE withdrawn successfully!`, {
+      autoClose: 2000,
+      hideProgressBar: true,
+    });
   }
 }
