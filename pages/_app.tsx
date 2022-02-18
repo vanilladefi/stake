@@ -5,6 +5,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Provider } from "urql";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Box from "../components/Box";
 import Footer from "../components/Footer";
 import Navigation from "../components/Navigation";
@@ -151,6 +153,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Navigation />
             <Component {...pageProps} />
             <Footer />
+            <ToastContainer />
           </Box>
         </ThemeProvider>
       </Provider>

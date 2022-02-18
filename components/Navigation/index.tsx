@@ -1,7 +1,7 @@
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, DotsThreeVertical, Moon, Sun, X } from "phosphor-react";
+import { DotsThreeVertical, Moon, Sun, X } from "phosphor-react";
 import { useEffect, useState } from "react";
 import Box from "../Box";
 import Container from "../Container";
@@ -94,19 +94,17 @@ const DesktopNavigation = () => {
           <NavLink css={{ py: "$8" }} href="/stake">
             stake
           </NavLink>
-          <NavLink css={{ py: "$8" }} href="/invest">
+          {/* <NavLink css={{ py: "$8" }} href="/invest">
             Invest
             <ArrowUpRight
               weight="bold"
               style={{ marginBottom: "3px", marginLeft: "5px" }}
               size="15px"
             />
-          </NavLink>
-          <NavLink css={{ py: "$8" }} href="/faq">
-            FAQ
-          </NavLink>
-          <NavLink css={{ py: "$8" }} href="/community">
-            Community
+          </NavLink> */}
+
+          <NavLink css={{ py: "$8" }} href="/litepaper">
+            Litepaper
           </NavLink>
           <ThemeChanger />
         </Stack>
@@ -216,19 +214,16 @@ const MobileNavigation = () => {
             <NavLink css={{ py: "$4" }} href="/stake">
               Stake
             </NavLink>
-            <NavLink css={{ py: "$4" }} href="/invest">
+            {/* <NavLink css={{ py: "$4" }} href="/invest">
               Invest
               <ArrowUpRight
                 weight="bold"
                 style={{ marginBottom: "3px", marginLeft: "5px" }}
                 size="15px"
               />
-            </NavLink>
-            <NavLink css={{ py: "$5", alignItems: "center" }} href="/faq">
-              FAQ
-            </NavLink>
-            <NavLink css={{ py: "$5", alignItems: "center" }} href="/community">
-              Community
+            </NavLink> */}
+            <NavLink css={{ py: "$5", alignItems: "center" }} href="/litepaper">
+              Litepaper
             </NavLink>
           </Stack>
 

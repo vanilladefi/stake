@@ -5,7 +5,8 @@ import Box from "../Box";
 import Loader from "../Loader";
 
 const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
-  const { walletAddress, balances, walletOpen } = useSnapshot(state);
+  const { walletAddress, truncatedWalletAddress, walletOpen } =
+    useSnapshot(state);
 
   const buttonStyles = {
     display: "flex",
@@ -21,6 +22,25 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     ...css,
   };
 
+  const walletButtonStyles = {
+    display: "flex",
+    flex: 1,
+    whiteSpace: "nowrap",
+    border: "1px solid",
+    borderColor: "$muted",
+    color: "$muted",
+    textTransform: "uppercase",
+    textAlign: "center",
+    fontSize: "$sm",
+    justifyContent: "center",
+    py: "$3",
+    px: "$4",
+    ...css,
+    "&:hover": {
+      backgroundColor: "rgba(255,255,255,.1)",
+    },
+  };
+
   return (
     <Box
       css={{ display: "flex", cursor: "pointer", ...css }}
@@ -32,11 +52,8 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     >
       {walletAddress ? (
         <>
-          <Box css={buttonStyles}>
-            {balances.vnl ? `${balances.vnl} VNL` : <Loader />}
-          </Box>
-          <Box css={buttonStyles}>
-            {balances.matic ? `${balances.matic} MATIC` : <Loader />}
+          <Box css={walletButtonStyles}>
+            {truncatedWalletAddress ? truncatedWalletAddress : <Loader />}
           </Box>
         </>
       ) : (

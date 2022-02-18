@@ -48,7 +48,7 @@ export const Input = styled("input", {
   },
   "&::placeholder": {
     color: "$offWhite50",
-    opacity: 0.3,
+    opacity: 0.7,
   },
   "&:focus": {
     boxShadow: `0 1px 0 0px $colors$muted`,
@@ -83,8 +83,8 @@ export const Input = styled("input", {
         },
       },
       lg: {
-        height: "$10",
-        fontSize: "$2xl",
+        height: "$8",
+        fontSize: "$xl",
         lineHeight: "$sizes$6",
         "&:-webkit-autofill::first-line": {
           fontSize: "$3",
@@ -143,13 +143,15 @@ export const Input = styled("input", {
       invalid: {
         boxShadow: "inset 0 0 0 1px $colors$red7",
         "&:focus": {
-          boxShadow: "inset 0px 0px 0px 1px $colors$red8, 0px 0px 0px 1px $colors$red8",
+          boxShadow:
+            "inset 0px 0px 0px 1px $colors$red8, 0px 0px 0px 1px $colors$red8",
         },
       },
       valid: {
         boxShadow: "inset 0 0 0 1px $colors$green7",
         "&:focus": {
-          boxShadow: "inset 0px 0px 0px 1px $colors$green8, 0px 0px 0px 1px $colors$green8",
+          boxShadow:
+            "inset 0px 0px 0px 1px $colors$green8, 0px 0px 0px 1px $colors$green8",
         },
       },
     },

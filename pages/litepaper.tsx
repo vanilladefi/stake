@@ -57,6 +57,7 @@ const SRow = styled("tr", {
 const Col = styled("td", {
   border: "1px solid $text",
   p: "$2",
+  position: "relative",
 });
 
 const OrderedList = styled("ol", {
@@ -120,7 +121,7 @@ const ExtLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
   );
 };
 
-const Faq = () => {
+const Litepaper = () => {
   return (
     <Container
       css={{
@@ -1308,4 +1309,4 @@ const Faq = () => {
   );
 };
 
-export default Faq;
+export default Litepaper;
