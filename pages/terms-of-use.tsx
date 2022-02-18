@@ -33,29 +33,6 @@ const ListItem = styled("li", {
   my: "$5",
 });
 
-const ExtLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
-  href,
-  children,
-  css,
-}) => {
-  return (
-    <Link href={href} passHref>
-      {typeof children === "string" ? (
-        <ThemeLink as="a" target="_blank" rel="noreferrer noopener">
-          {children}
-          <ArrowUpRight
-            weight="light"
-            style={{ marginLeft: "3px" }}
-            size="14px"
-          />
-        </ThemeLink>
-      ) : (
-        ""
-      )}
-    </Link>
-  );
-};
-
 const PrivacyPolicy = () => {
   return (
     <Container
