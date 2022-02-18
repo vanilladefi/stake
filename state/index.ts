@@ -1,5 +1,4 @@
 import { providers, Signer } from "ethers";
-import React from "react";
 import { proxy, ref, snapshot, subscribe, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
 import Web3Modal from "web3modal";
@@ -10,19 +9,19 @@ export type Balances = Partial<Record<BalanceTypes, string>>;
 
 type State = {
   ethereumProvider:
-    | providers.JsonRpcProvider
-    | providers.Web3Provider
-    | providers.WebSocketProvider
-    | providers.Provider
-    | providers.BaseProvider
-    | null;
+  | providers.JsonRpcProvider
+  | providers.Web3Provider
+  | providers.WebSocketProvider
+  | providers.Provider
+  | providers.BaseProvider
+  | null;
   polygonProvider:
-    | providers.JsonRpcProvider
-    | providers.Web3Provider
-    | providers.WebSocketProvider
-    | providers.Provider
-    | providers.BaseProvider
-    | null;
+  | providers.JsonRpcProvider
+  | providers.Web3Provider
+  | providers.WebSocketProvider
+  | providers.Provider
+  | providers.BaseProvider
+  | null;
   providerName: string | null;
   signer: Signer | null;
   balances: Balances;
@@ -32,7 +31,9 @@ type State = {
   alert: {
     title: string;
     body?: string;
-    customBody?: React.FC;
+    onConfirm?: () => void,
+    confirmText?: string
+    cancelText?: string
   } | null;
   walletOpen: boolean;
   unstakedBalance: string | null;

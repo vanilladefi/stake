@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { persistedKeys, ref, state, subscribeKey } from "..";
 import { correctNetwork } from "../../lib/config";
 import { formatJuice } from "../../utils/helpers";
-import { closeDialog } from "./dialog";
+import { showDialog } from "./dialog";
 
 export const connectWallet = async () => {
   const { modal } = snapshot(state);
@@ -17,6 +17,8 @@ export const connectWallet = async () => {
     const polygonProvider = await modal?.connect();
     const web3Provider = new providers.Web3Provider(polygonProvider);
     const signer = ref(web3Provider.getSigner());
+    const isCorrectChain = ensureCorrectChain(true);
+    if (!isCorrectChain) return;
 
     state.signer = signer;
     state.walletAddress = await signer?.getAddress();
@@ -42,36 +44,46 @@ export const disconnect = (soft?: boolean) => {
   state.unstakedBalance = null;
 };
 
-// TODO: Instead of prompting user to manually check their network, offer a button that changes/installs the used network to the user's wallet.
-export const ensureCorrectChain = async () => {
+export const ensureCorrectChain = (force?: true): boolean => {
+  const abort = () => {
+    disconnect();
+    showDialog("Wrong network", {
+      body: `Your wallet seems to have the wrong network enabled. You will need to switch to ${correctNetwork.chainName}.`,
+      onConfirm: async () => {
+        await switchToCorrectNetwork();
+        await connectWallet()
+      },
+      confirmText: 'Switch',
+      cancelText: 'Cancel'
+    });
+  };
   try {
     const { signer, walletAddress, modal } = snapshot(state);
     if (
       window.ethereum?.chainId !== correctNetwork.chainId &&
-      signer &&
-      walletAddress &&
       modal?.cachedProvider === "injected"
     ) {
-      return toast.error(
-        `Your wallet seems to have the wrong network enabled. Please check that you're using ${correctNetwork.chainName}.`,
-        {
-          position: toast.POSITION.TOP_CENTER,
-        }
-      );
+      if ((signer && walletAddress) || force) {
+        abort();
+      }
+
+      return false;
     }
+    return true;
   } catch (_e) {
     console.error(_e);
+    return false;
   }
 };
 
 export const switchToCorrectNetwork = async () => {
+  if (!window.ethereum) return;
+
   try {
     await window.ethereum.request({
       method: "wallet_addEthereumChain",
       params: [correctNetwork],
     });
-    await connectWallet();
-    closeDialog();
   } catch (_e) {
     console.error(_e);
   }

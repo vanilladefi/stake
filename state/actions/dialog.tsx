@@ -2,14 +2,20 @@ import { state } from "..";
 
 interface DialogOpts {
   body?: string;
-  customBody?: React.FC;
+  onConfirm?: () => any;
+  confirmText?: string;
+  cancelText?: string;
   link?: { text: string; href: string };
 }
 
 const showDialog = (title: string, opts?: DialogOpts) => {
+  const { body, onConfirm, confirmText, cancelText } = opts || {};
   state.alert = {
     title,
-    body: opts?.body,
+    body,
+    onConfirm,
+    confirmText,
+    cancelText,
   };
 };
 

@@ -12,18 +12,13 @@ import Table from "../Table";
 
 import valueUSD from "../../utils/valueUSD";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
-import tokens from "../../tokensV2";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import TableFilter from "../TableFilter";
+import { findToken } from "../../utils/helpers";
 
 export const AvailableStakes = () => {
   const [{ fetching, data: _data }, executeQuery] = useGetAssetPairsQuery();
-  const data =
-    _data?.assetPairs.filter((t) => {
-      const id = t.id.split("/")[0];
-      const isEnabled = tokens.find((ot) => ot.id === id)?.enabled;
-      return isEnabled;
-    }) || [];
+  const data = _data?.assetPairs.filter((t) => findToken(t.id)?.enabled) || [];
 
   // refetch data every 3 seconds
   useEffect(() => {
@@ -39,12 +34,7 @@ export const AvailableStakes = () => {
     () => [
       {
         Header: "Token",
-        accessor: (row): string | undefined => {
-          const name = tokens.find(
-            (token) => token.id === row.id.split("/")[0]
-          )?.name;
-          return name;
-        },
+        accessor: (row): string | undefined => findToken(row.id)?.name,
         id: "tokenIcon",
         width: "25%",
         minWidth: "120px",
@@ -70,14 +60,15 @@ export const AvailableStakes = () => {
                   flexShrink: 0,
                 }}
               >
-                {tokens.find((tt) => tt.id === row.original.id.split("/")[0])
-                  ?.imageUrl ? (
+                {findToken(row.original.id)?.imageUrl ? (
                   <Image
                     width="24px"
                     height="24px"
                     layout="fixed"
                     objectFit="cover"
-                    src={`/token-assets/${row.original.id.split("/")[0]}.png`}
+                    src={`/token-assets/${
+                      findToken(row.original.id)?.imageUrl
+                    }`}
                     alt="Token icon"
                   />
                 ) : null}
