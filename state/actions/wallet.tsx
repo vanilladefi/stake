@@ -5,6 +5,7 @@ import {
 } from "@vanilladefi/stake-sdk";
 import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
+import { toast } from "react-toastify";
 import { persistedKeys, ref, state, subscribeKey } from "..";
 import { correctNetwork } from "../../lib/config";
 import { formatJuice } from "../../utils/helpers";
@@ -223,8 +224,8 @@ async function onJuiceDeposited(depositor: string, amount: BigNumber) {
     await updateUnstakedAmount();
     await updateBalances();
     if (!walletOpen) {
-      showDialog("Juice deposited", {
-        body: `${formatJuice(amount)} JUICE deposited successfully!`,
+      toast.success(`${formatJuice(amount)} JUICE deposited successfully!`, {
+        position: toast.POSITION.BOTTOM_CENTER,
       });
     }
   }
@@ -236,8 +237,8 @@ async function onJuiceWithdrawn(withdrawer: string, amount: BigNumber) {
     await updateUnstakedAmount();
     await updateBalances();
     if (!walletOpen) {
-      showDialog("Juice withdrawn", {
-        body: `${formatJuice(amount)} JUICE withdrawn successfully!`,
+      toast.success(`${formatJuice(amount)} JUICE withdrawn successfully!`, {
+        position: toast.POSITION.BOTTOM_CENTER,
       });
     }
   }

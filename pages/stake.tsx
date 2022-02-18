@@ -57,9 +57,12 @@ const StakingIntro = () => (
         }}
       >
         <Flex css={{ flexDirection: "column" }}>
-          <ArrowLink text="Read more" />
+          <ArrowLink href="/litepaper" text="Read the Litepaper" />
           {/* {!snap.walletAddress && ( */}
-          <ArrowLink onClick={() => connectWallet()} text="Connect Wallet" />
+          <ArrowLink
+            onClick={() => connectWallet()}
+            text="Connect wallet to stake"
+          />
           {/* )} */}
         </Flex>
       </Stack>

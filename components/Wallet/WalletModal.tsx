@@ -7,8 +7,8 @@ import { polygonRpcUrl } from "../../lib/config";
 import { ref, state } from "../../state";
 import { darkTheme, theme } from "../../stitches.config";
 
-const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {  
-  const { resolvedTheme } = useTheme()
+const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const web3ModalOptions: IProviderOptions = {
@@ -20,35 +20,38 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             80001: polygonRpcUrl,
           },
         },
-      }
-    }
+      },
+    };
 
-    const themeColors = resolvedTheme === 'dark' ? {
-      background: darkTheme.colors.background.value,
-      main: darkTheme.colors.text.value,
-      secondary: darkTheme.colors.muted.value,
-      border: darkTheme.colors.extraMuted.value,
-      hover: darkTheme.colors.extraMuted.value,
-    } : {
-      background: theme.colors.background.value,
-      main: theme.colors.text.value,
-      secondary: theme.colors.muted.value,
-      border: theme.colors.extraMuted.value,
-      hover: theme.colors.extraMuted.value,
-    }
+    const themeColors =
+      resolvedTheme === "dark"
+        ? {
+            background: darkTheme.colors.background.value,
+            main: darkTheme.colors.text.value,
+            secondary: darkTheme.colors.muted.value,
+            border: darkTheme.colors.extraMuted.value,
+            hover: darkTheme.colors.extraMuted.value,
+          }
+        : {
+            background: theme.colors.background.value,
+            main: theme.colors.text.value,
+            secondary: theme.colors.muted.value,
+            border: theme.colors.extraMuted.value,
+            hover: theme.colors.extraMuted.value,
+          };
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const modal = new Web3Modal({
         network: "matic",
         cacheProvider: true,
         providerOptions: web3ModalOptions,
         theme: themeColors,
       });
-      state.modal = ref(modal)
+      state.modal = ref(modal);
     }
-  }, [resolvedTheme])
+  }, [resolvedTheme]);
 
-  return <></>
-}
+  return <></>;
+};
 
-export default WalletModal
+export default WalletModal;

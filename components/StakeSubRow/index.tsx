@@ -3,10 +3,10 @@ import * as sdk from "@vanilladefi/stake-sdk";
 import Image from "next/image";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { Row } from "react-table";
+import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
 import { correctNetwork } from "../../lib/config";
 import { state } from "../../state";
-import { showDialog } from "../../state/actions/dialog";
 import { connectWallet } from "../../state/actions/wallet";
 import { findToken, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
@@ -79,8 +79,8 @@ const StakeSubRow: FC<SubRowProps> = ({
     const token = findToken(row.original.id)?.address;
 
     if (!token) {
-      return showDialog("Invalid operation", {
-        body: "Error: Token is not available to stake",
+      return toast.error("Error: Token is not available to stake", {
+        position: toast.POSITION.TOP_CENTER,
       });
     }
 
@@ -103,12 +103,12 @@ const StakeSubRow: FC<SubRowProps> = ({
       const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${res.transactionHash}`;
 
       if (res.status === 1) {
-        showDialog("Success", {
-          body: `Transaction was successful, ${transactionLink}`, // TODO: Support custom React components in the dialog
+        toast.success(`Transaction was successful, ${transactionLink}`, {
+          position: toast.POSITION.BOTTOM_CENTER,
         });
       } else {
-        showDialog("Error", {
-          body: `Transaction failed, ${transactionLink}`,
+        toast.error(`Transaction failed, ${transactionLink}`, {
+          position: toast.POSITION.BOTTOM_CENTER,
         });
       }
     } catch (error) {
@@ -117,7 +117,9 @@ const StakeSubRow: FC<SubRowProps> = ({
       if ((error as any)?.code === 4001) {
         body = "The request was rejected by the user";
       }
-      showDialog("Error", { body });
+      toast.error(body, {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
     }
     setStakePending(false);
   }, [stakingDisabled, row.original.id, signer, stakeAmount, stakePosition]);
@@ -132,8 +134,8 @@ const StakeSubRow: FC<SubRowProps> = ({
     const token = findToken(row.original.id)?.address;
 
     if (!token) {
-      return showDialog("Invalid operation", {
-        body: "Error: Token is not available to stake",
+      return toast.error("Error: Token is not available to stake", {
+        position: toast.POSITION.BOTTOM_CENTER,
       });
     }
     setStakePending(true);
@@ -150,12 +152,12 @@ const StakeSubRow: FC<SubRowProps> = ({
       const res = await tx.wait();
 
       if (res.status === 1)
-        showDialog("Success", {
-          body: "Stake position closed [LINK]",
+        toast.success("Stake position closed [LINK]", {
+          position: toast.POSITION.BOTTOM_CENTER,
         });
       else
-        showDialog("Error", {
-          body: "Transaction failed [LINK]",
+        toast.error("Transaction failed [LINK]", {
+          position: toast.POSITION.BOTTOM_CENTER,
         });
     } catch (error) {
       console.warn(error);
@@ -163,13 +165,24 @@ const StakeSubRow: FC<SubRowProps> = ({
       if ((error as any)?.code === 4001) {
         body = "The request was rejected by the user";
       }
-      showDialog("Error", {
-        body,
+      toast.error(body, {
+        position: toast.POSITION.BOTTOM_CENTER,
       });
     }
 
     setStakePending(false);
   }, [closingDisabled, signer, row.original.id]);
+
+  const stakeDifferenceNumber = -(
+    Number(defaultStake) - Number(stakeAmount)
+  ).toFixed(3);
+  const stakeDifference =
+    stakeDifferenceNumber != 0 &&
+    `${
+      stakeDifferenceNumber > 0
+        ? "+" + stakeDifferenceNumber
+        : stakeDifferenceNumber
+    }`;
 
   return (
     <Flex
@@ -177,6 +190,20 @@ const StakeSubRow: FC<SubRowProps> = ({
         flex: 1,
         boxShadow: "inset 0px 0px 0px 1px $colors$extraMuted",
         background: "$background",
+        position: "relative",
+        "&::before": {
+          display: "block",
+          content: "",
+          width: "10px",
+          height: "10px",
+          borderTop: "1px solid $colors$extraMuted",
+          borderLeft: "1px solid $colors$extraMuted",
+          position: "absolute",
+          top: "-5px",
+          transform: "rotate(45deg)",
+          backgroundColor: "$background",
+          left: "1.55rem",
+        },
       }}
     >
       <Flex
@@ -186,16 +213,55 @@ const StakeSubRow: FC<SubRowProps> = ({
           alignItems: "center",
         }}
       >
-        <Text css={{ color: "$muted", fontSize: "$xl", mr: "$2" }}>Stake</Text>
-        <Input
-          disabled={stakePending}
-          size="lg"
-          type="number"
-          placeholder="100"
-          value={stakeAmount}
-          onChange={(e) => setStakeAmount(e.target.value)}
-          css={{ width: "200px", textAlign: "right", mx: "$3" }}
-        />{" "}
+        <Box
+          css={{
+            position: "relative",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            css={{
+              color: "$muted",
+              fontSize: "$xl",
+              marginBottom: type === "edit" && stakeDifference ? "1rem" : 0,
+              mr: "$2",
+            }}
+          >
+            Stake
+          </Text>{" "}
+          <Input
+            disabled={stakePending}
+            size="lg"
+            type="number"
+            placeholder="0.0"
+            value={stakeAmount}
+            onChange={(e) => setStakeAmount(e.target.value)}
+            css={{
+              width: "100%",
+              minWidth: "40px",
+              maxWidth: "140px",
+              textAlign: "right",
+              mx: "$3",
+            }}
+          />{" "}
+          {type === "edit" && (
+            <Text
+              css={{
+                fontSize: "$s",
+                color: "$muted",
+                position: "absolute",
+                paddingRight: ".4rem",
+                background: "$background",
+                left: "0",
+                bottom: ".9rem",
+              }}
+            >
+              {stakeDifference}
+            </Text>
+          )}
+        </Box>
         <Image
           alt="Vanilla drop icon"
           width="20px"
@@ -210,9 +276,10 @@ const StakeSubRow: FC<SubRowProps> = ({
           outline
           disabled={stakePending}
           uppercase
-          size="sm"
+          size="md"
           css={{
-            width: "90px",
+            width: "20%",
+            maxWidth: "80px",
           }}
           active={stakePosition === "long"}
         >
@@ -223,9 +290,10 @@ const StakeSubRow: FC<SubRowProps> = ({
           outline
           uppercase
           disabled={stakePending}
-          size="sm"
+          size="md"
           css={{
-            width: "90px",
+            width: "20%",
+            maxWidth: "80px",
           }}
           active={stakePosition === "short"}
         >
@@ -236,8 +304,8 @@ const StakeSubRow: FC<SubRowProps> = ({
         css={{
           p: "$5",
           alignItems: "center",
-          borderRight: "1px solid $colors$extraMuted",
           flex: 1,
+          borderRight: "1px solid $colors$extraMuted",
         }}
       >
         <Box
@@ -281,8 +349,9 @@ const StakeSubRow: FC<SubRowProps> = ({
                 width: "120px",
                 marginRight: "1px",
                 height: "auto",
-                px: "0",
-                fontSize: "15px",
+                px: "$2",
+                fontSize: "$md",
+                maxWidth: "80px",
                 fontWeight: 300,
                 textAlign: "center",
                 borderRight: "1px solid $extraMuted",
@@ -293,17 +362,19 @@ const StakeSubRow: FC<SubRowProps> = ({
             >
               Close position
             </Button>
+
             <Button
               ghost
               variant="primary"
               disabled={stakingDisabled}
               onClick={modifyStake}
               css={{
-                width: "100px",
                 marginRight: "1px",
                 height: "auto",
-                px: "0",
-                fontSize: "15px",
+                px: "$8",
+                width: "auto",
+                maxWidth: "100px",
+                fontSize: "$md",
                 fontWeight: 300,
                 textAlign: "center",
                 "&:hover": {
@@ -322,11 +393,12 @@ const StakeSubRow: FC<SubRowProps> = ({
           disabled={stakingDisabled}
           onClick={modifyStake}
           css={{
-            width: "140px",
+            width: "auto",
             marginRight: "1px",
             height: "auto",
-            px: "0",
-            fontSize: "18px",
+            px: "$6",
+            fontSize: "$md",
+            maxWidth: "100px",
             fontWeight: 300,
             textAlign: "center",
             "&:hover": {
@@ -334,7 +406,7 @@ const StakeSubRow: FC<SubRowProps> = ({
             },
           }}
         >
-          {stakePending ? "Pending..." : "Make stake"}
+          {stakePending ? "Pending..." : "Add Stake"}
         </Button>
       )}
     </Flex>

@@ -14,16 +14,18 @@ export const ArrowLink = ({
   text = "",
   href = "#",
   onClick,
+  newWindow = false,
 }: {
   text?: string;
   href?: string;
+  newWindow?: boolean;
   onClick?: () => void;
 }) => (
   <Link
     css={{
       textDecoration: "underline",
-      textUnderlineOffset: "2px",
-      textDecorationColor: "$primary",
+      textUnderlineOffset: "4px",
+      textDecorationColor: "$link",
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
@@ -31,12 +33,14 @@ export const ArrowLink = ({
     }}
     as="a"
     href={href}
+    target={newWindow ? "_blank" : "_self"}
+    rel={newWindow ? "noopener noreferrer" : ""}
     onClick={onClick}
   >
     <StyledArrow />
     <Text
       css={{
-        color: "$primary",
+        color: "$link",
         fontSize: "$xl",
         pb: "5px",
         ml: "$5",

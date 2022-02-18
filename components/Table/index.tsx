@@ -1,16 +1,21 @@
 /* eslint-disable react/jsx-key */
 import { matchSorter } from "match-sorter";
 import { ArrowDown, ArrowUp } from "phosphor-react";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  Column, IdType, Row, useExpanded, useGlobalFilter,
-  useSortBy, useTable
+  Column,
+  IdType,
+  Row,
+  useExpanded,
+  useGlobalFilter,
+  useSortBy,
+  useTable,
 } from "react-table";
+import { motion, AnimatePresence } from "framer-motion";
 import { styled } from "../../stitches.config";
 import Box from "../Box";
 import Flex from "../Flex";
 import Loader from "../Loader";
-
 
 /**
  * There's some boilter plate here
@@ -32,7 +37,7 @@ const TableContainer = styled(Box, {
     tr: {
       "&:nth-child(odd)": {
         "& td": {
-          backgroundColor: "rgba(255, 199, 148, 0.07)",
+          backgroundColor: "$tableZebra",
         },
       },
       "&:last-child": {
@@ -67,7 +72,8 @@ interface TableProps<T extends object> {
   filters?: string[]; // columns names to filter
   filter?: string; // Filter text
   renderRowSubComponent?: (props: { row: Row<T> }) => any;
-  isLoading?: boolean
+  isLoading?: boolean;
+  myStakes?: boolean; // For changing animation behaviour
 }
 
 /**
@@ -81,8 +87,11 @@ function Table<T extends object>({
   filters,
   filter,
   renderRowSubComponent,
-  isLoading
+  isLoading,
+  myStakes,
 }: TableProps<T>): React.ReactElement {
+  const [isLoaded, setLoaded] = useState(false);
+
   /**
    * Custom Filter Function ----
    * Only filter by: code * name
@@ -128,7 +137,12 @@ function Table<T extends object>({
 
   useEffect(() => {
     setGlobalFilter(filter); // Set the Global Filter to the filter prop.
+    setLoaded(true); // Fixed Framer Motion animations to run on client side https://github.com/framer/motion/issues/578
   }, [filter, setGlobalFilter]);
+
+  if (!isLoaded) {
+    return <></>; // For Framer Motion animations - will be fixed in https://github.com/framer/motion/pull/1452
+  }
 
   return (
     <TableContainer css={{ width: "100%", textAlign: "left" }}>
@@ -178,58 +192,84 @@ function Table<T extends object>({
             </tr>
           ))}
         </thead>
+
         <tbody {...getTableBodyProps()}>
-          {!isLoading ? rows.map((row, i) => {
-            prepareRow(row);
-            const { key, ...rowProps } = row.getRowProps();
-            return (
-              // Use a React.Fragment here so the table markup is still valid
-              <React.Fragment key={key}>
-                <tr {...rowProps}>
-                  {row.cells.map((cell) => {
-                    return (
-                      <td
-                        {...cell.getCellProps({
-                          style: {
-                            minWidth: cell.column.minWidth,
-                            width: cell.column.width,
-                            textAlign: cell.column.align || "center",
-                          },
-                        })}
-                      >
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
-                {/*
+          {!isLoading ? (
+            rows.map((row, i) => {
+              prepareRow(row);
+              const { key, ...rowProps } = row.getRowProps();
+              return (
+                // Use a React.Fragment here so the table markup is still valid
+                <React.Fragment key={key}>
+                  <AnimatePresence initial={false}>
+                    <motion.tr
+                      {...rowProps}
+                      key={key}
+                      initial={{ opacity: 0, y: myStakes ? 32 : -32 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: myStakes ? 32 : -32 }}
+                    >
+                      {row.cells.map((cell) => {
+                        return (
+                          <td
+                            {...cell.getCellProps({
+                              style: {
+                                minWidth: cell.column.minWidth,
+                                width: cell.column.width,
+                                textAlign: cell.column.align || "center",
+                              },
+                            })}
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        );
+                      })}
+                    </motion.tr>
+                  </AnimatePresence>
+                  {/*
                     If the row is in an expanded state, render a row with a
                     column that fills the entire length of the table.
                   */}
-                {row.isExpanded && renderRowSubComponent ? (
-                  <tr {...rowProps}>
-                    <td colSpan={visibleColumns.length} style={{ padding: 0 }}>
-                      {/*
+                  <AnimatePresence>
+                    {row.isExpanded && renderRowSubComponent ? (
+                      <motion.tr
+                        {...rowProps}
+                        key={key}
+                        transition={{ type: "spring", duration: 0.3 }}
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                      >
+                        <td
+                          colSpan={visibleColumns.length}
+                          style={{ padding: 0 }}
+                        >
+                          {/*
                           Inside it, call our renderRowSubComponent function. In reality,
                           you could pass whatever you want as props to
                           a component like this, including the entire
                           table instance. But for this example, we'll just
                           pass the row
                         */}
-                      {renderRowSubComponent({ row })}
-                    </td>
-                  </tr>
-                ) : null}
-              </React.Fragment>
-            );
-          }) : <tr>{headerGroups[headerGroups.length - 1].headers.map((_column) => {
-            return (
-              <td key={_column.id}>
-                <Loader/>
-              </td>
-            )
-          })}</tr>
-          }
+                          {renderRowSubComponent({ row })}
+                        </td>
+                      </motion.tr>
+                    ) : null}
+                  </AnimatePresence>
+                </React.Fragment>
+              );
+            })
+          ) : (
+            <tr>
+              {headerGroups[headerGroups.length - 1].headers.map((_column) => {
+                return (
+                  <td key={_column.id}>
+                    <Loader />
+                  </td>
+                );
+              })}
+            </tr>
+          )}
         </tbody>
       </Box>
     </TableContainer>

@@ -3,8 +3,9 @@ import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "next/link";
-import { ArrowCircleUpRight, Check, Copy } from "phosphor-react";
-import { useCallback, useEffect, useState } from "react";
+import { ArrowCircleUpRight, Copy } from "phosphor-react";
+import { useCallback, useState } from "react";
+import { toast } from "react-toastify";
 import { state, useSnapshot } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { parseJuice } from "../../utils/helpers";
@@ -27,19 +28,22 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
       {typeof children === "string" ? (
         <Text
           as="a"
+          target="_blank"
+          rel="noopener noreferrer"
           css={{
-            color: "$primary",
+            color: "$link",
             textDecoration: "none",
             "&:hover": {
               color: "$text",
             },
             display: "flex",
+            fontSize: "$sm",
             alignItems: "center",
           }}
         >
           {children}
-          <Box css={{ marginLeft: "$space$1", height: "24px" }}>
-            <ArrowCircleUpRight size={"24px"} />
+          <Box css={{ marginLeft: "$space$1", height: "20px" }}>
+            <ArrowCircleUpRight size={"20px"} />
           </Box>
         </Text>
       ) : (
@@ -60,29 +64,15 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     signer,
   } = useSnapshot(state);
 
-  const [copied, setCopied] = useState(false);
   const [juiceAmount, setJuiceAmount] = useState("");
   const [txDisabled, setTxDisabled] = useState<false | TxTypes>(false);
-  const [message, setMessage] = useState({
-    value: null,
-    error: undefined,
-  } as { value: string | null; error?: boolean });
 
   const copyToClipboard = useCallback((text) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 3000);
-      },
-      () => {
-        setCopied(false);
-      }
-    );
+    navigator.clipboard.writeText(text);
+    toast.success(`Address copied to clipboard`, {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
   }, []);
-
-  useEffect(() => {
-    setMessage({ value: null });
-  }, [walletOpen]);
 
   const handleTx = useCallback(
     async (type: TxTypes) => {
@@ -91,12 +81,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
       const _disabled = !(juiceAmount && +juiceAmount);
       if (_disabled) {
-        setMessage({ value: "Please enter some amount!" });
         return;
       }
 
       setTxDisabled(type);
-      setMessage({ value: null });
+
+      const waitingToast = toast.loading("Transaction pending user...", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
 
       try {
         const amount = parseJuice(juiceAmount).toString();
@@ -115,20 +107,26 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         } else {
           tx = await contract.withdraw(amount);
         }
-        setMessage({
-          value: "Transaction pending...",
+
+        toast.update(waitingToast, {
+          render: "Waiting for transaction to go through",
         });
-        setJuiceAmount("");
 
         const rec = await tx.wait();
         if (rec.status === 1) {
-          setMessage({
-            value: "Transaction successful [LINK]",
+          toast.update(waitingToast, {
+            render: "Transaction successful [LINK]",
+            type: "success",
+            isLoading: false,
+            closeButton: true,
+            autoClose: 7000,
           });
         } else {
-          setMessage({
-            value: "Transaction failed! [LINK]",
-            error: true,
+          toast.update(waitingToast, {
+            render: "Transaction failed! [LINK]",
+            type: "error",
+            isLoading: false,
+            closeButton: true,
           });
         }
       } catch (error) {
@@ -137,11 +135,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         if ((error as any)?.code === 4001) {
           msg = "The request was rejected by the user";
         }
-        setMessage({
-          value: msg,
-          error: true,
+        toast.update(waitingToast, {
+          render: msg,
+          type: "error",
+          isLoading: false,
+          closeButton: true,
         });
       }
+      setJuiceAmount("");
       setTxDisabled(false);
     },
     [juiceAmount, signer, txDisabled]
@@ -188,7 +189,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               flexDirection: "row",
               alignItems: "baseline",
               justifyContent: "space-between",
-              mb: "$space$5",
+              mb: "$space$4",
             }}
           >
             <Heading>WALLET</Heading>
@@ -201,18 +202,38 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             css={{
               display: "flex",
               flexDirection: "row",
-              alignItems: "baseline",
+              alignItems: "center",
               justifyContent: "space-between",
-              mb: "$space$5",
-              pb: "$space$5",
-              borderBottom: "1px $extraMuted solid",
+              pb: "$space$4",
             }}
           >
-            <Text css={{ fontFamily: "$monospace", fontSize: "$xl" }}>
-              {truncatedWalletAddress}
-            </Text>
+            <Box>
+              {" "}
+              <Text
+                css={{
+                  fontFamily: "$monospace",
+                  fontSize: "$xl",
+                }}
+              >
+                {truncatedWalletAddress}
+              </Text>
+              <Box
+                css={{
+                  display: "inline-block",
+                  marginRight: "$space$1",
+                  height: "30px",
+                  cursor: "pointer",
+                  pl: "$3",
+                  color: "$primary",
+                }}
+                onClick={() => copyToClipboard(walletAddress)}
+              >
+                <Copy size={"22px"} style={{ color: "$primary" }} />
+              </Box>
+            </Box>
+
             <Button
-              variant="primary"
+              variant="bordered"
               size="sm"
               css={{
                 borderRadius: "999px",
@@ -229,10 +250,28 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           <Box
             css={{
               display: "flex",
-              flexDirection: "column",
-              mb: "$space$5",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
               pb: "$space$5",
+              mb: "$space$5",
               borderBottom: "1px $extraMuted solid",
+            }}
+          >
+            <TradeLink
+              href={`https://polygonscan.com/address/${walletAddress}`}
+            >
+              View on Polygonscan
+            </TradeLink>
+            <TradeLink href={`https://etherscan.io/address/${walletAddress}`}>
+              View on Etherscan
+            </TradeLink>
+          </Box>
+
+          <Box
+            css={{
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <Box
@@ -276,57 +315,27 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 <Loader />
               )}
             </Box>
-          </Box>
 
-          <Box
-            css={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              mb: "$space$1",
-            }}
-          >
-            {copied ? (
-              <Text
-                css={{
-                  color: "$green",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-                onClick={() => copyToClipboard(walletAddress)}
-              >
-                <Box css={{ marginRight: "$space$1", height: "24px" }}>
-                  <Check size={"24px"} style={{ color: "$primary" }} />
-                </Box>{" "}
-                Copied to clipboard
-              </Text>
-            ) : (
-              <Text
-                css={{
-                  color: "$primary",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  "&:hover": {
-                    color: "$text",
-                  },
-                }}
-                onClick={() => copyToClipboard(walletAddress)}
-              >
-                <Box css={{ marginRight: "$space$1", height: "24px" }}>
-                  <Copy size={"24px"} style={{ color: "$primary" }} />
-                </Box>{" "}
-                Copy address
-              </Text>
-            )}
-
-            <TradeLink href={`https://etherscan.io/address/${walletAddress}`}>
-              View on Etherscan
-            </TradeLink>
+            <Box
+              css={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                mb: "$space$1",
+              }}
+            >
+              {balances.matic ? (
+                <>
+                  <Text css={{ color: "$textA", fontSize: "$xl" }}>
+                    {balances.matic} MATIC
+                  </Text>
+                  <TradeLink href="">Buy MATIC</TradeLink>
+                </>
+              ) : (
+                <Loader />
+              )}
+            </Box>
           </Box>
         </Box>
 
@@ -348,56 +357,80 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               mb: "$space$5",
             }}
           >
-            <Heading>STAKING BALANCE</Heading>
-            <Text css={{ color: "$muted", fontSize: "$sm" }}>
-              {unstakedBalance} JUICE
-            </Text>
+            <Heading>STAKING ACCOUNT</Heading>
+            <Box>
+              <Text css={{ color: "$muted", fontSize: "$sm" }}>
+                Unstaked JUICE: {unstakedBalance}
+              </Text>
+            </Box>
           </Box>
 
           <Box
-            css={{ display: "flex", flexDirection: "column", mb: "$space$5" }}
+            css={{
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+              mb: "$space$5",
+            }}
           >
-            <Input
-              type="number"
-              value={juiceAmount}
-              onChange={(e) => setJuiceAmount(e.target.value)}
-              size="xl"
-              variant="bordered"
-            ></Input>
+            {Number(unstakedBalance) <= 0 && Number(balances.juice) <= 0 ? (
+              <Text muted>
+                {/* TODO: don't show this message if user has active positions */}
+                You need to get some $JUICE first, before you can add it to your
+                staking account and start making stakes.
+              </Text>
+            ) : (
+              <Box
+                css={{
+                  "&::after": {
+                    display: "inline-block",
+                    content: "JUICE",
+                    color: "$muted",
+                    position: "absolute",
+                    top: 0,
+                    lineHeight: "3.5rem",
+                    right: "1rem",
+                  },
+                }}
+              >
+                <Input
+                  type="number"
+                  disabled={txDisabled == false ? false : true}
+                  value={juiceAmount}
+                  onChange={(e) => setJuiceAmount(e.target.value)}
+                  size="xl"
+                  placeholder="0.0"
+                  css={{
+                    padding: "1rem 1.5rem",
+                  }}
+                  variant="bordered"
+                ></Input>
+              </Box>
+            )}
             <Box css={{ display: "flex", flexDirection: "row", mt: "1px" }}>
               <>
-                <Button
-                  disabled={txDisabled === TxTypes.withdraw}
-                  onClick={() => handleTx(TxTypes.withdraw)}
-                  variant="bordered"
-                  css={{ display: "flex", flex: "1 0" }}
-                >
-                  {txDisabled === TxTypes.withdraw ? (
-                    <Loader css={{ height: "$1" }} />
-                  ) : (
-                    "Withdraw"
-                  )}
-                </Button>
-                <Button
-                  disabled={txDisabled === TxTypes.deposit}
-                  onClick={() => handleTx(TxTypes.deposit)}
-                  variant="bordered"
-                  css={{ display: "flex", flex: "1 0" }}
-                >
-                  {txDisabled === TxTypes.deposit ? (
-                    <Loader css={{ height: "$1" }} />
-                  ) : (
-                    "Deposit"
-                  )}
-                </Button>
+                {Number(unstakedBalance) > 0 && (
+                  <Button
+                    disabled={txDisabled == false ? false : true}
+                    onClick={() => handleTx(TxTypes.withdraw)}
+                    variant="bordered"
+                    css={{ display: "flex", fontSize: "$sm", flex: "1 0" }}
+                  >
+                    Withdraw {juiceAmount} JUICE
+                  </Button>
+                )}
+                {Number(balances.juice) > 0 && (
+                  <Button
+                    disabled={txDisabled == false ? false : true}
+                    onClick={() => handleTx(TxTypes.deposit)}
+                    variant="bordered"
+                    css={{ display: "flex", fontSize: "$sm", flex: "1 0" }}
+                  >
+                    Deposit {juiceAmount} JUICE
+                  </Button>
+                )}
               </>
             </Box>
-            <Text
-              size="small"
-              css={{ mt: "$1", color: message.error ? "$red" : "$primary" }}
-            >
-              {message.value}
-            </Text>
           </Box>
           <Button
             variant="primary"

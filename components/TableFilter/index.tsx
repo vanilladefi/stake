@@ -16,8 +16,8 @@ const TableFilter: React.FC<{ onChange?: (value: string) => any }> = ({
   return (
     <Flex
       css={{
-        borderTop: "1px solid rgba(255,255,255,0.3)",
-        borderBottom: "1px solid rgba(255,255,255,0.3)",
+        borderTop: "1px solid $extraMuted",
+        borderBottom: "1px solid $extraMuted",
       }}
     >
       <Container

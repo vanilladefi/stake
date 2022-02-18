@@ -1,7 +1,7 @@
 // stitches.config.ts
-import type Stitches from '@stitches/react';
-import { createStitches } from '@stitches/react';
-import { transparentize, darken, lighten } from 'polished';
+import type Stitches from "@stitches/react";
+import { createStitches } from "@stitches/react";
+import { transparentize, darken, lighten } from "polished";
 
 export const {
   styled,
@@ -18,23 +18,25 @@ export const {
       black: "#311E15",
       text: "#311E15",
       textSecondary: "#311d15",
-      textA: transparentize(0.1, '#10070F'),
-      background: "#F8F5EC",
-      backgroundA: transparentize(0.1, '#F1EBD4'),
-      primary: '#E5B754',
-      primaryDark: darken(0.3, '#E5B754'),
-      primaryLight: lighten(0.3, '#E5B754'),
-      secondary: '#30c',
-      muted: '#4F3428',
-      extraMuted: '#DDCDB9',
-      offWhite85: '#DDCDB9',
-      offWhite50: '#AF9E88',
-      lightStroke: transparentize(0.5, '#776464'),
-      green: "#A1F161",
+      textA: "#5a411c",
+      background: "#fffbef",
+      backgroundA: transparentize(0.1, "#F1EBD4"),
+      primary: "#E5B754",
+      primaryDark: darken(0.3, "#E5B754"),
+      primaryLight: lighten(0.3, "#E5B754"),
+      secondary: "#30c",
+      muted: "#514130",
+      extraMuted: "#DDCDB9",
+      offWhite85: "#DDCDB9",
+      offWhite50: "#AF9E88",
+      lightStroke: transparentize(0.5, "#776464"),
+      green: "#498717",
       red: "#FD5247",
       backgroundSecondary: "#FDFBF5",
       link: "#986d10",
-      outline: "#000"
+      outline: "#000",
+      tableZebra: "rgba(244,239,220,.7)",
+      modalCurtainBg: "rgba(66,42,12,.81)",
     },
     fonts: {
       body: 'PolySans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
@@ -184,7 +186,7 @@ export const {
     },
     lineHeights: {
       one: 1,
-      body: 1.2,
+      body: 1.5,
       heading: 0.85,
     },
     letterSpacings: {},
@@ -331,12 +333,16 @@ export const darkTheme = createTheme("dark", {
     background: "#10070F",
     backgroundA: transparentize(0.1, "#10070F"),
     primary: "#E5B754",
+    green: "#A1F161",
+    red: "#FD5247",
     secondary: "#30c",
     muted: "#AF9E88",
     extraMuted: "#776464",
     backgroundSecondary: "#1c1217",
     link: "#E5B754",
-    outline: "#fff"
+    outline: "#fff",
+    tableZebra: "rgba(255, 199, 148, 0.07)",
+    modalCurtainBg: "rgba(9,3,1,.87)",
   },
 });
 
@@ -350,11 +356,44 @@ export const globalStyles = globalCss({
     fontSize: "$md",
     "-webkit-font-smoothing": "antialiased",
     "-moz-osx-font-smoothing": "grayscale",
-    '.dark &': {
-      backgroundImage: 'radial-gradient(50.04% 28.4% at 6.4% -3.32%, #231308 0%, #10070F 100%)',
-      backgroundPosition: 'top left',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: '100% 3500px'
-    }
+
+    "--toastify-color-light": "$colors$background",
+    "--toastify-color-dark": "$colors$text",
+    "--toastify-color-info": "$colors$text",
+    "--toastify-color-success": "$colors$green",
+    "--toastify-color-warning": "$colors$primary",
+    "--toastify-color-error": "$colors$red",
+    "--toastify-color-transparent": "rgba(255, 255, 255, 0.7)",
+    "--toastify-icon-color-info": "$colors$text",
+    "--toastify-icon-color-success": "$colors$green",
+    "--toastify-icon-color-warning": "$colors$primary",
+    "--toastify-icon-color-error": "$colors$red",
+    "--toastify-toast-width": "320px",
+    "--toastify-toast-background": "$colors$background",
+    "--toastify-text-color-light": "$colors$text",
+    "--toastify-text-color-dark": "$colors$text",
+    ".Toastify__toast": {
+      borderRadius: 0,
+      border: "1px solid $colors$extraMuted",
+    },
+    ".Toastify__close-button--light": {
+      color: "$colors$text",
+      opacity: 1,
+    },
+    ".Toastify__toast-container": {
+      minWidth: "320px",
+      width: "100%",
+      maxWidth: "780px",
+    },
+    ".Toastify__progress-bar": {
+      height: "2px",
+    },
+    ".dark &": {
+      backgroundImage:
+        "radial-gradient(50.04% 28.4% at 6.4% -3.32%, #231308 0%, #10070F 100%)",
+      backgroundPosition: "top left",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "100% 3500px",
+    },
   },
 });

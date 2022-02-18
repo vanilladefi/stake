@@ -38,8 +38,8 @@ export const MyStakes = () => {
         Header: "Token",
         accessor: (row): string | undefined => findToken(row.id)?.name,
         id: "tokenIcon",
-        width: "15%",
-        minWidth: "250px",
+        width: "25%",
+        minWidth: "40px",
         align: "left",
         Cell: ({
           value,
@@ -59,6 +59,7 @@ export const MyStakes = () => {
                   position: "relative",
                   overflow: "hidden",
                   p: "3px",
+                  flexShrink: 0,
                 }}
               >
                 {findToken(row.original.id)?.imageUrl ? (
@@ -92,7 +93,7 @@ export const MyStakes = () => {
         accessor: "juiceValue",
         align: "right",
         width: "15%",
-        minWidth: "100px",
+        minWidth: "80px",
         Cell: ({ value = 0 }) => {
           return (
             <Box>
@@ -106,15 +107,21 @@ export const MyStakes = () => {
         accessor: "sentiment",
         align: "right",
         width: "15%",
-        minWidth: "100px",
-        Cell: ({ value = "xxxx" }) => value,
+        minWidth: "80px",
+        Cell: ({ value = "xxxx" }) => {
+          return (
+            <Text css={{ textTransform: "capitalize", color: "$muted" }}>
+              {value}
+            </Text>
+          );
+        },
       },
       {
         Header: "Price",
         accessor: "currentPrice",
         align: "right",
         width: "15%",
-        minWidth: "100px",
+        minWidth: "80px",
         Cell: ({ value, row }) => {
           return (
             <Box>
@@ -127,7 +134,7 @@ export const MyStakes = () => {
         accessor: "hourlyHistory",
         Header: "7D%",
         align: "right",
-        minWidth: "100px",
+        minWidth: "75px",
         Cell: ({ value }) => {
           const oldPrice = value[0].closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
@@ -154,7 +161,7 @@ export const MyStakes = () => {
         Header: "",
         align: "right",
         width: "10%",
-        minWidth: "100px",
+        minWidth: "50px",
         Cell: ({ value, row }) => {
           return (
             <Button
@@ -163,7 +170,7 @@ export const MyStakes = () => {
               variant="primary"
               size="sm"
               active={row.isExpanded}
-              css={{ width: "70px", borderRadius: "$sm", fontSize: "13px" }}
+              css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
               {...row.getToggleRowExpandedProps()}
             >
               {row.isExpanded ? "Cancel" : "Edit"}
@@ -260,9 +267,11 @@ export const MyStakes = () => {
   }, [getStakes, polygonProvider, signer, walletAddress]);
 
   const [tableData, setTableData] = useState<ColumnType[] | null>(null);
+  const [stakedTotal, setStakedTotal] = useState(0);
   useEffect(() => {
     if (stakes && stakes.length) {
       let _tableData: ColumnType[] = [];
+      let _stakedTotal = 0;
       priceData.forEach((pd, idx) => {
         const s = stakes.find((stake) => stake.id === findToken(pd.id)?.id);
         if (s) {
@@ -272,6 +281,11 @@ export const MyStakes = () => {
           });
         }
       });
+      stakes.forEach((sd) => {
+        _stakedTotal += Number(sd.juiceValue);
+      });
+      console.log(_stakedTotal);
+      setStakedTotal(_stakedTotal);
       setTableData(_tableData);
     } else {
       setTableData(null);
@@ -286,6 +300,9 @@ export const MyStakes = () => {
         justify="space-between"
         css={{
           mb: "$5",
+          mt: "$2",
+          pb: "$2",
+          borderBottom: "1px solid $extraMuted",
           "@md": {
             flexDirection: "row",
             alignItems: "center",
@@ -293,9 +310,46 @@ export const MyStakes = () => {
         }}
       >
         <Heading as="h1">My Stakes</Heading>
-        <Button variant="primary" onClick={() => (state.walletOpen = true)}>
-          Manage funds
-        </Button>
+        <Box
+          css={{ textAlign: "right" }}
+          onClick={() => (state.walletOpen = true)}
+        >
+          {(Number(state?.unstakedBalance) > 0 || stakedTotal > 0) && (
+            <Box>
+              <Box
+                as="a"
+                css={{
+                  fontSize: "$lg",
+                  cursor: "pointer",
+                  color: "$link",
+                  display: "inline-block",
+                  mb: "$1",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                {(Number(state?.unstakedBalance) + Number(stakedTotal)).toFixed(
+                  3
+                ) + " JUICE"}
+              </Box>
+              <Box
+                css={{
+                  fontSize: "$sm",
+                  color: "$muted",
+                  textTransform: "uppercase",
+                }}
+              >{`${Number(stakedTotal).toFixed(3)} Staked  /  ${Number(
+                state?.unstakedBalance
+              ).toFixed(3)} Unstaked`}</Box>
+            </Box>
+          )}
+        </Box>
+        {Number(state?.unstakedBalance) == 0 && stakedTotal == 0 && (
+          <Button variant="primary" onClick={() => (state.walletOpen = true)}>
+            Manage funds
+          </Button>
+        )}
       </Flex>
       {tableData || (!tableData && stakesLoading) ? (
         <Box
@@ -312,29 +366,50 @@ export const MyStakes = () => {
             columns={columns}
             isLoading={stakesLoading}
             data={tableData || []}
+            myStakes
             renderRowSubComponent={renderRowSubComponent}
           />
         </Box>
       ) : (
         <Container>
           <Flex column align="center" css={{ mb: "$8" }}>
-            <Text muted>
-              Start by adding JUICE and then making your first stake.
-            </Text>
-            <Link
-              href="/faq"
-              as="a"
-              css={{
-                color: "$primary",
-                // fontSize: "$lg",
-                p: "$2 0",
-                "@md": {
-                  // fontSize: "$xl",
-                },
-              }}
-            >
-              View FAQ for more info
-            </Link>
+            {Number(state?.balances?.juice) > 0 ? (
+              <Text
+                css={{
+                  fontSize: "$xl",
+                  p: "$2 0",
+                }}
+                muted
+              >
+                You have no active stakes yet.
+              </Text>
+            ) : (
+              <Text
+                css={{
+                  fontSize: "$xl",
+                  p: "$2 0",
+                }}
+                muted
+              >
+                To start staking,{" "}
+                <Link
+                  onClick={() => (state.walletOpen = true)}
+                  as="a"
+                  css={{
+                    color: "$primary",
+                    display: "inline",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+
+                    "@md": {
+                      // fontSize: "$xl",
+                    },
+                  }}
+                >
+                  deposit $JUICE to your staking balance
+                </Link>
+              </Text>
+            )}
           </Flex>
         </Container>
       )}

@@ -21,8 +21,10 @@ const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
       {typeof children === "string" ? (
         <Text
           as="a"
+          target="_blank"
+          rel="noopener noreferrer"
           css={{
-            color: "$primary",
+            color: "$link",
             textDecoration: "none",
             "&:hover": {
               color: "$text",
@@ -43,16 +45,18 @@ const EtherScanLink: React.FC<{ href: string }> = ({ href, children }) => {
   );
 };
 
-const RegularLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
-  href,
-  children,
-  css,
-}) => {
+const RegularLink: React.FC<{
+  href: string;
+  newWindow?: boolean;
+  css?: Stitches.CSS;
+}> = ({ href, children, css, newWindow }) => {
   return (
     <Link href={href} passHref>
       {typeof children === "string" ? (
         <Text
           as="a"
+          target={newWindow ? "_blank" : "_self"}
+          rel={newWindow ? "noopener noreferrer" : ""}
           css={{
             color: "$text",
             textDecoration: "none",
@@ -69,6 +73,8 @@ const RegularLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
       ) : (
         <Box
           as="a"
+          target={newWindow ? "_blank" : "_self"}
+          rel={newWindow ? "noopener noreferrer" : ""}
           css={{
             display: "flex",
             color: "$text",
@@ -112,11 +118,12 @@ const Footer = () => {
               },
             }}
           >
-            <EtherScanLink href="/">
-              $VNL ERC-20 Contract on Etherscan
+            <EtherScanLink href="https://mumbai.polygonscan.com/token/0xa652dd22ad2059c31ee27a7a5eb9399c7336dad7">
+              Juicenet contract on Polygonscan
             </EtherScanLink>
-            <EtherScanLink href="/">Vanilla Router on Etherscan</EtherScanLink>
-            <EtherScanLink href="/">VanillaDAO on Etherscan</EtherScanLink>
+            <EtherScanLink href="https://etherscan.io/address/0xa135f339B5acd1f4eCB1C6eEd69a31482f878545">
+              VanillaDAO on Etherscan
+            </EtherScanLink>
           </Stack>
           <Stack
             css={{
@@ -131,9 +138,6 @@ const Footer = () => {
               },
             }}
           >
-            <RegularLink css={{ justifyContent: "flex-end" }} href="/">
-              Bug bounty
-            </RegularLink>
             <RegularLink css={{ justifyContent: "flex-end" }} href="/">
               Terms of Use
             </RegularLink>
@@ -170,6 +174,7 @@ const Footer = () => {
           >
             <RegularLink
               href="https://discord.gg/CnPuf2cGQ3"
+              newWindow
               css={{ mr: "$3" }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
@@ -177,13 +182,21 @@ const Footer = () => {
               </Flex>
               Discord
             </RegularLink>
-            <RegularLink href="/" css={{ mr: "$3" }}>
+            <RegularLink
+              href="https://community.vanilladefi.com/"
+              newWindow
+              css={{ mr: "$3" }}
+            >
               <Flex color="text" css={{ mr: "$2" }}>
                 <Notebook size="24px" weight="fill" />
               </Flex>
-              Blog
+              Forum
             </RegularLink>
-            <RegularLink href="https://t.me/vanilladefi" css={{ mr: "$3" }}>
+            <RegularLink
+              href="https://t.me/vanilladefi"
+              newWindow
+              css={{ mr: "$3" }}
+            >
               <Flex color="text" css={{ mr: "$2" }}>
                 <TelegramLogo size="24px" weight="fill" />
               </Flex>
@@ -191,6 +204,7 @@ const Footer = () => {
             </RegularLink>
             <RegularLink
               href="https://www.twitter.com/vanilladefi"
+              newWindow
               css={{ mr: "$3" }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
@@ -200,6 +214,7 @@ const Footer = () => {
             </RegularLink>
             <RegularLink
               href="https://www.github.com/vanilladefi"
+              newWindow
               css={{ mr: "$3" }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
