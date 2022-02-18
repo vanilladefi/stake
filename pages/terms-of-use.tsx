@@ -1,6 +1,5 @@
 import { styled } from "../stitches.config";
-import { Link as LinkIconP, ArrowUpRight } from "phosphor-react";
-import type * as Stitches from "@stitches/react";
+import { Link as LinkIconP } from "phosphor-react";
 
 import Box from "../components/Box";
 import Text from "../components/Text";
