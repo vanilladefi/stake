@@ -341,7 +341,7 @@ const PrivacyPolicy = () => {
         </Box>
         <Box>
           <Heading as="h3" id="8-disclaimers">
-            <ThemeLink href="8-disclaimers">
+            <ThemeLink href="#8-disclaimers">
               <LinkIcon size="20px" />
             </ThemeLink>{" "}
             8. Disclaimers
