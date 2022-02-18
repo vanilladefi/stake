@@ -20,17 +20,30 @@ import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
 
-/**
- * Early rough implementation
- * Just a POC
- */
+// TODO: Move these types and enums somewhere else, maybe even SDK?
+export enum Sentiment {
+  long = "long",
+  short = "short"
+}
+
+export type Stake = {
+    id: string | null
+    juiceStake: string
+    juiceValue: string
+    sentiment: Sentiment
+}
+
 export const MyStakes = () => {
+  const { signer, polygonProvider, walletAddress, stakes } = useSnapshot(state);
+
   // leaving `executeQuery` to AvailableStakes component
   const [{ fetching: _, data: _data }] = useGetAssetPairsQuery();
 
   const priceData = useMemo(() => {
     return _data?.assetPairs.filter((t) => findToken(t.id)?.enabled) || [];
   }, [_data?.assetPairs]);
+
+  const [stakesLoading, setStakesLoading] = useState(true);
 
   const columns: Column<ColumnType>[] = useMemo(
     () => [
@@ -195,11 +208,7 @@ export const MyStakes = () => {
     []
   );
 
-  const [stakes, setStakes] = useState<any[] | null>(null);
-  const [stakesLoading, setStakesLoading] = useState(true);
-
-  const { signer, polygonProvider, walletAddress } = useSnapshot(state);
-
+  // TODO: As this stuff goes to global state, maybe handle this in a separate action file under /state?
   const getStakes = useCallback(async () => {
     if (!walletAddress || !signer) return;
 
@@ -223,19 +232,21 @@ export const MyStakes = () => {
       optionalAddress: contractAddress || "",
     });
 
-    let _stakes: any[] = [];
+    let _stakes: Stake[] = [];
+
     _tokens.forEach((token, idx) => {
       if (!res[idx].juiceStake.isZero()) {
         const stake = {
           id: token.pairId,
           juiceStake: formatJuice(res[idx].juiceStake),
           juiceValue: formatJuice(res[idx].juiceValue),
-          sentiment: res[idx].sentiment === true ? "long" : "short",
+          sentiment: res[idx].sentiment === true ? Sentiment.long : Sentiment.short,
         };
         _stakes.push(stake);
       }
     });
-    setStakes(_stakes);
+
+    state.stakes = _stakes;
 
     if (stakesLoading) setStakesLoading(false);
   }, [stakesLoading, polygonProvider, signer, walletAddress]);
@@ -275,16 +286,18 @@ export const MyStakes = () => {
       priceData.forEach((pd, idx) => {
         const s = stakes.find((stake) => stake.id === findToken(pd.id)?.id);
         if (s) {
+          // Some casting magic to remove linter errors
+          const { id, ...rest } = s
+          const s_fixed = { id: String(id || ""), ...rest }
           _tableData.push({
             ...pd,
-            ...s,
+            ...s_fixed,
           });
         }
       });
       stakes.forEach((sd) => {
         _stakedTotal += Number(sd.juiceValue);
       });
-      console.log(_stakedTotal);
       setStakedTotal(_stakedTotal);
       setTableData(_tableData);
     } else {
