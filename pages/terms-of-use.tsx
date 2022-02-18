@@ -442,9 +442,9 @@ const PrivacyPolicy = () => {
             third-party websites and we will not accept any legal responsibility
             for any content, material, or information contained in them. The
             display of any hyperlink and reference to any third-party website
-            does not mean that we endorse that third party's website, products,
-            or services. Your usage of a third-party site may be governed by the
-            terms and conditions of that third-party site.
+            does not mean that we endorse that third party&rsquo;s website,
+            products, or services. Your usage of a third-party site may be
+            governed by the terms and conditions of that third-party site.
           </Paragraph>
         </Box>
         <Box>
