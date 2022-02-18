@@ -167,9 +167,12 @@ export const AvailableStakes = () => {
 
   return (
     <>
-      <TableFilter onChange={(value) => setFilterValue(value)} />
+      <TableFilter onChange={setFilterValue} />
       <Container css={{ py: "$5" }}>
         <Heading as="h1">Available Stakes</Heading>
+        {getData().length === 0 ? (
+          <p>You have open stakes in every available token.</p>
+        ) : (
         <Box
           css={{
             overflowX: "auto",
@@ -187,6 +190,7 @@ export const AvailableStakes = () => {
             renderRowSubComponent={renderRowSubComponent}
           />
         </Box>
+        )}
       </Container>
     </>
   );
