@@ -21,7 +21,10 @@ export const AvailableStakes = () => {
   const [{ fetching, data: _data }, executeQuery] = useGetAssetPairsQuery();
    
   const getData = useCallback(() => {
-    const filteredTokens = _data?.assetPairs.filter((t) => findToken(t.id)?.enabled && !stakes?.find(stake => stake.id === findToken(t.id)?.id)) || [];
+    const filteredTokens = _data?.assetPairs.filter((t) => {
+      const token = findToken(t.id)
+      return token?.enabled && !stakes?.find(stake => stake.id === token?.id)
+    }) || [];
     return filteredTokens
   }, [stakes, _data])
 
