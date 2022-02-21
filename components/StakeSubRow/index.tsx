@@ -123,6 +123,8 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
         );
 
         emitEvent(VanillaEvents.stakesChanged);
+
+        row.toggleRowExpanded(false);
       } else {
         toast.error(
           <>
@@ -142,7 +144,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
       toast.error(body);
     }
     setStakePending(false);
-  }, [stakingDisabled, row.original.id, signer, stakeAmount, stakePosition]);
+  }, [stakingDisabled, signer, row, stakeAmount, stakePosition]);
 
   const closeStakePosition = useCallback(async () => {
     if (closingDisabled) return;
@@ -185,6 +187,8 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
         );
 
         emitEvent(VanillaEvents.stakesChanged);
+
+        row.toggleRowExpanded(false)
       } else
         toast.error(
           <>
@@ -204,7 +208,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
     }
 
     setStakePending(false);
-  }, [closingDisabled, signer, row.original.id]);
+  }, [closingDisabled, signer, row]);
 
   return (
     <Flex
