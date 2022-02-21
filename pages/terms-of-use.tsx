@@ -74,7 +74,7 @@ const PrivacyPolicy = () => {
             lineHeight: "1.2",
           }}
         >
-          Vanilla Defi terms of service.
+          Vanilla terms of service.
         </Text>
       </Box>
       <Stack
@@ -110,14 +110,12 @@ const PrivacyPolicy = () => {
           <Paragraph>
             Equilibrium Group Oy (business ID 2891403-1) is a limited liability
             company formed under Finnish law, which has its principal office at
-            Linnankatu 3 A 2, 20100 Turku, Finland. We are a research and
+            Linnankatu 3 A 24, 20100 Turku, Finland. We are a research and
             development company focused on designing and building the
             decentralized web.
           </Paragraph>
           <Paragraph>
-            Our Site gives you access to a decentralized trading platform on the
-            Ethereum blockchain that allows users to make a profit by trading
-            and loaning Ethereum assets using smart contracts.
+            Our Site gives you access to decentralized asset manager platform on the Polygon & Ethereum blockchains that allows users to make a profit by staking ERC-20 assets using smart contracts.
           </Paragraph>
           <Paragraph>
             Please read these Terms of Service (&ldquo;Terms&rdquo;) carefully
@@ -145,13 +143,6 @@ const PrivacyPolicy = () => {
             </ThemeLink>{" "}
             2. Eligibility
           </Heading>
-          <Paragraph>
-            The Services are provided only to entities and persons at least the
-            age of 18. By accessing our using the Services, you represent and
-            warrant that you are at least eighteen (18) years of age. If you are
-            under the age of eighteen (18), you may not, under any circumstances
-            or for any reason, use the Services.
-          </Paragraph>
           <Paragraph>
             You represent and warrant that you have the full right, power, and
             authority to enter into and comply with these Terms on behalf of
@@ -230,11 +221,6 @@ const PrivacyPolicy = () => {
               copyright, trademark, service mark, patent, right of publicity,
               right of privacy, or other proprietary or intellectual property
               rights under the law.
-            </ListItem>
-            <ListItem>
-              Making of copies, modifying, reproducing, transmitting, altering
-              or distributing all or any part of the Site or any material or
-              information contained in it without our express permission.
             </ListItem>
             <ListItem>
               Interference with or compromising the integrity, security, or
