@@ -61,7 +61,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     walletAddress,
     truncatedWalletAddress,
     balances,
-    unstakedBalance,
+    rawBalances,
     signer,
   } = useSnapshot(state);
 
@@ -118,7 +118,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               <Link external href={waitingLink} text="View on explorer" />
             </>
           ),
-          autoClose: false
+          autoClose: false,
         });
 
         const rec = await tx.wait();
@@ -165,7 +165,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           type: "error",
           isLoading: false,
           closeButton: true,
-          autoClose: 3000
+          autoClose: 5000,
         });
       }
 
@@ -386,7 +386,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             <Heading>STAKING ACCOUNT</Heading>
             <Box>
               <Text css={{ color: "$muted", fontSize: "$sm" }}>
-                Unstaked JUICE: {unstakedBalance}
+                Unstaked JUICE: {balances.unstakedJuice}
               </Text>
             </Box>
           </Box>
@@ -399,7 +399,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               mb: "$space$5",
             }}
           >
-            {Number(unstakedBalance) <= 0 && Number(balances.juice) <= 0 ? (
+            {rawBalances.unstakedJuice?.isZero() &&
+            rawBalances.juice?.isZero() ? (
               <Text muted>
                 {/* TODO: don't show this message if user has active positions */}
                 You need to get some $JUICE first, before you can add it to your
@@ -435,7 +436,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             )}
             <Box css={{ display: "flex", flexDirection: "row", mt: "1px" }}>
               <>
-                {Number(unstakedBalance) > 0 && (
+                {rawBalances.unstakedJuice?.gt(0) && (
                   <Button
                     disabled={txDisabled == false ? false : true}
                     onClick={() => handleTx(TxTypes.withdraw)}
@@ -445,7 +446,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     Withdraw {juiceAmount} JUICE
                   </Button>
                 )}
-                {Number(balances.juice) > 0 && (
+                {rawBalances.juice?.gt(0) && (
                   <Button
                     disabled={txDisabled == false ? false : true}
                     onClick={() => handleTx(TxTypes.deposit)}

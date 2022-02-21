@@ -11,11 +11,13 @@ export const EMAIL_REGEX =
 export const isValidEmail = (email?: string) =>
   !!email && EMAIL_REGEX.test(email);
 
-export const formatJuice = (amount: ethers.BigNumberish) =>
-  Number(ethers.utils.formatUnits(amount, juiceDecimals)).toFixed(3);
+type Nullable<T> = T | null | undefined;
 
-export const parseJuice = (amount: string | number) =>
-  ethers.utils.parseUnits(amount.toString(), juiceDecimals);
+export const formatJuice = (amount: Nullable<ethers.BigNumberish>) =>
+  Number(ethers.utils.formatUnits(amount || 0, juiceDecimals)).toFixed(3);
+
+export const parseJuice = (amount: Nullable<string | number>) =>
+  ethers.utils.parseUnits(amount?.toString() || '0', juiceDecimals);
 
 export const findToken = (nameOrId: string): typeof tokens[0] | undefined => {
   const id = nameOrId.split('/')[0].trim()
@@ -32,6 +34,6 @@ export const getTransactionLink = (txHash: string) => {
   if (explorerUrl.endsWith('/')) {
     explorerUrl = explorerUrl.slice(0, -1)
   }
-  const transactionLink = `${correctNetwork.blockExplorerUrls[0]}/tx/${txHash}`
+  const transactionLink = `${explorerUrl}/tx/${txHash}`
   return transactionLink;
 }

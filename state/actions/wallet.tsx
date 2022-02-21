@@ -1,4 +1,4 @@
-import { isAddress } from "@vanilladefi/core-sdk";
+import { isAddress, vnlDecimals } from "@vanilladefi/core-sdk";
 import {
   getBasicWalletDetails,
   getJuiceStakingContract,
@@ -8,8 +8,9 @@ import { snapshot } from "valtio";
 import { toast } from "react-toastify";
 import { persistedKeys, ref, state, subscribeKey, VanillaEvents } from "..";
 import { correctNetwork } from "../../lib/config";
-import { formatJuice } from "../../utils/helpers";
+import { emitEvent, formatJuice, parseJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
+import { parseUnits } from "ethers/lib/utils";
 
 let lockedWalletToast: any;
 
@@ -46,7 +47,6 @@ export const connectWallet = async () => {
     state.walletAddress = await signer?.getAddress();
 
     updateBalances();
-    updateUnstakedAmount();
   } catch (error) {
     console.warn("Connection error: ", error);
   }
@@ -63,7 +63,7 @@ export const disconnect = (soft?: boolean) => {
 
   !soft && localStorage.removeItem(persistedKeys.walletAddress);
   state.balances = {};
-  state.unstakedBalance = null;
+  state.rawBalances = {};
 };
 
 export const ensureCorrectChain = (force?: true): boolean => {
@@ -115,13 +115,11 @@ export const initWalletSubscriptions = () => {
   subscribeKey(state, "walletOpen", (walletOpen) => {
     if (walletOpen) {
       updateBalances();
-      updateUnstakedAmount();
     }
   });
 
   subscribeKey(state, "walletAddress", (address) => {
     updateBalances();
-    updateUnstakedAmount();
     updateTruncatedAddress();
 
     persistWalletAddress();
@@ -152,7 +150,6 @@ export const initWalletSubscriptions = () => {
   // subscribe to balance changes custom events
   window.addEventListener(VanillaEvents.balancesChanged, () => {
     updateBalances();
-    updateUnstakedAmount();
   });
 
   subscribeKey(state, "modal", (modal) => {
@@ -191,30 +188,59 @@ export const updateBalances = async () => {
   const { polygonProvider, ethereumProvider, walletAddress } = snapshot(state);
 
   if (walletAddress && isAddress(walletAddress)) {
+    const unstakedJuice = await getUnstakedJuice();
+
+    state.balances.unstakedJuice = formatJuice(unstakedJuice);
+    state.rawBalances.unstakedJuice = unstakedJuice;
+
+    const stakedJuice = await getStakedJuice();
+    state.balances.stakedJuice = formatJuice(stakedJuice);
+    state.rawBalances.stakedJuice = stakedJuice;
+
+    const totalJuice = stakedJuice.add(unstakedJuice || 0);
+    state.balances.totalJuice = formatJuice(totalJuice);
+    state.rawBalances.totalJuice = totalJuice;
+
     const contractAddress = isAddress(
       process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
     );
-    const walletBalances = await getBasicWalletDetails(walletAddress, {
-      polygonProvider: polygonProvider || undefined,
-      ethereumProvider: ethereumProvider || undefined,
-      optionalAddress: contractAddress || undefined,
-    });
+    let { vnlBalance, ethBalance, maticBalance, juiceBalance } =
+      await getBasicWalletDetails(walletAddress, {
+        polygonProvider: polygonProvider || undefined,
+        ethereumProvider: ethereumProvider || undefined,
+        optionalAddress: contractAddress || undefined,
+      });
 
-    if (walletBalances.vnlBalance && walletBalances.ethBalance) {
-      state.balances.vnl = Number(walletBalances.vnlBalance).toFixed(3);
-      state.balances.eth = Number(walletBalances.ethBalance).toFixed(3);
-      state.balances.juice = Number(walletBalances.juiceBalance).toFixed(3);
-      state.balances.matic = Number(walletBalances.maticBalance).toFixed(3);
-    }
+    state.balances.vnl = Number(vnlBalance).toFixed(3);
+    state.balances.eth = Number(ethBalance).toFixed(3);
+    state.balances.matic = Number(maticBalance).toFixed(3);
+    state.balances.juice = Number(juiceBalance).toFixed(3);
+
+    state.rawBalances.vnl = parseUnits(vnlBalance || "0", vnlDecimals);
+    state.rawBalances.eth = parseUnits(ethBalance || "0");
+    state.rawBalances.matic = parseUnits(maticBalance || "0");
+    state.rawBalances.juice = parseJuice(juiceBalance);
   } else {
     state.balances = {};
+    state.rawBalances = {};
   }
 };
 
-export const updateUnstakedAmount = async () => {
+export const getStakedJuice = async () => {
+  const { stakes } = snapshot(state);
+
+  let rawStakedJuice = BigNumber.from(0);
+
+  stakes?.forEach?.((sd) => {
+    rawStakedJuice = rawStakedJuice.add(sd.rawJuiceValue || 0);
+  });
+
+  return rawStakedJuice;
+};
+
+export const getUnstakedJuice = async () => {
   const { signer, polygonProvider, walletAddress } = snapshot(state);
   if (!walletAddress) {
-    state.unstakedBalance = null;
     return;
   }
 
@@ -227,10 +253,8 @@ export const updateUnstakedAmount = async () => {
       optionalAddress: contractAddress || undefined,
     });
     if (contract) {
-      const unstaked = formatJuice(
-        await contract.unstakedBalanceOf(walletAddress)
-      );
-      state.unstakedBalance = unstaked;
+      const unstaked = await contract.unstakedBalanceOf(walletAddress);
+      return unstaked;
     }
   } catch (error) {
     console.error(error);
@@ -250,8 +274,7 @@ export const updateTruncatedAddress = () => {
 async function onJuiceDeposited(depositor: string, amount: BigNumber) {
   const { walletAddress } = snapshot(state);
   if (depositor.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
-    await updateUnstakedAmount();
-    await updateBalances();
+    emitEvent(VanillaEvents.balancesChanged);
 
     // TODO discuss if we need this as we already have transaction confirmation toast
     toast.success(`${formatJuice(amount)} JUICE deposited successfully!`, {
@@ -264,8 +287,7 @@ async function onJuiceDeposited(depositor: string, amount: BigNumber) {
 async function onJuiceWithdrawn(withdrawer: string, amount: BigNumber) {
   const { walletAddress } = snapshot(state);
   if (withdrawer.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
-    await updateUnstakedAmount();
-    await updateBalances();
+    emitEvent(VanillaEvents.balancesChanged);
 
     toast.success(`${formatJuice(amount)} JUICE withdrawn successfully!`, {
       autoClose: 2000,

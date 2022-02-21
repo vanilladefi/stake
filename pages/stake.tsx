@@ -5,7 +5,7 @@ import Text from "../components/Text";
 import { GetAssetPairsDocument } from "../generated/graphql";
 import client, { ssrCache } from "../urql";
 import { useSnapshot } from "valtio";
-import { state } from "../state";
+import { state, VanillaEvents } from "../state";
 import Stack from "../components/Stack";
 import { JuicingIcon } from "../assets";
 import { GetStaticProps } from "next";
@@ -15,6 +15,11 @@ import { connectWallet } from "../state/actions/wallet";
 import Box from "../components/Box";
 import { MyStakes } from "../components/MyStakes";
 import { AvailableStakes } from "../components/AvailableStakes";
+import { useEffect } from "react";
+import { isAddress } from "@vanilladefi/core-sdk";
+import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
+import { emitEvent } from "../utils/helpers";
+import { fetchStakes } from "../state/actions/stakes";
 
 const StakingIntro = () => (
   <Stack
@@ -88,7 +93,42 @@ const StakingIntro = () => (
 );
 
 const Stake = () => {
-  const snap = useSnapshot(state);
+  const { walletAddress, signer, polygonProvider } = useSnapshot(state);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+
+    const contractAddress = isAddress(
+      process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+    );
+    const contract = getJuiceStakingContract({
+      signerOrProvider: signer || polygonProvider || undefined,
+      optionalAddress: contractAddress || undefined,
+    });
+    if (!contract) return;
+
+    const onStakesChange = () => {
+      emitEvent(VanillaEvents.stakesChanged);
+    };
+
+    contract.on("StakeAdded", onStakesChange);
+    contract.on("StakeRemoved", onStakesChange);
+
+    return () => {
+      contract.off("StakeAdded", onStakesChange);
+      contract.off("StakeRemoved", onStakesChange);
+    };
+  }, [polygonProvider, signer, walletAddress]);
+
+  useEffect(() => {
+    const onStakesChange = () => {
+      fetchStakes();
+    };
+    window.addEventListener(VanillaEvents.stakesChanged, onStakesChange);
+    return () => {
+      window.removeEventListener(VanillaEvents.stakesChanged, onStakesChange);
+    };
+  }, []);
 
   return (
     <>
@@ -97,9 +137,7 @@ const Stake = () => {
           backgroundColor: "rgba(255, 201, 170, 0.02)",
         }}
       >
-        <Container>
-          {snap.walletAddress ? <MyStakes /> : <StakingIntro />}
-        </Container>
+        <Container>{walletAddress ? <MyStakes /> : <StakingIntro />}</Container>
       </Flex>
       <AvailableStakes />
     </>

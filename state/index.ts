@@ -1,31 +1,54 @@
-import { providers, Signer } from "ethers";
+import { BigNumber, providers, Signer } from "ethers";
 import { proxy, ref, snapshot, subscribe, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
 import Web3Modal from "web3modal";
-import { Stake } from "../components/MyStakes";
 import { defaultEthereumProvider, defaultPolygonProvider } from "../lib/config";
 
-type BalanceTypes = "eth" | "vnl" | "juice" | "matic";
-export type Balances = Partial<Record<BalanceTypes, string>>;
+type PrimitiveBalanceTypes = "eth" | "vnl" | "juice" | "matic"
+type JuicenetBalanceTypes = "unstakedJuice" | "stakedJuice" | "totalJuice";
+
+export type Balances = {
+  [key in PrimitiveBalanceTypes | JuicenetBalanceTypes]?: string;
+};
+
+export type RawBalances = {
+  [key in PrimitiveBalanceTypes | JuicenetBalanceTypes]?: BigNumber
+}
+
+export enum Sentiment {
+  long = "long",
+  short = "short",
+}
+
+export type Stake = {
+  id: string;
+  juiceStake: string;
+  juiceValue: string;
+  rawJuiceStake: BigNumber;
+  rawJuiceValue: BigNumber;
+  sentiment: Sentiment;
+};
+
 
 type State = {
   ethereumProvider:
-    | providers.JsonRpcProvider
-    | providers.Web3Provider
-    | providers.WebSocketProvider
-    | providers.Provider
-    | providers.BaseProvider
-    | null;
+  | providers.JsonRpcProvider
+  | providers.Web3Provider
+  | providers.WebSocketProvider
+  | providers.Provider
+  | providers.BaseProvider
+  | null;
   polygonProvider:
-    | providers.JsonRpcProvider
-    | providers.Web3Provider
-    | providers.WebSocketProvider
-    | providers.Provider
-    | providers.BaseProvider
-    | null;
+  | providers.JsonRpcProvider
+  | providers.Web3Provider
+  | providers.WebSocketProvider
+  | providers.Provider
+  | providers.BaseProvider
+  | null;
   providerName: string | null;
   signer: Signer | null;
   balances: Balances;
+  rawBalances: RawBalances;
   walletAddress: string | null;
   truncatedWalletAddress: string | null;
   modal: Web3Modal | null;
@@ -38,7 +61,6 @@ type State = {
     cancelText?: string
   } | null;
   walletOpen: boolean;
-  unstakedBalance: string | null;
 };
 
 export const initialState: State = {
@@ -47,13 +69,13 @@ export const initialState: State = {
   providerName: null,
   signer: null,
   balances: {},
+  rawBalances: {},
   walletAddress: null,
   truncatedWalletAddress: null,
   modal: null,
   alert: null,
   stakes: null,
   walletOpen: false,
-  unstakedBalance: null,
 };
 
 const persistedKeys = {
