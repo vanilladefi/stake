@@ -382,7 +382,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                         color: "$textA",
                         fontSize: "$xxl",
                         marginRight: "$1",
-                        ursor: "pointer",
+                        cursor:
+                          transactionType === "deposit" ? "pointer" : "default",
                       }}
                       onClick={() =>
                         transactionType === "deposit" &&
@@ -546,7 +547,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       color: "$textA",
                       fontSize: "$xxl",
                       marginRight: "$1",
-                      cursor: "pointer",
+                      cursor:
+                        transactionType === "withdraw" ? "pointer" : "default",
                     }}
                     onClick={() =>
                       transactionType === "withdraw" &&
