@@ -187,7 +187,7 @@ export const AvailableStakes = () => {
         >
           <Table
             filter={filterValue}
-            isLoading={fetching}
+            // isLoading={fetching}
             columns={columns}
             data={getData()}
             renderRowSubComponent={renderRowSubComponent}
