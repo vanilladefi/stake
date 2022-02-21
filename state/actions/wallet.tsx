@@ -48,7 +48,7 @@ export const connectWallet = async () => {
     updateBalances();
     updateUnstakedAmount();
   } catch (error) {
-    console.warn(error);
+    console.warn("Connection error: ", error);
   }
 };
 
@@ -157,7 +157,7 @@ export const initWalletSubscriptions = () => {
 
   subscribeKey(state, "modal", (modal) => {
     if (modal?.cachedProvider) {
-      // TODO see if we can remove this
+      // TODO see if we can remove this or make run only once
       connectWallet();
       let name = null;
       switch (modal?.cachedProvider) {

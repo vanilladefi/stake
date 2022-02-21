@@ -206,17 +206,6 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
     setStakePending(false);
   }, [closingDisabled, signer, row.original.id]);
 
-  const stakeDifferenceNumber = -(
-    Number(defaultStake) - Number(stakeAmount)
-  ).toFixed(3);
-  const stakeDifference =
-    stakeDifferenceNumber != 0 &&
-    `${
-      stakeDifferenceNumber > 0
-        ? "+" + stakeDifferenceNumber
-        : stakeDifferenceNumber
-    }`;
-
   return (
     <Flex
       css={{
@@ -258,7 +247,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
             css={{
               color: "$muted",
               fontSize: "$xl",
-              marginBottom: type === "edit" && stakeDifference ? "1rem" : 0,
+              marginBottom: 0,
               mr: "$2",
             }}
           >
@@ -278,22 +267,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
               textAlign: "right",
               mx: "$3",
             }}
-          />{" "}
-          {type === "edit" && (
-            <Text
-              css={{
-                fontSize: "$s",
-                color: "$muted",
-                position: "absolute",
-                paddingRight: ".4rem",
-                background: "$background",
-                left: "0",
-                bottom: ".9rem",
-              }}
-            >
-              {stakeDifference}
-            </Text>
-          )}
+          />
         </Box>
         <Image
           alt="Vanilla drop icon"
