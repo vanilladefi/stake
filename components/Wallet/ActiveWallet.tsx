@@ -4,7 +4,7 @@ import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import NextLink from "next/link";
 import Link from "../Link";
-import { ArrowCircleUpRight, Copy } from "phosphor-react";
+import { ArrowCircleUpRight, Copy, ArrowUp, ArrowDown } from "phosphor-react";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import { state, useSnapshot, VanillaEvents } from "../../state";
@@ -12,11 +12,12 @@ import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { emitEvent, getTransactionLink, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
-import Heading from "../Heading";
 import Input from "../Input";
 import Loader from "../Loader";
 import Text from "../Text";
 import Curtain from "./Curtain";
+
+import { PolygonScanIcon } from "../../assets";
 
 enum TxTypes {
   deposit,
@@ -34,17 +35,22 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
           css={{
             color: "$link",
             textDecoration: "none",
+            textTransform: "uppercase",
+            display: "inline-flex",
+            fontSize: "$sm",
+            px: "$2",
+            lineHeight: "$md",
+            alignItems: "center",
+            borderRadius: "400px",
             "&:hover": {
               color: "$text",
+              background: "$backgroundSecondary",
             },
-            display: "flex",
-            fontSize: "$sm",
-            alignItems: "center",
           }}
         >
           {children}
           <Box css={{ marginLeft: "$space$1", height: "20px" }}>
-            <ArrowCircleUpRight size={"20px"} />
+            <ArrowCircleUpRight size={"17px"} />
           </Box>
         </Text>
       ) : (
@@ -67,6 +73,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
   const [juiceAmount, setJuiceAmount] = useState("");
   const [txDisabled, setTxDisabled] = useState<false | TxTypes>(false);
+  const [transactionType, setTransactionType] = useState<
+    "deposit" | "withdraw"
+  >(Number(balances.juice) > 0 ? "deposit" : "withdraw");
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard.writeText(text);
@@ -75,6 +84,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       hideProgressBar: true,
     });
   }, []);
+
+  const vnlToDao = 1500 - Number(balances.vnl);
 
   const handleTx = useCallback(
     async (type: TxTypes) => {
@@ -165,7 +176,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           type: "error",
           isLoading: false,
           closeButton: true,
-          autoClose: 5000,
+          autoClose: 3000,
         });
       }
 
@@ -190,114 +201,267 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       }}
     >
       <Curtain />
-      <Box
-        css={{
-          display: "flex",
-          position: "relative",
-          background: "$background",
-          flexDirection: "column",
-          zIndex: "43",
-          border: "$extraMuted 1px solid",
-        }}
-      >
+      <Box>
         <Box
-          as="section"
           css={{
-            px: "$space$4",
-            py: "$space$5",
-            width: "$md",
-            borderBottom: "1px $extraMuted solid",
+            display: "flex",
+            position: "relative",
+            textAlign: "right",
+            color: "$link",
+            flexDirection: "column",
+            zIndex: "43",
+            padding: "$2 $4",
+          }}
+        >
+          <Text as="a" onClick={() => (state.walletOpen = false)}>
+            Close
+          </Text>
+        </Box>
+        <Box
+          css={{
+            display: "flex",
+            position: "relative",
+            background: "$background",
+            flexDirection: "column",
+            zIndex: "43",
+            border: "$extraMuted 1px solid",
           }}
         >
           <Box
+            as="section"
             css={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-              mb: "$space$4",
+              px: "$space$4",
+              py: "$space$5",
+              width: "$md",
             }}
           >
-            <Heading>WALLET</Heading>
-            <Text css={{ color: "$muted", fontSize: "$sm" }}>
-              Connected with {providerName}
-            </Text>
-          </Box>
-
-          <Box
-            css={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              pb: "$space$4",
-            }}
-          >
-            <Box>
-              {" "}
-              <Text
-                css={{
-                  fontFamily: "$monospace",
-                  fontSize: "$xl",
-                }}
-              >
-                {truncatedWalletAddress}
-              </Text>
+            <Box
+              css={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                borderBottom: "1px solid $extraMuted",
+                justifyContent: "space-between",
+                pb: "$5",
+                mb: "$4",
+              }}
+            >
               <Box
                 css={{
-                  display: "inline-block",
-                  marginRight: "$space$1",
-                  height: "30px",
-                  cursor: "pointer",
-                  pl: "$3",
-                  color: "$primary",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
-                onClick={() => copyToClipboard(walletAddress)}
               >
-                <Copy size={"22px"} style={{ color: "$primary" }} />
+                <Text
+                  title={`Connected with ${providerName}`}
+                  css={{
+                    fontFamily: "$monospace",
+                    fontSize: "$xl",
+                    display: "inline-block",
+                    lineHeight: "$9",
+                    marginRight: "$4",
+                  }}
+                >
+                  {truncatedWalletAddress}
+                </Text>
+                <Button
+                  variant="bordered"
+                  size="sm"
+                  css={{
+                    borderRadius: "999px",
+                    border: "0",
+                    fontSize: "$sm",
+                    fontWeight: "lighter",
+                  }}
+                  onClick={() => disconnect()}
+                >
+                  Disconnect
+                </Button>
+              </Box>
+
+              <Box
+                css={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Box
+                  css={{
+                    display: "inline-block",
+                    marginRight: "$space$1",
+                    cursor: "pointer",
+                    color: "$primary",
+                  }}
+                  onClick={() => copyToClipboard(walletAddress)}
+                >
+                  <Copy size={"22px"} style={{ color: "$primary" }} />
+                </Box>
+                <Link
+                  css={{ paddingLeft: "$1" }}
+                  as="a"
+                  title="View account on Polygonscan"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  href={`https://polygonscan.com/address/${walletAddress}`}
+                >
+                  <PolygonScanIcon fill="inherit" />
+                </Link>
               </Box>
             </Box>
 
-            <Button
-              variant="bordered"
-              size="sm"
+            <Box
               css={{
-                borderRadius: "999px",
-                border: "0",
-                fontSize: "$sm",
-                fontWeight: "lighter",
+                display: "flex",
+                flexDirection: "column",
               }}
-              onClick={() => disconnect()}
             >
-              Disconnect
-            </Button>
+              <Box
+                css={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "baseline",
+                  justifyContent: "space-between",
+                  mb: "$space$2",
+                }}
+              >
+                {balances.vnl ? (
+                  <>
+                    <Text css={{ color: "$textA", fontSize: "$xl" }}>
+                      {balances.vnl} VNL <TradeLink href="">Buy</TradeLink>
+                    </Text>
+                    <Text muted>+{vnlToDao} to DAO</Text>
+                  </>
+                ) : (
+                  <Loader />
+                )}
+              </Box>
+
+              <Box
+                css={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "baseline",
+                  justifyContent: "space-between",
+                  mb: "$space$1",
+                }}
+              >
+                {balances.juice ? (
+                  <>
+                    <Text css={{ color: "$textA", fontSize: "$xl" }}>
+                      {balances.juice} JUICE <TradeLink href="">Buy</TradeLink>
+                    </Text>
+                    <Text muted>In your wallet</Text>
+                  </>
+                ) : (
+                  <Loader />
+                )}
+              </Box>
+            </Box>
           </Box>
 
           <Box
             css={{
               display: "flex",
               flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              pb: "$space$5",
-              mb: "$space$5",
-              borderBottom: "1px $extraMuted solid",
+              mb: "$space$2",
+              width: "$md",
             }}
           >
-            <TradeLink
-              href={`https://polygonscan.com/address/${walletAddress}`}
+            <Box
+              css={{
+                position: "relative",
+                width: "100%",
+                boxShadow: "inset 0 0 40px rgba(0,0,0.25)",
+                "&::after": {
+                  display: "inline-block",
+                  content: "JUICE",
+                  color: "$muted",
+                  position: "absolute",
+                  top: 0,
+                  lineHeight: "3.5rem",
+                  right: "1rem",
+                },
+              }}
             >
-              View on Polygonscan
-            </TradeLink>
-            <TradeLink href={`https://etherscan.io/address/${walletAddress}`}>
-              View on Etherscan
-            </TradeLink>
+              <Input
+                type="number"
+                disabled={txDisabled == false ? false : true}
+                value={juiceAmount}
+                onChange={(e) => setJuiceAmount(e.target.value)}
+                size="xl"
+                placeholder="0.0"
+                css={{
+                  height: "57px",
+                  padding: "1rem 1rem",
+                  border: 0,
+                }}
+                variant="bordered"
+              />
+            </Box>
+
+            <Box
+              css={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <>
+                {rawBalances.juice > 0 && (
+                  <Button
+                    disabled={txDisabled == false ? false : true}
+                    uppercase
+                    outline
+                    onClick={() => setTransactionType("deposit")}
+                    active={transactionType === "deposit"}
+                    css={{
+                      display: "flex",
+                      fontSize: "$xs",
+                      flex: "1 0",
+                      padding: "0 $3",
+                      height: "56px",
+                      borderColor: "1px solid $extraMuted",
+                    }}
+                  >
+                    Deposit{" "}
+                    <ArrowDown
+                      style={{ paddingLeft: ".25rem" }}
+                      size={"21px"}
+                    />
+                  </Button>
+                )}
+                {rawBalances.unstakedJuice > 0 && (
+                  <Button
+                    disabled={txDisabled == false ? false : true}
+                    uppercase
+                    onClick={() => setTransactionType("withdraw")}
+                    outline
+                    css={{
+                      display: "flex",
+                      flex: "1 0",
+                      fontSize: "$xs",
+                      padding: "0 $3",
+                      height: "56px",
+                      borderColor: "1px solid $extraMuted",
+                    }}
+                    active={transactionType === "withdraw"}
+                  >
+                    <ArrowUp style={{ paddingRight: ".25rem" }} size={"21px"} />{" "}
+                    Withdraw
+                  </Button>
+                )}
+              </>
+            </Box>
           </Box>
 
           <Box
+            as="section"
             css={{
-              display: "flex",
-              flexDirection: "column",
+              px: "$space$4",
+              py: "$space$5",
+              width: "$md",
             }}
           >
             <Box
@@ -312,51 +476,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               {balances.juice ? (
                 <>
                   <Text css={{ color: "$textA", fontSize: "$xl" }}>
-                    {balances.juice} JUICE
+                    {unstakedBalance} JUICE
                   </Text>
-                  <TradeLink href="">Buy JUICE</TradeLink>
-                </>
-              ) : (
-                <Loader />
-              )}
-            </Box>
-
-            <Box
-              css={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "baseline",
-                justifyContent: "space-between",
-                mb: "$space$1",
-              }}
-            >
-              {balances.vnl ? (
-                <>
-                  <Text css={{ color: "$textA", fontSize: "$xl" }}>
-                    {balances.vnl} VNL
-                  </Text>
-                  <TradeLink href="">Buy VNL</TradeLink>
-                </>
-              ) : (
-                <Loader />
-              )}
-            </Box>
-
-            <Box
-              css={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "baseline",
-                justifyContent: "space-between",
-                mb: "$space$1",
-              }}
-            >
-              {balances.matic ? (
-                <>
-                  <Text css={{ color: "$textA", fontSize: "$xl" }}>
-                    {balances.matic} MATIC
-                  </Text>
-                  <TradeLink href="">Buy MATIC</TradeLink>
+                  <Text muted>Unstaked in Juicenet</Text>
                 </>
               ) : (
                 <Loader />
@@ -406,71 +528,32 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 You need to get some $JUICE first, before you can add it to your
                 staking account and start making stakes.
               </Text>
-            ) : (
-              <Box
-                css={{
-                  "&::after": {
-                    display: "inline-block",
-                    content: "JUICE",
-                    color: "$muted",
-                    position: "absolute",
-                    top: 0,
-                    lineHeight: "3.5rem",
-                    right: "1rem",
-                  },
-                }}
-              >
-                <Input
-                  type="number"
-                  disabled={txDisabled == false ? false : true}
-                  value={juiceAmount}
-                  onChange={(e) => setJuiceAmount(e.target.value)}
-                  size="xl"
-                  placeholder="0.0"
-                  css={{
-                    padding: "1rem 1.5rem",
-                  }}
-                  variant="bordered"
-                ></Input>
-              </Box>
             )}
-            <Box css={{ display: "flex", flexDirection: "row", mt: "1px" }}>
-              <>
-                {rawBalances.unstakedJuice?.gt(0) && (
-                  <Button
-                    disabled={txDisabled == false ? false : true}
-                    onClick={() => handleTx(TxTypes.withdraw)}
-                    variant="bordered"
-                    css={{ display: "flex", fontSize: "$sm", flex: "1 0" }}
-                  >
-                    Withdraw {juiceAmount} JUICE
-                  </Button>
-                )}
-                {rawBalances.juice?.gt(0) && (
-                  <Button
-                    disabled={txDisabled == false ? false : true}
-                    onClick={() => handleTx(TxTypes.deposit)}
-                    variant="bordered"
-                    css={{ display: "flex", fontSize: "$sm", flex: "1 0" }}
-                  >
-                    Deposit {juiceAmount} JUICE
-                  </Button>
-                )}
-              </>
-            </Box>
           </Box>
+        </Box>
+        {Number(juiceAmount) > 0 && (
           <Button
             variant="primary"
+            disabled={txDisabled == false ? false : true}
             css={{
               width: "100%",
-              position: "relative",
               boxSizing: "border-box",
+              position: "relative",
+              zIndex: "43",
+              marginTop: "$3",
+              height: "56px",
             }}
-            onClick={() => (state.walletOpen = false)}
+            onClick={() =>
+              transactionType === "deposit"
+                ? handleTx(TxTypes.deposit)
+                : handleTx(TxTypes.withdraw)
+            }
           >
-            Close
+            {transactionType === "deposit"
+              ? `Deposit ${juiceAmount} JUICE to Juicenet`
+              : `Withdraw ${juiceAmount} JUICE from Juicenet`}
           </Button>
-        </Box>
+        )}
       </Box>
     </Box>
   ) : (
