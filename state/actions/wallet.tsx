@@ -11,9 +11,31 @@ import { correctNetwork } from "../../lib/config";
 import { formatJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
 
+let lockedWalletToast: any;
+
 export const connectWallet = async () => {
   const { modal } = snapshot(state);
   try {
+    // Handle metamask locked state
+    if (typeof window !== undefined) {
+      const isUnlocked = window.ethereum?._metamask?.isUnlocked;
+      if (isUnlocked && (await isUnlocked()) === false) {
+        const isToastActive = toast.isActive(lockedWalletToast);
+        if (isToastActive) return;
+
+        lockedWalletToast = toast.warn(
+          "Locked metamask detected, please login in your wallet first!",
+          {
+            autoClose: 3000,
+            closeButton: true,
+            position: toast.POSITION.TOP_CENTER,
+          }
+        );
+
+        return;
+      }
+    }
+
     const polygonProvider = await modal?.connect();
     const web3Provider = new providers.Web3Provider(polygonProvider);
     const signer = ref(web3Provider.getSigner());
@@ -135,6 +157,7 @@ export const initWalletSubscriptions = () => {
 
   subscribeKey(state, "modal", (modal) => {
     if (modal?.cachedProvider) {
+      // TODO see if we can remove this
       connectWallet();
       let name = null;
       switch (modal?.cachedProvider) {
@@ -229,11 +252,11 @@ async function onJuiceDeposited(depositor: string, amount: BigNumber) {
   if (depositor.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
     await updateUnstakedAmount();
     await updateBalances();
-    
+
     // TODO discuss if we need this as we already have transaction confirmation toast
     toast.success(`${formatJuice(amount)} JUICE deposited successfully!`, {
       autoClose: 2000,
-      hideProgressBar: true
+      hideProgressBar: true,
     });
   }
 }
@@ -243,7 +266,7 @@ async function onJuiceWithdrawn(withdrawer: string, amount: BigNumber) {
   if (withdrawer.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
     await updateUnstakedAmount();
     await updateBalances();
-    
+
     toast.success(`${formatJuice(amount)} JUICE withdrawn successfully!`, {
       autoClose: 2000,
       hideProgressBar: true,
