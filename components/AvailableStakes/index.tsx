@@ -1,24 +1,32 @@
-import React, { useEffect, useMemo, useCallback, useState } from "react";
-import Image from "next/image";
 import { ethers } from "ethers";
+import Image from "next/image";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
-
+import { useSnapshot } from "valtio";
+import { useGetAssetPairsQuery } from "../../generated/graphql";
+import { state } from "../../state";
+import { findToken } from "../../utils/helpers";
+import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
 import Container from "../Container";
 import Flex from "../Flex";
 import Heading from "../Heading";
-import Table from "../Table";
-
-import valueUSD from "../../utils/valueUSD";
-import { useGetAssetPairsQuery } from "../../generated/graphql";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
+import Table from "../Table";
 import TableFilter from "../TableFilter";
-import { findToken } from "../../utils/helpers";
 
 export const AvailableStakes = () => {
+  const { stakes } = useSnapshot(state);
   const [{ fetching, data: _data }, executeQuery] = useGetAssetPairsQuery();
-  const data = _data?.assetPairs.filter((t) => findToken(t.id)?.enabled) || [];
+   
+  const getData = useCallback(() => {
+    const filteredTokens = _data?.assetPairs.filter((t) => {
+      const token = findToken(t.id)
+      return token?.enabled && !stakes?.find(stake => stake.id === token?.id)
+    }) || [];
+    return filteredTokens
+  }, [stakes, _data])
 
   // refetch data every 3 seconds
   useEffect(() => {
@@ -162,28 +170,29 @@ export const AvailableStakes = () => {
 
   return (
     <>
-      <TableFilter onChange={(value) => setFilterValue(value)} />
+      <TableFilter onChange={setFilterValue} />
       <Container css={{ py: "$5" }}>
         <Heading as="h1">Available Stakes</Heading>
-        {!data ? (
-          <p>loading</p>
+        {getData().length === 0 ? (
+          <p>You have open stakes in every available token.</p>
         ) : (
-          <Box
-            css={{
-              overflowX: "auto",
-              "&::-webkit-scrollbar": {
-                height: 0,
-                background: "transparent",
-              },
-            }}
-          >
-            <Table
-              filter={filterValue}
-              columns={columns}
-              data={data}
-              renderRowSubComponent={renderRowSubComponent}
-            />
-          </Box>
+        <Box
+          css={{
+            overflowX: "auto",
+            "&::-webkit-scrollbar": {
+              height: 0,
+              background: "transparent",
+            },
+          }}
+        >
+          <Table
+            filter={filterValue}
+            isLoading={fetching}
+            columns={columns}
+            data={getData()}
+            renderRowSubComponent={renderRowSubComponent}
+          />
+        </Box>
         )}
       </Container>
     </>

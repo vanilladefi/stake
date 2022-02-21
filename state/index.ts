@@ -2,6 +2,7 @@ import { providers, Signer } from "ethers";
 import { proxy, ref, snapshot, subscribe, useSnapshot } from "valtio";
 import { subscribeKey } from "valtio/utils";
 import Web3Modal from "web3modal";
+import { Stake } from "../components/MyStakes";
 import { defaultEthereumProvider, defaultPolygonProvider } from "../lib/config";
 
 type BalanceTypes = "eth" | "vnl" | "juice" | "matic";
@@ -9,25 +10,26 @@ export type Balances = Partial<Record<BalanceTypes, string>>;
 
 type State = {
   ethereumProvider:
-  | providers.JsonRpcProvider
-  | providers.Web3Provider
-  | providers.WebSocketProvider
-  | providers.Provider
-  | providers.BaseProvider
-  | null;
+    | providers.JsonRpcProvider
+    | providers.Web3Provider
+    | providers.WebSocketProvider
+    | providers.Provider
+    | providers.BaseProvider
+    | null;
   polygonProvider:
-  | providers.JsonRpcProvider
-  | providers.Web3Provider
-  | providers.WebSocketProvider
-  | providers.Provider
-  | providers.BaseProvider
-  | null;
+    | providers.JsonRpcProvider
+    | providers.Web3Provider
+    | providers.WebSocketProvider
+    | providers.Provider
+    | providers.BaseProvider
+    | null;
   providerName: string | null;
   signer: Signer | null;
   balances: Balances;
   walletAddress: string | null;
   truncatedWalletAddress: string | null;
   modal: Web3Modal | null;
+  stakes: Stake[] | null;
   alert: {
     title: string;
     body?: string | JSX.Element;
@@ -49,6 +51,7 @@ export const initialState: State = {
   truncatedWalletAddress: null,
   modal: null,
   alert: null,
+  stakes: null,
   walletOpen: false,
   unstakedBalance: null,
 };
