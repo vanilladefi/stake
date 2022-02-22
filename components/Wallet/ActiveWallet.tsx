@@ -81,7 +81,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const [txDisabled, setTxDisabled] = useState<false | TxTypes>(false);
   const [transactionType, setTransactionType] = useState<
     "deposit" | "withdraw"
-  >(Number(balances.juice) > 0 ? "deposit" : "withdraw");
+  >(rawBalances.juice?.gt(0) ? "deposit" : "withdraw");
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard.writeText(text);
@@ -211,14 +211,18 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             display: "flex",
             position: "relative",
             textAlign: "right",
-            color: "$link",
+            color: "$primary",
             flexDirection: "column",
             zIndex: "43",
             padding: "$2 $4",
+            cursor: "pointer",
           }}
         >
-          <Text as="a" onClick={() => (state.walletOpen = false)}>
-            Close
+          <Text
+            css={{ color: "$primary" }}
+            onClick={() => (state.walletOpen = false)}
+          >
+            Close &times;
           </Text>
         </Box>
         <Box
@@ -293,11 +297,11 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     display: "inline-block",
                     marginRight: "$space$1",
                     cursor: "pointer",
-                    color: "$primary",
+                    color: "$link",
                   }}
                   onClick={() => copyToClipboard(walletAddress)}
                 >
-                  <Copy size={"22px"} style={{ color: "$primary" }} />
+                  <Copy size={"22px"} style={{ color: "$link" }} />
                 </Box>
                 <Link
                   css={{ paddingLeft: "$1" }}
@@ -332,7 +336,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               >
                 {balances.vnl ? (
                   <>
-                    <Text css={{ color: "$extraMuted", fontSize: "$sm" }}>
+                    <Text css={{ color: "$offWhite50", fontSize: "$sm" }}>
                       {balances.vnl} VNL <TradeLink href="">Buy</TradeLink>
                     </Text>
                   </>
@@ -350,7 +354,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               >
                 {balances.matic ? (
                   <>
-                    <Text css={{ color: "$extraMuted", fontSize: "$sm" }}>
+                    <Text css={{ color: "$offWhite50", fontSize: "$sm" }}>
                       {balances.matic} MATIC <TradeLink href="">Buy</TradeLink>
                     </Text>
                   </>
@@ -413,7 +417,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               mb: "$space$2",
               height: "60px",
               width: "$md",
-              boxShadow: "inset 0 0 40px rgba(0,0,0.25)",
+              backgroundColor: "$tableZebra",
             }}
           >
             <Box
@@ -424,13 +428,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             >
               <Input
                 type="number"
+                autoFocus
                 disabled={txDisabled === false ? false : true}
                 value={juiceAmount}
                 onChange={(e) => setJuiceAmount(e.target.value)}
                 size="xl"
                 placeholder="0.0"
                 css={{
-                  height: "57px",
+                  height: "100%",
                   padding: "1rem 1rem",
                   border: 0,
                   fontSize: "$xxl",
@@ -443,7 +448,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                   alignItems: "center",
                   justifyContent: "right",
                   textAlign: "right",
-                  color: "$extraMuted",
+                  color: "$offWhite50",
                   position: "absolute",
                   top: 0,
                   height: "100%",
@@ -452,7 +457,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                   zIndex: 5,
                   minWidth: "40px",
                   "&:hover": {
-                    color: juiceAmount ? "$muted" : "$extraMuted",
+                    color: juiceAmount ? "$muted" : "$offWhite50",
                   },
                 }}
                 onClick={() => (!txDisabled ? setJuiceAmount("") : null)}
@@ -575,30 +580,36 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           </Box>
         </Box>
 
-        {juiceAmount && (
-          <Button
-            variant="primary"
-            disabled={txDisabled != false}
-            css={{
-              width: "100%",
-              boxSizing: "border-box",
-              position: "relative",
-              zIndex: "43",
-              marginTop: "$3",
-              fontSize: "$xl",
-              height: "56px",
-            }}
-            onClick={() =>
-              transactionType === "deposit"
-                ? handleTx(TxTypes.deposit)
-                : handleTx(TxTypes.withdraw)
-            }
-          >
-            {transactionType === "deposit"
-              ? `Deposit ${juiceAmount} JUICE to Juicenet`
-              : `Withdraw ${juiceAmount} JUICE from Juicenet`}
-          </Button>
-        )}
+        <Button
+          variant="primary"
+          disabled={txDisabled != false || !juiceAmount}
+          css={{
+            width: "100%",
+            boxSizing: "border-box",
+            position: "relative",
+            zIndex: "43",
+            marginTop: "$3",
+            fontSize: "$xl",
+            minHeight: "56px",
+            maxWidth: "$md",
+            display: "flex",
+            padding: "1rem 2rem",
+            alignItems: "center",
+          }}
+          onClick={() =>
+            transactionType === "deposit"
+              ? handleTx(TxTypes.deposit)
+              : handleTx(TxTypes.withdraw)
+          }
+        >
+          {juiceAmount && transactionType === "deposit" ? (
+            `Deposit ${juiceAmount} JUICE to Juicenet`
+          ) : juiceAmount && transactionType === "withdraw" ? (
+            `Withdraw ${juiceAmount} JUICE from Juicenet`
+          ) : (
+            <>Enter a JUICE Amount to transfer</>
+          )}
+        </Button>
       </Box>
     </Box>
   ) : (
