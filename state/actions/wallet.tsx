@@ -14,11 +14,16 @@ import { parseUnits } from "ethers/lib/utils";
 
 let lockedWalletToast: any;
 
-export const connectWallet = async () => {
+interface ConnectOptions {
+  skipLockedWalletCheck?: boolean;
+}
+
+export const connectWallet = async (opts?: ConnectOptions) => {
+  const { skipLockedWalletCheck } = opts || {}
   const { modal } = snapshot(state);
   try {
     // Handle metamask locked state
-    if (typeof window !== undefined) {
+    if (typeof window !== undefined && !skipLockedWalletCheck) {
       const isUnlocked = window.ethereum?._metamask?.isUnlocked;
       if (isUnlocked && (await isUnlocked()) === false) {
         const isToastActive = toast.isActive(lockedWalletToast);
@@ -32,8 +37,6 @@ export const connectWallet = async () => {
             position: toast.POSITION.TOP_CENTER,
           }
         );
-
-        return;
       }
     }
 
@@ -155,7 +158,7 @@ export const initWalletSubscriptions = () => {
   subscribeKey(state, "modal", (modal) => {
     if (modal?.cachedProvider) {
       // TODO see if we can remove this or make run only once
-      connectWallet();
+      connectWallet({ skipLockedWalletCheck: true });
       let name = null;
       switch (modal?.cachedProvider) {
         case "injected": {

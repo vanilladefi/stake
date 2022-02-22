@@ -136,7 +136,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
     } catch (error) {
       console.warn(error);
 
-      let body = "Something went wrong!";
+      let body = "Something went wrong, try again later!";
       if ((error as any)?.code === 4001) {
         body = "Request was rejected by the user";
       }
@@ -188,7 +188,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
 
         emitEvent(VanillaEvents.stakesChanged);
 
-        row.toggleRowExpanded(false)
+        row.toggleRowExpanded(false);
       } else
         toast.error(
           <>
@@ -199,7 +199,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
     } catch (error) {
       console.warn(error);
 
-      let body = "Something went wrong!";
+      let body = "Something went wrong, try again later!";
       if ((error as any)?.code === 4001) {
         body = "The request was rejected by the user";
       }
@@ -346,7 +346,11 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
       {type === "edit" ? (
         stakePending ? (
           <Flex justify="center" align="center" css={{ width: "220px" }}>
-            <Link external variant={txLink ? "default" : "subtle"} href={txLink}>
+            <Link
+              external
+              variant={txLink ? "default" : "subtle"}
+              href={txLink}
+            >
               {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
               Pending...
             </Link>
