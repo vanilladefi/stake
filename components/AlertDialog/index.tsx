@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 import { state } from "../../state";
 import Button from "../Button";
@@ -12,14 +12,18 @@ import {
 
 const AlertDialog = () => {
   const { alert } = useSnapshot(state);
-  const { title, body, onConfirm, onCancel, confirmText, cancelText } = alert || {};
+  const { title, body, onConfirm, onCancel, confirmText, cancelText, confirmDisabled } = alert || {};
 
-  const handleConfirm = useCallback(() => {
-    onConfirm?.();
+  const [loading, setLoading] = useState(false)
+  const handleConfirm = useCallback(async () => {
+    setLoading(true)
+    await onConfirm?.();
+    setLoading(false)
     state.alert = null;
   }, [onConfirm]);
 
   const handleCancel = useCallback(() => {
+    setLoading(false)
     state.alert = null;
     onCancel?.();
   }, [onCancel]);
@@ -58,6 +62,7 @@ const AlertDialog = () => {
               fluid
               variant="primary"
               css={{ ml: "$2" }}
+              disabled={confirmDisabled || loading}
             >
               {confirmText || "Confirm"}
             </Button>

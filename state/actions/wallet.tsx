@@ -41,6 +41,7 @@ export const connectWallet = async (opts?: ConnectOptions) => {
     }
 
     const polygonProvider = await modal?.connect();
+    window.ethereum = polygonProvider
     const web3Provider = new providers.Web3Provider(polygonProvider);
     const signer = ref(web3Provider.getSigner());
     const isCorrectChain = ensureCorrectChain(true);
@@ -83,10 +84,10 @@ export const ensureCorrectChain = (force?: true): boolean => {
     });
   };
   try {
-    const { signer, walletAddress, modal } = snapshot(state);
+    console.log({ correctNetwork });
+    const { signer, walletAddress } = snapshot(state);
     if (
-      window.ethereum?.chainId !== correctNetwork.chainId &&
-      modal?.cachedProvider === "injected"
+      window.ethereum?.chainId !== correctNetwork.chainId
     ) {
       if ((signer && walletAddress) || force) {
         abort();

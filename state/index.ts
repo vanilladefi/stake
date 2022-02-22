@@ -29,6 +29,16 @@ export type Stake = {
   sentiment: Sentiment;
 };
 
+export type AlertOpts = {
+  title: string;
+  body?: string | JSX.Element;
+  onConfirm?: () => void | Promise<void>,
+  onCancel?: () => void,
+  confirmDisabled?: boolean,
+  confirmText?: string
+  cancelText?: string
+}
+
 
 type State = {
   ethereumProvider:
@@ -53,14 +63,7 @@ type State = {
   truncatedWalletAddress: string | null;
   modal: Web3Modal | null;
   stakes: Stake[] | null;
-  alert: {
-    title: string;
-    body?: string | JSX.Element;
-    onConfirm?: () => void,
-    onCancel?: () => void,
-    confirmText?: string
-    cancelText?: string
-  } | null;
+  alert: AlertOpts | null;
   walletOpen: boolean;
 };
 
