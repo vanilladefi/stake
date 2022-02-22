@@ -12,12 +12,17 @@ import {
 
 const AlertDialog = () => {
   const { alert } = useSnapshot(state);
-  const { title, body, onConfirm, confirmText, cancelText } = alert || {};
+  const { title, body, onConfirm, onCancel, confirmText, cancelText } = alert || {};
 
   const handleConfirm = useCallback(() => {
     onConfirm?.();
     state.alert = null;
   }, [onConfirm]);
+
+  const handleCancel = useCallback(() => {
+    state.alert = null;
+    onCancel?.();
+  }, [onCancel]);
 
   useEffect(() => {
     const onKeyEvent = (event: KeyboardEvent) => {
@@ -41,9 +46,7 @@ const AlertDialog = () => {
         {body && <AlertDialogDescription>{body}</AlertDialogDescription>}
         <AlertDialogCancel as="div">
           <Button
-            onClick={() => {
-              state.alert = null;
-            }}
+            onClick={handleCancel}
             fluid
             variant={onConfirm ? "default" : "primary"}
           >

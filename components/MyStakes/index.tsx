@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
-import { state } from "../../state";
+import { Stake, state } from "../../state";
 import { fetchStakes } from "../../state/actions/stakes";
 import { findToken } from "../../utils/helpers";
 import valueUSD from "../../utils/valueUSD";
@@ -86,24 +86,26 @@ export const MyStakes = () => {
       },
       {
         Header: "Stake",
-        accessor: "juiceValue",
+        accessor: (row) => row.currentStake?.juiceValue,
+        id: "currentStake.juiceValue",
         align: "right",
         width: "15%",
         minWidth: "80px",
-        Cell: ({ value = 0 }) => {
-          return <Box>{value}</Box>;
+        Cell: ({ value }: { value: string | undefined }) => {
+          return <Box>{value || "xxxx"}</Box>;
         },
       },
       {
         Header: "Sentiment",
-        accessor: "sentiment",
+        accessor: (row) => row.currentStake?.sentiment,
+        id: "currentStake.sentiment",
         align: "right",
         width: "15%",
         minWidth: "80px",
-        Cell: ({ value = "xxxx" }) => {
+        Cell: ({ value }: { value: string | undefined }) => {
           return (
             <Text css={{ textTransform: "capitalize", color: "$muted" }}>
-              {value}
+              {value || "xxxx"}
             </Text>
           );
         },
@@ -176,16 +178,7 @@ export const MyStakes = () => {
 
   const renderRowSubComponent = useCallback(
     ({ row }: { row: Row<ColumnType> }) => {
-      return (
-        <StakeSubRow
-          type="edit"
-          row={row}
-          defaultStake={{
-            amount: row.original.juiceValue,
-            position: row.original.sentiment,
-          }}
-        />
-      );
+      return <StakeSubRow type="edit" row={row} />;
     },
     []
   );
@@ -203,12 +196,14 @@ export const MyStakes = () => {
     if (stakes && stakes.length) {
       let _tableData: ColumnType[] = [];
 
-      priceData.forEach((pd, idx) => {
-        const s = stakes.find((stake) => stake.id === findToken(pd.id)?.id);
-        if (s) {
+      priceData.forEach((pd) => {
+        const currentStake: Stake | undefined = stakes.find(
+          (stake) => stake.id === findToken(pd.id)?.id
+        );
+        if (currentStake) {
           _tableData.push({
             ...pd,
-            ...s,
+            currentStake,
           });
         }
       });

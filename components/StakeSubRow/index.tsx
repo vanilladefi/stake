@@ -1,11 +1,11 @@
-import { isAddress } from "@vanilladefi/core-sdk";
-import * as sdk from "@vanilladefi/stake-sdk";
 import Image from "next/image";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
+import * as sdk from "@vanilladefi/stake-sdk";
+import { isAddress } from "@vanilladefi/core-sdk";
 import { Row } from "react-table";
 import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
-import { state, VanillaEvents } from "../../state";
+import { Stake, state, VanillaEvents } from "../../state";
 import { connectWallet } from "../../state/actions/wallet";
 import {
   emitEvent,
@@ -21,14 +21,13 @@ import Link from "../Link";
 import Text from "../Text";
 
 import { PolygonScanIcon } from "../../assets";
+import { BigNumber } from "ethers";
 
 export type ColumnType = {
   __typename?: "AssetPair";
   id: string;
+  currentStake?: Stake;
   currentPrice: any;
-  juiceStake?: string;
-  juiceValue?: string;
-  sentiment?: "long" | "short";
   decimals: number;
   roundId: any;
   hourRoundId: number;
@@ -47,168 +46,112 @@ export type ColumnType = {
 
 interface SubRowProps {
   row: Row<ColumnType>;
-  defaultStake?: {
-    amount?: string;
-    position?: "long" | "short";
-  };
   type?: "edit" | "make";
 }
 
-const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
-  const { signer } = useSnapshot(state);
+const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
+  const { signer, rawBalances } = useSnapshot(state);
 
-  const [stakeAmount, setStakeAmount] = useState(defaultStake?.amount || "");
+  const staked = row.original.currentStake;
+
+  const [stakeAmount, setStakeAmount] = useState(staked?.juiceValue || "");
   const [stakePosition, setStakePosition] = useState<"long" | "short">(
-    defaultStake?.position || "long"
+    staked?.sentiment || "long"
   );
   const [stakePending, setStakePending] = useState(false);
-  const [stakingDisabled, setStakingDisabled] = useState(true);
-  const [closingDisabled, setClosingDisabled] = useState(true);
   const [txLink, setTxLink] = useState<string>();
 
-  useEffect(() => {
-    const _disabled = !(stakeAmount && +stakeAmount) || stakePending;
-    if (_disabled && !stakingDisabled) setStakingDisabled(true);
-    else if (!_disabled && stakingDisabled) setStakingDisabled(false);
-  }, [stakingDisabled, setStakingDisabled, stakeAmount, stakePending]);
+  const stakingDisabled = stakePending || !(stakeAmount && +stakeAmount);
+  const closingDisabled = stakePending;
 
-  useEffect(() => {
-    const _disabled = stakePending;
-    if (_disabled && !closingDisabled) setClosingDisabled(true);
-    else if (!_disabled && closingDisabled) setClosingDisabled(false);
-  }, [stakePending, closingDisabled]);
+  const handleStake = useCallback(
+    async (type: "close" | "modify" = "modify") => {
+      if (type === "modify" && stakingDisabled) return;
+      if (type === "close" && closingDisabled) return;
 
-  const modifyStake = useCallback(async () => {
-    if (stakingDisabled) return;
-
-    if (!signer) {
-      return connectWallet();
-    }
-
-    const token = findToken(row.original.id)?.address;
-
-    if (!token) {
-      return toast.error("Error: Token is not available to stake", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
-    setTxLink(undefined);
-    setStakePending(true);
-    try {
-      const amount = parseJuice(stakeAmount).toString();
-      const sentiment = stakePosition === "short" ? false : true;
-
-      const stake = { token, amount, sentiment };
-
-      const contractAddress = isAddress(
-        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
-      );
-      const tx = await sdk.modifyStake(stake, {
-        signerOrProvider: signer,
-        optionalAddress: contractAddress || "",
-      });
-
-      const _txLink = getTransactionLink(tx.hash);
-      setTxLink(_txLink);
-
-      const rec = await tx.wait();
-
-      const transactionLink = getTransactionLink(rec.transactionHash);
-      if (rec.status === 1) {
-        toast.success(
-          <>
-            Transaction was successful.{" "}
-            <Link href={transactionLink} external text="View on explorer" />{" "}
-          </>
-        );
-
-        emitEvent(VanillaEvents.stakesChanged);
-
-        row.toggleRowExpanded(false);
-      } else {
-        toast.error(
-          <>
-            Transaction failed!{" "}
-            <Link href={transactionLink} external text="View on explorer" />{" "}
-          </>
-        );
-      }
-    } catch (error) {
-      console.warn(error);
-
-      let body = "Something went wrong, try again later!";
-      if ((error as any)?.code === 4001) {
-        body = "Request was rejected by the user";
+      if (!signer) {
+        return connectWallet();
       }
 
-      toast.error(body);
-    }
-    setStakePending(false);
-  }, [stakingDisabled, signer, row, stakeAmount, stakePosition]);
-
-  const closeStakePosition = useCallback(async () => {
-    if (closingDisabled) return;
-
-    if (!signer) {
-      return connectWallet();
-    }
-
-    const token = findToken(row.original.id)?.address;
-
-    if (!token) {
-      return toast.error("Error: Token is not available to stake", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
-    setTxLink(undefined);
-    setStakePending(true);
-    try {
-      const stake = { token, amount: 0, sentiment: false };
-
-      const contractAddress = isAddress(
-        process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
-      );
-      const tx = await sdk.modifyStake(stake, {
-        signerOrProvider: signer,
-        optionalAddress: contractAddress || "",
-      });
-      const _txLink = getTransactionLink(tx.hash);
-      setTxLink(_txLink);
-
-      const res = await tx.wait();
-
-      const transactionLink = getTransactionLink(res.transactionHash);
-      if (res.status === 1) {
-        toast.success(
-          <>
-            Stake position closed.{" "}
-            <Link href={transactionLink} external text="View on explorer" />{" "}
-          </>
-        );
-
-        emitEvent(VanillaEvents.stakesChanged);
-
-        row.toggleRowExpanded(false);
-      } else
-        toast.error(
-          <>
-            Transaction failed!{" "}
-            <Link href={transactionLink} external text="View on explorer" />{" "}
-          </>
-        );
-    } catch (error) {
-      console.warn(error);
-
-      let body = "Something went wrong, try again later!";
-      if ((error as any)?.code === 4001) {
-        body = "The request was rejected by the user";
+      const token = findToken(row.original.id)?.address;
+      if (!token) {
+        return toast.error("Error: Token is not available to stake", {
+          position: toast.POSITION.TOP_CENTER,
+        });
       }
 
-      toast.error(body);
-    }
+      const amount =
+        type === "close" ? BigNumber.from(0) : parseJuice(stakeAmount);
 
-    setStakePending(false);
-  }, [closingDisabled, signer, row]);
+      if (
+        type === "modify" &&
+        !rawBalances.unstakedJuice?.gte(amount.sub(staked?.rawJuiceValue || 0))
+      ) {
+        return toast.error("You don't have enough juice to stake this amount");
+      }
+
+      setTxLink(undefined);
+      setStakePending(true);
+      try {
+        const sentiment = stakePosition === "short" ? false : true;
+
+        const stake = { token, amount, sentiment };
+
+        const contractAddress = isAddress(
+          process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+        );
+        const tx = await sdk.modifyStake(stake, {
+          signerOrProvider: signer,
+          optionalAddress: contractAddress || "",
+        });
+
+        const _txLink = getTransactionLink(tx.hash);
+        setTxLink(_txLink);
+
+        const reciept = await tx.wait();
+        const transactionLink = getTransactionLink(reciept.transactionHash);
+
+        if (reciept.status === 1) {
+          toast.success(
+            <>
+              Transaction was successful.{" "}
+              <Link href={transactionLink} external text="View on explorer" />{" "}
+            </>
+          );
+
+          emitEvent(VanillaEvents.stakesChanged);
+          row.toggleRowExpanded(false);
+        } else {
+          toast.error(
+            <>
+              Transaction failed!{" "}
+              <Link href={transactionLink} external text="View on explorer" />{" "}
+            </>
+          );
+        }
+      } catch (error) {
+        console.warn(error);
+
+        let body = "Something went wrong, try again later!";
+        if ((error as any)?.code === 4001) {
+          body = "Request was rejected by the user";
+        }
+        toast.error(body);
+      }
+
+      setStakePending(false);
+    },
+    [
+      stakingDisabled,
+      closingDisabled,
+      signer,
+      row,
+      stakePosition,
+      stakeAmount,
+      rawBalances.unstakedJuice,
+      staked?.rawJuiceValue,
+    ]
+  );
 
   return (
     <Flex
@@ -361,7 +304,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
               ghost
               variant="primary"
               disabled={closingDisabled}
-              onClick={closeStakePosition}
+              onClick={() => handleStake("close")}
               css={{
                 color: "$red",
                 width: "120px",
@@ -385,7 +328,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
               ghost
               variant="primary"
               disabled={stakingDisabled}
-              onClick={modifyStake}
+              onClick={() => handleStake()}
               css={{
                 marginRight: "1px",
                 height: "auto",
@@ -416,7 +359,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make", defaultStake }) => {
           ghost
           variant="primary"
           disabled={stakingDisabled}
-          onClick={modifyStake}
+          onClick={() => handleStake()}
           css={{
             width: "auto",
             marginRight: "1px",

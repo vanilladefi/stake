@@ -86,6 +86,18 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         return;
       }
 
+      const amount = parseJuice(juiceAmount);
+
+      if (type === TxTypes.deposit && amount.gt(rawBalances.juice || 0)) {
+        return toast.error("Insufficient JUICE!");
+      }
+      if (
+        type === TxTypes.withdraw &&
+        amount.gt(rawBalances.unstakedJuice || 0)
+      ) {
+        return toast.error("Insufficient Unstaked balance!");
+      }
+
       setTxDisabled(type);
 
       const waitingToast = toast.loading(
@@ -93,7 +105,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       );
 
       try {
-        const amount = parseJuice(juiceAmount).toString();
         const contractAddress = isAddress(
           process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
         );
@@ -171,7 +182,13 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
       setTxDisabled(false);
     },
-    [juiceAmount, signer, txDisabled]
+    [
+      juiceAmount,
+      rawBalances.juice,
+      rawBalances.unstakedJuice,
+      signer,
+      txDisabled,
+    ]
   );
 
   return walletOpen ? (

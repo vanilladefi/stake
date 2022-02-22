@@ -57,6 +57,7 @@ type State = {
     title: string;
     body?: string | JSX.Element;
     onConfirm?: () => void,
+    onCancel?: () => void,
     confirmText?: string
     cancelText?: string
   } | null;
