@@ -1,25 +1,26 @@
-import Flex from "../components/Flex";
-import Heading from "../components/Heading";
-import Text from "../components/Text";
-
-import { GetAssetPairsDocument } from "../generated/graphql";
-import client, { ssrCache } from "../urql";
-import { useSnapshot } from "valtio";
-import { state, VanillaEvents } from "../state";
-import Stack from "../components/Stack";
-import { JuicingIcon } from "../assets";
-import { GetStaticProps } from "next";
-import { ArrowLink } from "../components/ArrowLink";
-import Container from "../components/Container";
-import { connectWallet } from "../state/actions/wallet";
-import Box from "../components/Box";
-import { MyStakes } from "../components/MyStakes";
-import { AvailableStakes } from "../components/AvailableStakes";
-import { useEffect } from "react";
 import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
-import { emitEvent } from "../utils/helpers";
+import { StakeAddedEvent, StakeRemovedEvent } from "@vanilladefi/stake-sdk/lib/types/juicenet/IJuiceStaking";
+import { GetStaticProps } from "next";
+import { useEffect } from "react";
+import { snapshot, useSnapshot } from "valtio";
+import { JuicingIcon } from "../assets";
+import { ArrowLink } from "../components/ArrowLink";
+import { AvailableStakes } from "../components/AvailableStakes";
+import Box from "../components/Box";
+import Container from "../components/Container";
+import Flex from "../components/Flex";
+import Heading from "../components/Heading";
+import { MyStakes } from "../components/MyStakes";
+import Stack from "../components/Stack";
+import Text from "../components/Text";
+import { GetAssetPairsDocument } from "../generated/graphql";
+import { state, VanillaEvents } from "../state";
 import { fetchStakes } from "../state/actions/stakes";
+import { connectWallet } from "../state/actions/wallet";
+import client, { ssrCache } from "../urql";
+import { emitEvent } from "../utils/helpers";
+
 
 const StakingIntro = () => (
   <Stack
@@ -107,8 +108,12 @@ const Stake = () => {
     });
     if (!contract) return;
 
-    const onStakesChange = () => {
-      emitEvent(VanillaEvents.stakesChanged);
+    const onStakesChange = (event: StakeAddedEvent | StakeRemovedEvent) => {
+      const { walletAddress } = snapshot(state);
+      // Check that the event was created by the logged in user
+      if (event.args.user.toLowerCase() === walletAddress?.toLowerCase()) {
+        emitEvent(VanillaEvents.stakesChanged);
+      }
     };
 
     contract.on("StakeAdded", onStakesChange);
