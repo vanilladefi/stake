@@ -75,9 +75,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
       const token = findToken(row.original.id)?.address;
       if (!token) {
-        return toast.error("Error: Token is not available to stake", {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        return toast.error("Error: Token is not available to stake");
       }
 
       const amount =
