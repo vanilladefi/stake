@@ -50,7 +50,6 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
             borderRadius: "400px",
             "&:hover": {
               color: "$text",
-              background: "$backgroundSecondary",
             },
           }}
         >
