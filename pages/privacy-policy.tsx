@@ -94,7 +94,7 @@ const PrivacyPolicy = () => {
           }}
         >
           With this Privacy Notice, we provide you information about why and how
-          we process your personal data in Vanilla Defi.
+          we process your personal data in Vanilla.
         </Text>
       </Box>
       <Stack
@@ -149,8 +149,8 @@ const PrivacyPolicy = () => {
             processes the data subject&rsquo;s personal data.{" "}
           </Paragraph>
           <Paragraph>
-            Service means our decentralized trading platform on the Ethereum
-            blockchain.{" "}
+            Service means our decentralized staking platform on the Polygon
+            &amp; Ethereum blockchains.{" "}
           </Paragraph>
         </Box>
         <Box>
@@ -161,7 +161,7 @@ const PrivacyPolicy = () => {
             2 OUR CONTACT DETAILS
           </Heading>
           <Paragraph>Equilibrium Group Oy (business ID 2891403-1)</Paragraph>
-          <Paragraph>Linnankatu 3 A 2, 20100 Turku, Finland</Paragraph>
+          <Paragraph>Linnankatu 3 A 24, 20100 Turku, Finland</Paragraph>
           <Paragraph>
             If you have any questions regarding the privacy notice, please
             contact us at hello@vanilladefi.com.{" "}

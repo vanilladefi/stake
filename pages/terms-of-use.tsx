@@ -74,7 +74,7 @@ const PrivacyPolicy = () => {
             lineHeight: "1.2",
           }}
         >
-          Vanilla Defi terms of service.
+          Vanilla terms of service.
         </Text>
       </Box>
       <Stack
@@ -110,14 +110,14 @@ const PrivacyPolicy = () => {
           <Paragraph>
             Equilibrium Group Oy (business ID 2891403-1) is a limited liability
             company formed under Finnish law, which has its principal office at
-            Linnankatu 3 A 2, 20100 Turku, Finland. We are a research and
+            Linnankatu 3 A 24, 20100 Turku, Finland. We are a research and
             development company focused on designing and building the
             decentralized web.
           </Paragraph>
           <Paragraph>
-            Our Site gives you access to a decentralized trading platform on the
-            Ethereum blockchain that allows users to make a profit by trading
-            and loaning Ethereum assets using smart contracts.
+            Our Site gives you access to a decentralized staking platform on the
+            Ethereum &amp; Polygon blockchains that allows users to make a
+            profit by staking.
           </Paragraph>
           <Paragraph>
             Please read these Terms of Service (&ldquo;Terms&rdquo;) carefully
@@ -348,10 +348,10 @@ const PrivacyPolicy = () => {
           </Heading>
           <Paragraph>
             Our Site&rsquo;s main function is to act as an interface and
-            facilitator for decentralized token trading and lending as well as
-            profit mining activities on the Ethereum blockchain. You acknowledge
-            that our Services merely provide you a user interface by which you
-            may access decentralized activities.
+            facilitator for decentralized token staking on the Ethereum &amp;
+            Polygon blockchains. You acknowledge that our Services merely
+            provide you a user interface by which you may access decentralized
+            activities.
           </Paragraph>
           <Paragraph>
             By accessing and using the Services, you further represent that you
