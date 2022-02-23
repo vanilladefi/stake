@@ -205,7 +205,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       }}
     >
       <Curtain />
-      <Box>
+      <Box
+        css={{
+          width: "100%",
+          maxWidth: "$md",
+          minWidth: "300px",
+          mx: "$2",
+        }}
+      >
         <Box
           css={{
             display: "flex",
@@ -240,7 +247,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             css={{
               px: "$space$4",
               py: "$space$5",
-              width: "$md",
             }}
           >
             <Box
@@ -416,14 +422,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               borderBottom: "1px solid $extraMuted",
               mb: "$space$2",
               height: "60px",
-              width: "$md",
+              width: "100%",
               backgroundColor: "$tableZebra",
             }}
           >
             <Box
               css={{
                 position: "relative",
-                width: "100%",
+                width: "50%",
               }}
             >
               <Input
@@ -472,8 +478,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
             <Box
               css={{
-                width: "100%",
+                width: "50%",
                 display: "flex",
+                flexShrink: "0",
                 flexDirection: "row",
                 marginLeft: "2px",
                 padding: "8px",
@@ -489,13 +496,24 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                   css={{
                     display: "flex",
                     fontSize: "$xs",
-                    flex: "1 0",
                     padding: "0 $3",
                     height: "100%",
+                    width: "50%",
                     borderColor: "1px solid $extraMuted",
                   }}
                 >
-                  Deposit{" "}
+                  <Text
+                    css={{
+                      lineHeight: "$xs",
+                      color: "inherit",
+                    }}
+                    display={{
+                      "@initial": "none",
+                      "@sm": "inline",
+                    }}
+                  >
+                    Deposit
+                  </Text>
                   <ArrowDown style={{ paddingLeft: ".25rem" }} size={"21px"} />
                 </Button>
 
@@ -507,16 +525,24 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     outline
                     css={{
                       display: "flex",
-                      flex: "1 0",
                       fontSize: "$xs",
                       padding: "0 $3",
+                      width: "50%",
                       height: "100%",
                       borderColor: "1px solid $extraMuted",
                     }}
                     active={transactionType === "withdraw"}
                   >
                     <ArrowUp style={{ paddingRight: ".25rem" }} size={"21px"} />{" "}
-                    Withdraw
+                    <Text
+                      display={{
+                        "@initial": "none",
+                        "@sm": "inline",
+                      }}
+                      css={{ lineHeight: "$xs", color: "inherit" }}
+                    >
+                      Withdraw
+                    </Text>
                   </Button>
                 )}
               </>
@@ -528,7 +554,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             css={{
               px: "$space$4",
               my: "$3",
-              width: "$md",
+              width: "100%",
             }}
           >
             <Box
@@ -591,7 +617,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             marginTop: "$3",
             fontSize: "$xl",
             minHeight: "56px",
-            maxWidth: "$md",
             display: "flex",
             padding: "1rem 2rem",
             alignItems: "center",
