@@ -259,7 +259,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             as="section"
             css={{
               px: "$space$4",
-              py: "$space$5",
+              py: "$space$4",
             }}
           >
             <Box
@@ -316,10 +316,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               >
                 <Box
                   css={{
-                    display: "inline-block",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     marginRight: "$space$1",
                     cursor: "pointer",
                     color: "$link",
+                    width: "40px",
+                    height: "40px",
                     "&:hover": {
                       color: "$text",
                     },
@@ -330,7 +334,11 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 </Box>
                 <Link
                   css={{
-                    paddingLeft: "$1",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "40px",
+                    height: "40px",
                     "&:hover": {
                       color: "$text",
                     },
@@ -634,7 +642,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
         <Button
           variant="primary"
-          disabled={txDisabled != false || !juiceAmount}
+          disabled={txDisabled != false || Number(juiceAmount) == 0}
           css={{
             width: "100%",
             boxSizing: "border-box",
@@ -646,6 +654,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             display: "flex",
             padding: "1rem 2rem",
             alignItems: "center",
+            transition: "opacity 0.3s",
           }}
           onClick={() =>
             transactionType === "deposit"
@@ -653,9 +662,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               : handleTx(TxTypes.withdraw)
           }
         >
-          {juiceAmount && transactionType === "deposit" ? (
+          {Number(juiceAmount) > 0 && transactionType === "deposit" ? (
             `Deposit ${juiceAmount} JUICE to Juicenet`
-          ) : juiceAmount && transactionType === "withdraw" ? (
+          ) : Number(juiceAmount) > 0 && transactionType === "withdraw" ? (
             `Withdraw ${juiceAmount} JUICE from Juicenet`
           ) : (
             <>Enter a JUICE Amount to transfer</>
