@@ -127,7 +127,7 @@ const MobileNavigation = () => {
         borderBottomColor: "$extraMuted",
         backgroundColor: "$background",
         color: "$text",
-        zIndex: 9999,
+        zIndex: 40,
       }}
     >
       <Container
@@ -208,10 +208,9 @@ const MobileNavigation = () => {
               display: "flex",
               flex: 1,
               flexShrink: 0,
-              mb: "$2",
             }}
           >
-            <NavLink css={{ py: "$4" }} href="/stake">
+            <NavLink css={{ py: "$3" }} href="/stake">
               Stake
             </NavLink>
             {/* <NavLink css={{ py: "$4" }} href="/invest">
@@ -222,7 +221,7 @@ const MobileNavigation = () => {
                 size="15px"
               />
             </NavLink> */}
-            <NavLink css={{ py: "$5", alignItems: "center" }} href="/litepaper">
+            <NavLink css={{ py: "$3", alignItems: "center" }} href="/litepaper">
               Litepaper
             </NavLink>
           </Stack>

@@ -214,6 +214,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           background: "$background",
           flexDirection: "column",
           zIndex: "43",
+          width: "100%",
+          maxWidth: "$md",
+          minWidth: "300px",
+          mx: "$3",
           border: "$extraMuted 1px solid",
         }}
       >
@@ -222,7 +226,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           css={{
             px: "$space$4",
             py: "$space$5",
-            width: "$md",
+
             borderBottom: "1px $extraMuted solid",
           }}
         >
@@ -387,7 +391,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           css={{
             px: "$space$4",
             py: "$space$5",
-            width: "$md",
+            maxWidth: "$md",
             borderBottom: "1px $extraMuted solid",
           }}
         >
