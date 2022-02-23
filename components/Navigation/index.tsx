@@ -235,8 +235,6 @@ const MobileNavigation = () => {
 };
 
 const Navigation = () => {
-  // const breakpointIndex = useBreakpointIndex();
-
   return (
     <>
       <Box

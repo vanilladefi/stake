@@ -2,13 +2,14 @@ import type * as Stitches from "@stitches/react";
 import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
-import Link from "next/link";
+import NextLink from "next/link";
+import Link from "../Link";
 import { ArrowCircleUpRight, Copy } from "phosphor-react";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
-import { state, useSnapshot } from "../../state";
+import { state, useSnapshot, VanillaEvents } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
-import { parseJuice } from "../../utils/helpers";
+import { emitEvent, getTransactionLink, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Heading from "../Heading";
@@ -24,7 +25,7 @@ enum TxTypes {
 
 const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (
-    <Link href={href} passHref>
+    <NextLink href={href} passHref>
       {typeof children === "string" ? (
         <Text
           as="a"
@@ -49,7 +50,7 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
       ) : (
         children
       )}
-    </Link>
+    </NextLink>
   );
 };
 
@@ -60,7 +61,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     walletAddress,
     truncatedWalletAddress,
     balances,
-    unstakedBalance,
+    rawBalances,
     signer,
   } = useSnapshot(state);
 
@@ -70,7 +71,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard.writeText(text);
     toast.success(`Address copied to clipboard`, {
-      position: toast.POSITION.BOTTOM_CENTER,
+      autoClose: 2000,
+      hideProgressBar: true,
     });
   }, []);
 
@@ -84,14 +86,25 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         return;
       }
 
+      const amount = parseJuice(juiceAmount);
+
+      if (type === TxTypes.deposit && amount.gt(rawBalances.juice || 0)) {
+        return toast.error("Insufficient JUICE!");
+      }
+      if (
+        type === TxTypes.withdraw &&
+        amount.gt(rawBalances.unstakedJuice || 0)
+      ) {
+        return toast.error("Insufficient Unstaked balance!");
+      }
+
       setTxDisabled(type);
 
-      const waitingToast = toast.loading("Transaction pending user...", {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
+      const waitingToast = toast.loading(
+        "Awaiting user confirmation, please confirm this transaction in your wallet."
+      );
 
       try {
-        const amount = parseJuice(juiceAmount).toString();
         const contractAddress = isAddress(
           process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
         );
@@ -108,44 +121,74 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           tx = await contract.withdraw(amount);
         }
 
+        const waitingLink = getTransactionLink(tx.hash);
         toast.update(waitingToast, {
-          render: "Waiting for transaction to go through",
+          render: (
+            <>
+              Transaction submitted, awaiting confirmation in blockchain.{" "}
+              <Link external href={waitingLink} text="View on explorer" />
+            </>
+          ),
+          autoClose: false,
         });
 
         const rec = await tx.wait();
+        const recLink = getTransactionLink(rec.transactionHash);
         if (rec.status === 1) {
           toast.update(waitingToast, {
-            render: "Transaction successful [LINK]",
+            render: (
+              <>
+                Transaction confirmed.{" "}
+                <Link external href={recLink} text="View on explorer" />
+              </>
+            ),
             type: "success",
             isLoading: false,
             closeButton: true,
-            autoClose: 7000,
+            autoClose: 5000,
           });
+
+          emitEvent(VanillaEvents.balancesChanged);
         } else {
           toast.update(waitingToast, {
-            render: "Transaction failed! [LINK]",
+            render: (
+              <>
+                Transaction failed.{" "}
+                <Link external href={recLink} text="View on explorer" />
+              </>
+            ),
             type: "error",
             isLoading: false,
             closeButton: true,
+            autoClose: 5000,
           });
         }
+
+        setJuiceAmount("");
       } catch (error) {
-        console.warn("Error depositing!, ", error);
+        console.warn("Error: , ", error);
         let msg = "Some error occured, try again later!";
         if ((error as any)?.code === 4001) {
-          msg = "The request was rejected by the user";
+          msg = "Request was rejected by the user";
         }
         toast.update(waitingToast, {
           render: msg,
           type: "error",
           isLoading: false,
           closeButton: true,
+          autoClose: 5000,
         });
       }
-      setJuiceAmount("");
+
       setTxDisabled(false);
     },
-    [juiceAmount, signer, txDisabled]
+    [
+      juiceAmount,
+      rawBalances.juice,
+      rawBalances.unstakedJuice,
+      signer,
+      txDisabled,
+    ]
   );
 
   return walletOpen ? (
@@ -360,7 +403,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             <Heading>STAKING ACCOUNT</Heading>
             <Box>
               <Text css={{ color: "$muted", fontSize: "$sm" }}>
-                Unstaked JUICE: {unstakedBalance}
+                Unstaked JUICE: {balances.unstakedJuice}
               </Text>
             </Box>
           </Box>
@@ -373,7 +416,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               mb: "$space$5",
             }}
           >
-            {Number(unstakedBalance) <= 0 && Number(balances.juice) <= 0 ? (
+            {rawBalances.unstakedJuice?.isZero() &&
+            rawBalances.juice?.isZero() ? (
               <Text muted>
                 {/* TODO: don't show this message if user has active positions */}
                 You need to get some $JUICE first, before you can add it to your
@@ -409,7 +453,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             )}
             <Box css={{ display: "flex", flexDirection: "row", mt: "1px" }}>
               <>
-                {Number(unstakedBalance) > 0 && (
+                {rawBalances.unstakedJuice?.gt(0) && (
                   <Button
                     disabled={txDisabled == false ? false : true}
                     onClick={() => handleTx(TxTypes.withdraw)}
@@ -419,7 +463,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     Withdraw {juiceAmount} JUICE
                   </Button>
                 )}
-                {Number(balances.juice) > 0 && (
+                {rawBalances.juice?.gt(0) && (
                   <Button
                     disabled={txDisabled == false ? false : true}
                     onClick={() => handleTx(TxTypes.deposit)}

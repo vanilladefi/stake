@@ -19,14 +19,17 @@ import TableFilter from "../TableFilter";
 export const AvailableStakes = () => {
   const { stakes } = useSnapshot(state);
   const [{ fetching, data: _data }, executeQuery] = useGetAssetPairsQuery();
-   
+
   const getData = useCallback(() => {
-    const filteredTokens = _data?.assetPairs.filter((t) => {
-      const token = findToken(t.id)
-      return token?.enabled && !stakes?.find(stake => stake.id === token?.id)
-    }) || [];
-    return filteredTokens
-  }, [stakes, _data])
+    const filteredTokens =
+      _data?.assetPairs.filter((t) => {
+        const token = findToken(t.id);
+        return (
+          token?.enabled && !stakes?.find((stake) => stake.id === token?.id)
+        );
+      }) || [];
+    return filteredTokens;
+  }, [stakes, _data]);
 
   // refetch data every 3 seconds
   useEffect(() => {
@@ -151,7 +154,7 @@ export const AvailableStakes = () => {
               css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
               {...row.getToggleRowExpandedProps()}
             >
-              {row.isExpanded ? "Cancel" : "Stake"}
+              {row.isExpanded ? "Collapse" : "Stake"}
             </Button>
           );
         },
@@ -176,23 +179,23 @@ export const AvailableStakes = () => {
         {getData().length === 0 ? (
           <p>You have open stakes in every available token.</p>
         ) : (
-        <Box
-          css={{
-            overflowX: "auto",
-            "&::-webkit-scrollbar": {
-              height: 0,
-              background: "transparent",
-            },
-          }}
-        >
-          <Table
-            filter={filterValue}
-            isLoading={fetching}
-            columns={columns}
-            data={getData()}
-            renderRowSubComponent={renderRowSubComponent}
-          />
-        </Box>
+          <Box
+            css={{
+              overflowX: "auto",
+              "&::-webkit-scrollbar": {
+                height: 0,
+                background: "transparent",
+              },
+            }}
+          >
+            <Table
+              filter={filterValue}
+              // isLoading={fetching}
+              columns={columns}
+              data={getData()}
+              renderRowSubComponent={renderRowSubComponent}
+            />
+          </Box>
         )}
       </Container>
     </>

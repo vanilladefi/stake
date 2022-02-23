@@ -21,10 +21,6 @@ const StyledArrow = styled(ArrowRight, {
   },
 });
 
-const SendButton = styled(Button, {
-  padding: "0 $3 !important",
-});
-
 const EmailForm: FC = () => {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(false);
@@ -65,16 +61,16 @@ const EmailForm: FC = () => {
           },
         });
 
-        const { error } = await res.json();
+        const { error }: { error?: string; done?: boolean } = await res.json();
 
+        // error returned by api responce should be safe to show on client side directly
         if (error) {
-          throw error;
+          setError(error);
+        } else {
+          setIsDone(true);
+          setEmail("");
         }
-
-        setIsDone(true);
-        setEmail("");
       } catch (error) {
-        // maybe do something with it
         setError("Something went wrong, try again later!");
       } finally {
         setIsLoading(false);
@@ -90,27 +86,34 @@ const EmailForm: FC = () => {
       ) : (
         <fieldset disabled={isLoading}>
           <form noValidate onSubmit={onSubmit}>
-            <Flex>
+            <Flex css={{ height: "$10", position: "relative" }}>
               <Input
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.currentTarget.value)}
+                onChange={(e) => setEmail(e.currentTarget.value)}
                 autoCapitalize="off"
                 autoCorrect="off"
                 size="lg"
                 variant="bordered"
                 css={{
+                  height: "100%",
                   fontSize: "$lg",
                   px: "$3",
                   width: "100%",
                   mb: "$1",
-                  mr: '1px'
+                  mr: "1px",
                 }}
                 placeholder="Email address"
               />
-              <SendButton disabled={isLoading} muted={!isValid} type="submit" variant="primary">
+              <Button
+                css={{ padding: "0 $3 !important", height: "100%" }}
+                disabled={isLoading}
+                muted={!isValid}
+                type="submit"
+                variant="primary"
+              >
                 <StyledArrow />
-              </SendButton>
+              </Button>
             </Flex>
             <ErrorText>{error}</ErrorText>
           </form>

@@ -1,5 +1,5 @@
 import { styled } from "../../stitches.config";
-import Link from "../Link";
+import NextLink from "next/link";
 import Text from "../Text";
 import { ArrowRight } from "../../assets";
 
@@ -9,6 +9,8 @@ const StyledArrow = styled(ArrowRight, {
   padding: "5px",
   boxSizing: "border-box",
 });
+
+const Link = styled(NextLink)
 
 export const ArrowLink = ({
   text = "",

@@ -129,6 +129,13 @@ function Table<T extends object>({
       // keep expanded state when data updates
       autoResetExpanded: false,
       autoResetGlobalFilter: false,
+      getRowId: (row, relativeIndex, parent) => {
+        const origId = parent
+          ? [parent.id, relativeIndex].join(".")
+          : relativeIndex;
+        
+        return (row as any)?.id || origId;
+      },
     },
     useGlobalFilter,
     useSortBy,

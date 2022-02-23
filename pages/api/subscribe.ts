@@ -26,8 +26,13 @@ const handler: NextApiHandler = async (req, res) => {
 
         return res.status(201).json({ done: true })
     } catch (error) {
-        console.error("subsscribe api handler error: ", error)
-        return res.status(500).json({ error: "Internal server error" })
+        let title = (error as any)?.response?.body?.title
+        if (title === 'Member Exists') {
+            res.status(400).json({ error: "This email is already registered!" })
+            return
+        }
+        console.error("subscribe api handler error: ", error)
+        return res.status(500).json({ error: "Something went wrong, try again later!" })
     }
 }
 

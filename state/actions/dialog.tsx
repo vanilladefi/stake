@@ -1,21 +1,15 @@
-import { state } from "..";
+import { AlertOpts, state } from "..";
+import { ref } from "valtio";
 
-interface DialogOpts {
-  body?: string;
-  onConfirm?: () => any;
-  confirmText?: string;
-  cancelText?: string;
-  link?: { text: string; href: string };
-}
+type DialogOpts = Omit<AlertOpts, "title">;
 
 const showDialog = (title: string, opts?: DialogOpts) => {
-  const { body, onConfirm, confirmText, cancelText } = opts || {};
+  const { body: _body, ...rst } = opts || {};
+  const body = typeof _body === "string" || !_body ? _body : ref(_body);
   state.alert = {
     title,
     body,
-    onConfirm,
-    confirmText,
-    cancelText,
+    ...rst,
   };
 };
 

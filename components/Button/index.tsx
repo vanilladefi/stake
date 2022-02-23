@@ -23,9 +23,6 @@ const StyledButton = styled(
     "&:disabled": {
       opacity: 0.5, // maybe some better design
       cursor: "auto",
-      "&:hover": {
-        backgroundColor: "unset",
-      },
     },
     "&:focus-visible": {
       outline: "$outline auto 1px",

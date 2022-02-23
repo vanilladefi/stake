@@ -1,14 +1,12 @@
-import { isAddress, Token } from "@vanilladefi/core-sdk";
-import { getAllStakes, getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ethers } from "ethers";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
-import { state } from "../../state";
-import tokens from "../../tokens";
-import { findToken, formatJuice } from "../../utils/helpers";
+import { Stake, state } from "../../state";
+import { fetchStakes } from "../../state/actions/stakes";
+import { findToken } from "../../utils/helpers";
 import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
@@ -20,21 +18,8 @@ import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
 
-// TODO: Move these types and enums somewhere else, maybe even SDK?
-export enum Sentiment {
-  long = "long",
-  short = "short"
-}
-
-export type Stake = {
-    id: string | null
-    juiceStake: string
-    juiceValue: string
-    sentiment: Sentiment
-}
-
 export const MyStakes = () => {
-  const { signer, polygonProvider, walletAddress, stakes } = useSnapshot(state);
+  const { stakes, rawBalances, balances } = useSnapshot(state);
 
   // leaving `executeQuery` to AvailableStakes component
   const [{ fetching: _, data: _data }] = useGetAssetPairsQuery();
@@ -42,8 +27,6 @@ export const MyStakes = () => {
   const priceData = useMemo(() => {
     return _data?.assetPairs.filter((t) => findToken(t.id)?.enabled) || [];
   }, [_data?.assetPairs]);
-
-  const [stakesLoading, setStakesLoading] = useState(true);
 
   const columns: Column<ColumnType>[] = useMemo(
     () => [
@@ -103,28 +86,26 @@ export const MyStakes = () => {
       },
       {
         Header: "Stake",
-        accessor: "juiceValue",
+        accessor: (row) => row.currentStake?.juiceValue,
+        id: "currentStake.juiceValue",
         align: "right",
         width: "15%",
         minWidth: "80px",
-        Cell: ({ value = 0 }) => {
-          return (
-            <Box>
-              {value}
-            </Box>
-          );
+        Cell: ({ value }: { value: string | undefined }) => {
+          return <Box>{value || "xxxx"}</Box>;
         },
       },
       {
         Header: "Sentiment",
-        accessor: "sentiment",
+        accessor: (row) => row.currentStake?.sentiment,
+        id: "currentStake.sentiment",
         align: "right",
         width: "15%",
         minWidth: "80px",
-        Cell: ({ value = "xxxx" }) => {
+        Cell: ({ value }: { value: string | undefined }) => {
           return (
             <Text css={{ textTransform: "capitalize", color: "$muted" }}>
-              {value}
+              {value || "xxxx"}
             </Text>
           );
         },
@@ -186,7 +167,7 @@ export const MyStakes = () => {
               css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
               {...row.getToggleRowExpandedProps()}
             >
-              {row.isExpanded ? "Cancel" : "Edit"}
+              {row.isExpanded ? "Collapse" : "Edit"}
             </Button>
           );
         },
@@ -197,108 +178,36 @@ export const MyStakes = () => {
 
   const renderRowSubComponent = useCallback(
     ({ row }: { row: Row<ColumnType> }) => {
-      return (
-        <StakeSubRow
-          type="edit"
-          row={row}
-          defaultStake={row.original.juiceValue}
-        />
-      );
+      return <StakeSubRow type="edit" row={row} />;
     },
     []
   );
+  const [stakesLoading, setStakesLoading] = useState(true);
 
-  // TODO: As this stuff goes to global state, maybe handle this in a separate action file under /state?
-  const getStakes = useCallback(async () => {
-    if (!walletAddress || !signer) return;
-
-    const _tokens: Token[] = tokens
-      .filter((t) => t.enabled && t.address)
-      .map((t) => ({
-        address: t.address as string,
-        pairId: t.id,
-        symbol: "",
-        decimals: t.decimals + "",
-        chainId: "",
-        logoColor: "",
-      }));
-
-    const contractAddress = isAddress(
-      process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
-    );
-
-    const res = await getAllStakes(walletAddress, _tokens, {
-      signerOrProvider: signer || (polygonProvider as any),
-      optionalAddress: contractAddress || "",
-    });
-
-    let _stakes: Stake[] = [];
-
-    _tokens.forEach((token, idx) => {
-      if (!res[idx].juiceStake.isZero()) {
-        const stake = {
-          id: token.pairId,
-          juiceStake: formatJuice(res[idx].juiceStake),
-          juiceValue: formatJuice(res[idx].juiceValue),
-          sentiment: res[idx].sentiment === true ? Sentiment.long : Sentiment.short,
-        };
-        _stakes.push(stake);
-      }
-    });
-
-    state.stakes = _stakes;
-
-    if (stakesLoading) setStakesLoading(false);
-  }, [stakesLoading, polygonProvider, signer, walletAddress]);
-
+  // fetch stakes on component mount, global listeners are set in __app.tsx
   useEffect(() => {
-    if (!walletAddress) return;
-
-    const contractAddress = isAddress(
-      process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
-    );
-    const contract = getJuiceStakingContract({
-      signerOrProvider: signer || polygonProvider || undefined,
-      optionalAddress: contractAddress || undefined,
+    fetchStakes().then(() => {
+      if (stakesLoading) setStakesLoading(false);
     });
-    if (!contract) return;
-
-    getStakes();
-    const onStakesChanged = () => {
-      getStakes();
-    };
-
-    contract.on("StakeAdded", onStakesChanged);
-    contract.on("StakeRemoved", onStakesChanged);
-
-    return () => {
-      contract.off("StakeAdded", onStakesChanged);
-      contract.off("StakeRemoved", onStakesChanged);
-    };
-  }, [getStakes, polygonProvider, signer, walletAddress]);
+  }, [stakesLoading]);
 
   const [tableData, setTableData] = useState<ColumnType[] | null>(null);
-  const [stakedTotal, setStakedTotal] = useState(0);
   useEffect(() => {
     if (stakes && stakes.length) {
       let _tableData: ColumnType[] = [];
-      let _stakedTotal = 0;
-      priceData.forEach((pd, idx) => {
-        const s = stakes.find((stake) => stake.id === findToken(pd.id)?.id);
-        if (s) {
-          // Some casting magic to remove linter errors
-          const { id, ...rest } = s
-          const s_fixed = { id: String(id || ""), ...rest }
+
+      priceData.forEach((pd) => {
+        const currentStake: Stake | undefined = stakes.find(
+          (stake) => stake.id === findToken(pd.id)?.id
+        );
+        if (currentStake) {
           _tableData.push({
             ...pd,
-            ...s_fixed,
+            currentStake,
           });
         }
       });
-      stakes.forEach((sd) => {
-        _stakedTotal += Number(sd.juiceValue);
-      });
-      setStakedTotal(_stakedTotal);
+
       setTableData(_tableData);
     } else {
       setTableData(null);
@@ -327,7 +236,8 @@ export const MyStakes = () => {
           css={{ textAlign: "right" }}
           onClick={() => (state.walletOpen = true)}
         >
-          {(Number(state?.unstakedBalance) > 0 || stakedTotal > 0) && (
+          {(rawBalances.unstakedJuice?.gt(0) ||
+            rawBalances.stakedJuice?.gt(0)) && (
             <Box>
               <Box
                 as="a"
@@ -342,9 +252,7 @@ export const MyStakes = () => {
                   },
                 }}
               >
-                {(Number(state?.unstakedBalance) + Number(stakedTotal)).toFixed(
-                  3
-                ) + " JUICE"}
+                {balances.totalJuice + " JUICE"}
               </Box>
               <Box
                 css={{
@@ -352,13 +260,11 @@ export const MyStakes = () => {
                   color: "$muted",
                   textTransform: "uppercase",
                 }}
-              >{`${Number(stakedTotal).toFixed(3)} Staked  /  ${Number(
-                state?.unstakedBalance
-              ).toFixed(3)} Unstaked`}</Box>
+              >{`${balances.stakedJuice} Staked  /  ${balances.unstakedJuice} Unstaked`}</Box>
             </Box>
           )}
         </Box>
-        {Number(state?.unstakedBalance) == 0 && stakedTotal == 0 && (
+        {!rawBalances.unstakedJuice?.gt(0) && !rawBalances.stakedJuice?.gt(0) && (
           <Button variant="primary" onClick={() => (state.walletOpen = true)}>
             Manage funds
           </Button>
@@ -386,7 +292,7 @@ export const MyStakes = () => {
       ) : (
         <Container>
           <Flex column align="center" css={{ mb: "$8" }}>
-            {Number(state?.balances?.juice) > 0 ? (
+            {rawBalances.unstakedJuice?.gt(0) ? (
               <Text
                 css={{
                   fontSize: "$xl",

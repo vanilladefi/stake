@@ -49,8 +49,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (!signer || !window.ethereum) return;
 
-    // ensureCorrectChain(); called initially on wallet connect
-
     window.ethereum.on("accountsChanged", connectWallet);
     window.ethereum.on("chainChanged", ensureCorrectChain);
 
@@ -155,7 +153,12 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Navigation />
             <Component {...pageProps} />
             <Footer />
-            <ToastContainer />
+            <ToastContainer
+              pauseOnHover
+              pauseOnFocusLoss
+              autoClose={5000}
+              position="bottom-center"
+            />
           </Box>
         </ThemeProvider>
       </Provider>

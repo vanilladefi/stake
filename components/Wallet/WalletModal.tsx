@@ -3,7 +3,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import Web3Modal, { IProviderOptions } from "web3modal";
-import { polygonRpcUrl } from "../../lib/config";
+import { getWeb3ModalNetworkName, polygonRpcUrl } from "../../lib/config";
 import { ref, state } from "../../state";
 import { darkTheme, theme } from "../../stitches.config";
 
@@ -42,7 +42,7 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
     if (typeof window !== "undefined") {
       const modal = new Web3Modal({
-        network: "matic",
+        network: getWeb3ModalNetworkName(process.env.NEXT_PUBLIC_NETWORK || ""),
         cacheProvider: true,
         providerOptions: web3ModalOptions,
         theme: themeColors,
