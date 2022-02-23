@@ -1,9 +1,10 @@
 import type * as Stitches from "@stitches/react";
+import { networks } from "@vanilladefi/stake-sdk";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
-import Web3Modal, { IProviderOptions } from "web3modal";
-import { getWeb3ModalNetworkName, polygonRpcUrl } from "../../lib/config";
+import Web3Modal, { ICoreOptions, IProviderOptions } from "web3modal";
+import { chainId, getWeb3ModalNetworkName, polygonRpcUrl } from "../../lib/config";
 import { ref, state } from "../../state";
 import { darkTheme, theme } from "../../stitches.config";
 
@@ -11,17 +12,17 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    const web3ModalOptions: IProviderOptions = {
+    const web3ModalProviderOptions: IProviderOptions | undefined = chainId !== networks.testnet.chainId ? {
       walletconnect: {
         package: WalletConnectProvider,
         options: {
+          network: getWeb3ModalNetworkName(process.env.NEXT_PUBLIC_NETWORK || ""),
           rpc: {
-            137: polygonRpcUrl,
-            80001: polygonRpcUrl,
-          },
+            [chainId]: polygonRpcUrl, // Wishful thinking that someday walletconnect wallets would support testnets
+          }
         },
       },
-    };
+    } : undefined;
 
     const themeColors =
       resolvedTheme === "dark"
@@ -41,12 +42,15 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           };
 
     if (typeof window !== "undefined") {
-      const modal = new Web3Modal({
+      let modalOptions: Partial<ICoreOptions> = {
         network: getWeb3ModalNetworkName(process.env.NEXT_PUBLIC_NETWORK || ""),
         cacheProvider: true,
-        providerOptions: web3ModalOptions,
         theme: themeColors,
-      });
+      }
+      if (web3ModalProviderOptions) {
+        modalOptions.providerOptions = web3ModalProviderOptions
+      }
+      const modal = new Web3Modal(modalOptions);
       state.modal = ref(modal);
     }
   }, [resolvedTheme]);

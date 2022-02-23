@@ -1,6 +1,5 @@
 import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
-import { StakeAddedEvent, StakeRemovedEvent } from "@vanilladefi/stake-sdk/lib/types/juicenet/IJuiceStaking";
 import { GetStaticProps } from "next";
 import { useEffect } from "react";
 import { snapshot, useSnapshot } from "valtio";
@@ -108,10 +107,11 @@ const Stake = () => {
     });
     if (!contract) return;
 
-    const onStakesChange = (event: StakeAddedEvent | StakeRemovedEvent) => {
+    // TODO: Seems that event definitions for StakeAdded and StakeRemoved are outdated. They only return a string containing the user's address now.
+    const onStakesChange = (event: string) => {
       const { walletAddress } = snapshot(state);
       // Check that the event was created by the logged in user
-      if (event.args.user.toLowerCase() === walletAddress?.toLowerCase()) {
+      if (event.toLowerCase() === walletAddress?.toLowerCase()) {
         emitEvent(VanillaEvents.stakesChanged);
       }
     };
