@@ -100,6 +100,18 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         return;
       }
 
+      const amount = parseJuice(juiceAmount);
+
+      if (type === TxTypes.deposit && amount.gt(rawBalances.juice || 0)) {
+        return toast.error("Insufficient JUICE in Wallet.");
+      }
+      if (
+        type === TxTypes.withdraw &&
+        amount.gt(rawBalances.unstakedJuice || 0)
+      ) {
+        return toast.error("Insufficient balance in Juicenet");
+      }
+
       setTxDisabled(type);
 
       const waitingToast = toast.loading(
