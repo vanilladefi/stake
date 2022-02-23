@@ -12,9 +12,17 @@ const Text = styled("span", {
     },
     size: {
       small: {
-        fontSize: "$sm"
-      }
-    }
+        fontSize: "$sm",
+      },
+    },
+    display: {
+      none: {
+        display: "none",
+      },
+      inline: {
+        display: "inline",
+      },
+    },
   },
 });
 
