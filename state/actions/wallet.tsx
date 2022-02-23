@@ -20,6 +20,7 @@ let lockedWalletToast: any;
 interface ConnectOptions {
   skipLockedWalletCheck?: boolean;
 }
+let window_ethereum: any
 
 export const connectWallet = async (opts?: ConnectOptions) => {
   const { skipLockedWalletCheck } = opts || {};
@@ -44,7 +45,10 @@ export const connectWallet = async (opts?: ConnectOptions) => {
     }
 
     const polygonProvider = await modal?.connect();
+
+    window_ethereum = window.ethereum
     window.ethereum = polygonProvider;
+
     const web3Provider = new providers.Web3Provider(polygonProvider);
     const signer = ref(web3Provider.getSigner());
     const isCorrectChain = ensureCorrectChain(true);
@@ -54,6 +58,7 @@ export const connectWallet = async (opts?: ConnectOptions) => {
     state.walletAddress = await signer?.getAddress();
 
     updateBalances();
+    updateProviderName()
   } catch (error) {
     console.warn("Connection error: ", error);
   }
@@ -61,7 +66,12 @@ export const connectWallet = async (opts?: ConnectOptions) => {
 
 export const disconnect = (soft?: boolean) => {
   const { modal } = snapshot(state);
-  !soft && modal?.clearCachedProvider();
+  if (!soft) {
+    modal?.clearCachedProvider();
+    if (window_ethereum) {
+      window.ethereum = window_ethereum
+    }
+  }
 
   state.signer = null;
   if (!soft) state.walletAddress = null;
@@ -168,21 +178,7 @@ export const initWalletSubscriptions = () => {
     if (modal?.cachedProvider) {
       // TODO see if we can remove this or make run only once
       connectWallet({ skipLockedWalletCheck: true });
-      let name = null;
-      switch (modal?.cachedProvider) {
-        case "injected": {
-          name = "Metamask";
-          break;
-        }
-        case "walletconnect": {
-          name = "WalletConnect";
-          break;
-        }
-        default: {
-          name = null;
-        }
-      }
-      state.providerName = name;
+      updateProviderName()
     }
   });
 };
@@ -195,6 +191,25 @@ export const persistWalletAddress = () => {
       JSON.stringify(state.walletAddress)
     );
 };
+
+export const updateProviderName = async () => {
+  const { modal } = snapshot(state)
+  let name = null;
+  switch (modal?.cachedProvider) {
+    case "injected": {
+      name = "Metamask";
+      break;
+    }
+    case "walletconnect": {
+      name = "WalletConnect";
+      break;
+    }
+    default: {
+      name = null;
+    }
+  }
+  state.providerName = name;
+}
 
 export const updateBalances = async () => {
   const { polygonProvider, ethereumProvider, walletAddress } = snapshot(state);

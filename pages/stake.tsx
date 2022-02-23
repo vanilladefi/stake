@@ -108,10 +108,10 @@ const Stake = () => {
     });
     if (!contract) return;
 
-    const onStakesChange = (event: StakeAddedEvent | StakeRemovedEvent) => {
+    const onStakesChange = (user: string) => {
       const { walletAddress } = snapshot(state);
       // Check that the event was created by the logged in user
-      if (event.args.user.toLowerCase() === walletAddress?.toLowerCase()) {
+      if (user.toLowerCase() === walletAddress?.toLowerCase()) {
         emitEvent(VanillaEvents.stakesChanged);
       }
     };

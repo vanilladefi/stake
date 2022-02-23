@@ -15,12 +15,15 @@ export const getWeb3ModalNetworkName = (networkName: string) => {
   switch (networkName) {
     case "maticmum": {
       web3ModalNetworkName = "mumbai";
+      break;
     }
     case "local": {
       web3ModalNetworkName = "matic";
+      break;
     }
     case "matic": {
       web3ModalNetworkName = "matic";
+      break;
     }
     default: {
       web3ModalNetworkName = "matic";
