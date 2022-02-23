@@ -7,7 +7,7 @@ body {
 }
 
 svg {
-  min-width: fit-content;
+  flex-shrink: 0;
 }
 
 fieldset {
