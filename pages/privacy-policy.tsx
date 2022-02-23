@@ -26,6 +26,7 @@ const LinkIcon = styled(LinkIconP, {
 
 const ThemeLink = styled(Link, {
   color: "$link",
+  display: "inline",
 });
 
 const ExtLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
@@ -34,9 +35,9 @@ const ExtLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
   css,
 }) => {
   return (
-    <Link href={href} passHref>
+    <>
       {typeof children === "string" ? (
-        <ThemeLink as="a" target="_blank" rel="noreferrer noopener">
+        <ThemeLink href={href} as="a" target="_blank" rel="noreferrer noopener">
           {children}
           <ArrowUpRight
             weight="light"
@@ -47,7 +48,7 @@ const ExtLink: React.FC<{ href: string; css?: Stitches.CSS }> = ({
       ) : (
         ""
       )}
-    </Link>
+    </>
   );
 };
 
