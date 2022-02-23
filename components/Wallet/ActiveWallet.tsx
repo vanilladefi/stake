@@ -2,15 +2,8 @@ import type * as Stitches from "@stitches/react";
 import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
-import NextLink from "next/link";
 import Link from "../Link";
-import {
-  ArrowCircleUpRight,
-  Copy,
-  ArrowUp,
-  ArrowDown,
-  XCircle,
-} from "phosphor-react";
+import { Copy, ArrowUp, ArrowDown, XCircle } from "phosphor-react";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import { state, useSnapshot, VanillaEvents } from "../../state";
