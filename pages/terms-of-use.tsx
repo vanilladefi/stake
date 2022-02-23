@@ -115,9 +115,9 @@ const PrivacyPolicy = () => {
             decentralized web.
           </Paragraph>
           <Paragraph>
-            Our Site gives you access to a decentralized staking platform on the
-            Ethereum &amp; Polygon blockchains that allows users to make a
-            profit by staking.
+            Our Site gives you access to decentralized asset manager platform on
+            the Polygon &amp; Ethereum blockchains that allows users to make a
+            profit by staking ERC-20 assets using smart contracts.
           </Paragraph>
           <Paragraph>
             Please read these Terms of Service (&ldquo;Terms&rdquo;) carefully
@@ -145,13 +145,6 @@ const PrivacyPolicy = () => {
             </ThemeLink>{" "}
             2. Eligibility
           </Heading>
-          <Paragraph>
-            The Services are provided only to entities and persons at least the
-            age of 18. By accessing our using the Services, you represent and
-            warrant that you are at least eighteen (18) years of age. If you are
-            under the age of eighteen (18), you may not, under any circumstances
-            or for any reason, use the Services.
-          </Paragraph>
           <Paragraph>
             You represent and warrant that you have the full right, power, and
             authority to enter into and comply with these Terms on behalf of
@@ -230,11 +223,6 @@ const PrivacyPolicy = () => {
               copyright, trademark, service mark, patent, right of publicity,
               right of privacy, or other proprietary or intellectual property
               rights under the law.
-            </ListItem>
-            <ListItem>
-              Making of copies, modifying, reproducing, transmitting, altering
-              or distributing all or any part of the Site or any material or
-              information contained in it without our express permission.
             </ListItem>
             <ListItem>
               Interference with or compromising the integrity, security, or

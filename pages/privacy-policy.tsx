@@ -149,8 +149,8 @@ const PrivacyPolicy = () => {
             processes the data subject&rsquo;s personal data.{" "}
           </Paragraph>
           <Paragraph>
-            Service means our decentralized staking platform on the Polygon
-            &amp; Ethereum blockchains.{" "}
+            Service means our decentralized asset management platform on the
+            Polygon &amp; Ethereum blockchains.{" "}
           </Paragraph>
         </Box>
         <Box>
