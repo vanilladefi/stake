@@ -80,7 +80,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const [txDisabled, setTxDisabled] = useState<false | TxTypes>(false);
   const [transactionType, setTransactionType] = useState<
     "deposit" | "withdraw"
-  >(rawBalances.juice?.gt(0) ? "deposit" : "withdraw");
+  >("deposit");
 
   const copyToClipboard = useCallback((text) => {
     navigator.clipboard.writeText(text);
@@ -216,20 +216,22 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           css={{
             display: "flex",
             position: "relative",
-            textAlign: "right",
+            alignItems: "flex-end",
+            justifyContent: "right",
+            width: "100%",
             color: "$primary",
             flexDirection: "column",
             zIndex: "43",
-            padding: "$2 $4",
+            padding: "$2 $2",
+            height: "44px",
             cursor: "pointer",
+            "&:hover": {
+              color: "$text",
+            },
           }}
+          onClick={() => (state.walletOpen = false)}
         >
-          <Text
-            css={{ color: "$primary" }}
-            onClick={() => (state.walletOpen = false)}
-          >
-            Close &times;
-          </Text>
+          <XCircle size={"24px"} />
         </Box>
         <Box
           css={{
@@ -283,6 +285,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     border: "0",
                     fontSize: "$sm",
                     fontWeight: "lighter",
+                    "&:hover": {
+                      color: "$text",
+                    },
                   }}
                   onClick={() => disconnect()}
                 >
@@ -303,20 +308,28 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     marginRight: "$space$1",
                     cursor: "pointer",
                     color: "$link",
+                    "&:hover": {
+                      color: "$text",
+                    },
                   }}
                   onClick={() => copyToClipboard(walletAddress)}
                 >
                   <Copy size={"22px"} style={{ color: "$link" }} />
                 </Box>
                 <Link
-                  css={{ paddingLeft: "$1" }}
+                  css={{
+                    paddingLeft: "$1",
+                    "&:hover": {
+                      color: "$text",
+                    },
+                  }}
                   as="a"
                   title="View account on Polygonscan"
                   target="_blank"
                   rel="noreferrer noopener"
                   href={`https://polygonscan.com/address/${walletAddress}`}
                 >
-                  <PolygonScanIcon fill="inherit" />
+                  <PolygonScanIcon fill="currentColor" />
                 </Link>
               </Box>
             </Box>
@@ -497,7 +510,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     fontSize: "$xs",
                     padding: "0 $3",
                     height: "100%",
-                    width: "50%",
+                    width: "100%",
                     borderColor: "1px solid $extraMuted",
                   }}
                 >
@@ -526,7 +539,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       display: "flex",
                       fontSize: "$xs",
                       padding: "0 $3",
-                      width: "50%",
+                      width: "100%",
                       height: "100%",
                       borderColor: "1px solid $extraMuted",
                     }}
