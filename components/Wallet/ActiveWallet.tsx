@@ -230,7 +230,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             color: "$primary",
             flexDirection: "column",
             zIndex: "43",
-            padding: "$2 $2",
+            padding: "$2 $4",
             height: "44px",
             cursor: "pointer",
             "&:hover": {
@@ -262,36 +262,59 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               css={{
                 display: "flex",
                 flexDirection: "row",
-                alignItems: "center",
+                alignItems: "flex-start",
                 justifyContent: "space-between",
               }}
             >
               <Box
                 css={{
                   display: "flex",
-                  flexDirection: "row",
+                  flexDirection: "column",
                   alignItems: "center",
+                  justifyContent: "left",
                 }}
               >
                 <Text
-                  title={`Connected with ${providerName}`}
                   css={{
                     fontFamily: "$monospace",
                     fontSize: "$xl",
                     display: "inline-block",
                     lineHeight: "$9",
-                    marginRight: "$4",
+                    width: "100%",
                   }}
                 >
                   {truncatedWalletAddress}
                 </Text>
+                <Text
+                  css={{
+                    fontSize: "$xs",
+                    textTransform: "uppercase",
+                    color: "$offWhite50",
+                    width: "100%",
+                    mt: "$1",
+                  }}
+                >
+                  Connected with {providerName}
+                </Text>
+              </Box>
+
+              <Box
+                css={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  border: "1px solid $extraMuted",
+                }}
+              >
                 <Button
                   variant="bordered"
+                  title="Disconnect wallet"
                   size="sm"
                   css={{
-                    borderRadius: "999px",
-                    border: "0",
                     fontSize: "$sm",
+                    boxShadow: "none",
+                    borderRight: "1px solid $extraMuted",
+                    height: "40px",
                     fontWeight: "lighter",
                     "&:hover": {
                       color: "$text",
@@ -301,25 +324,17 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 >
                   Disconnect
                 </Button>
-              </Box>
-
-              <Box
-                css={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
                 <Box
+                  title="Copy wallet address to clipboard"
                   css={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    marginRight: "$space$1",
                     cursor: "pointer",
                     color: "$link",
                     width: "40px",
                     height: "40px",
+                    borderRight: "1px solid $extraMuted",
                     "&:hover": {
                       color: "$text",
                     },
@@ -355,7 +370,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                mt: "$3",
+                mt: "$2",
                 pb: "$3",
                 borderBottom: "1px solid $extraMuted",
               }}
