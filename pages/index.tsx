@@ -419,7 +419,6 @@ const Home: NextPage = () => {
                   css={{
                     ml: "$10",
                     order: 1,
-                    width: "30%",
                     maxWidth: "96px",
                     textAlign: "center",
                     "@md": {
