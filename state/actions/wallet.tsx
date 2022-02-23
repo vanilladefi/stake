@@ -7,7 +7,10 @@ import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
 import { toast } from "react-toastify";
 import { persistedKeys, ref, state, subscribeKey, VanillaEvents } from "..";
-import { correctNetwork } from "../../lib/config";
+import {
+  correctNetwork,
+  getHexaDecimalChainId,
+} from "../../lib/config";
 import { emitEvent, formatJuice, parseJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
 import { parseUnits } from "ethers/lib/utils";
@@ -19,7 +22,7 @@ interface ConnectOptions {
 }
 
 export const connectWallet = async (opts?: ConnectOptions) => {
-  const { skipLockedWalletCheck } = opts || {}
+  const { skipLockedWalletCheck } = opts || {};
   const { modal } = snapshot(state);
   try {
     // Handle metamask locked state
@@ -41,7 +44,8 @@ export const connectWallet = async (opts?: ConnectOptions) => {
     }
 
     const polygonProvider = await modal?.connect();
-    window.ethereum = polygonProvider
+    window.ethereum = polygonProvider;
+    window.ethereum.on("chainChanged", () => alert('changed'));
     const web3Provider = new providers.Web3Provider(polygonProvider);
     const signer = ref(web3Provider.getSigner());
     const isCorrectChain = ensureCorrectChain(true);
@@ -84,11 +88,10 @@ export const ensureCorrectChain = (force?: true): boolean => {
     });
   };
   try {
-    console.log({ correctNetwork });
     const { signer, walletAddress } = snapshot(state);
-    if (
-      window.ethereum?.chainId !== correctNetwork.chainId
-    ) {
+    let _chainId: number | undefined = window.ethereum?.chainId;
+    const chainId = getHexaDecimalChainId(_chainId || 0);
+    if (chainId !== correctNetwork.chainId) {
       if ((signer && walletAddress) || force) {
         abort();
       }
