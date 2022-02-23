@@ -30,7 +30,9 @@ enum TxTypes {
   withdraw,
 }
 
-const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
+{
+  /* TradeLinks are added as soon as it's figured out where tokens are to be purchased
+  const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
   return (
     <NextLink href={href} passHref>
       {typeof children === "string" ? (
@@ -63,7 +65,8 @@ const TradeLink: React.FC<{ href: string }> = ({ href, children }) => {
       )}
     </NextLink>
   );
-};
+}; */
+}
 
 const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const {
