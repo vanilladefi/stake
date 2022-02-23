@@ -397,4 +397,7 @@ export const globalStyles = globalCss({
       backgroundSize: "100% 3500px",
     },
   },
+  a: {
+    color: "$link",
+  },
 });
