@@ -18,7 +18,7 @@ const WalletModal: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
         options: {
           network: getWeb3ModalNetworkName(process.env.NEXT_PUBLIC_NETWORK || ""),
           rpc: {
-            [chainId]: polygonRpcUrl, // Wishful thinking that someday walletconnect wallets would support testnets
+            137: polygonRpcUrl,
           }
         },
       },
