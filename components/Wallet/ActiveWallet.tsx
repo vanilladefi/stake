@@ -367,7 +367,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 {balances.vnl ? (
                   <>
                     <Text css={{ color: "$offWhite50", fontSize: "$sm" }}>
-                      {balances.vnl} VNL <TradeLink href="">Buy</TradeLink>
+                      {balances.vnl} VNL{" "}
+                      {/*<TradeLink href="">Buy</TradeLink>*/}
                     </Text>
                   </>
                 ) : (
@@ -385,7 +386,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 {balances.matic ? (
                   <>
                     <Text css={{ color: "$offWhite50", fontSize: "$sm" }}>
-                      {balances.matic} MATIC <TradeLink href="">Buy</TradeLink>
+                      {balances.matic} MATIC{" "}
+                      {/*<TradeLink href="">Buy</TradeLink> */}
                     </Text>
                   </>
                 ) : (
@@ -428,7 +430,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     >
                       {balances.juice} JUICE
                     </Text>
-                    <TradeLink href="">Buy</TradeLink>
+                    {/* <TradeLink href="">Buy</TradeLink> */}
                   </Box>
                   <Text muted>In your wallet</Text>
                 </>
