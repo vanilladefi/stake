@@ -214,6 +214,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           background: "$background",
           flexDirection: "column",
           zIndex: "43",
+          width: "100%",
           maxWidth: "$md",
           minWidth: "300px",
           mx: "$3",
