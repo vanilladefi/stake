@@ -1,6 +1,5 @@
 import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
-import { StakeAddedEvent, StakeRemovedEvent } from "@vanilladefi/stake-sdk/lib/types/juicenet/IJuiceStaking";
 import { GetStaticProps } from "next";
 import { useEffect } from "react";
 import { snapshot, useSnapshot } from "valtio";
