@@ -1,5 +1,5 @@
 import type * as Stitches from "@stitches/react";
-import { isAddress } from "@vanilladefi/core-sdk";
+import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "../Link";
@@ -17,6 +17,7 @@ import Text from "../Text";
 import Curtain from "./Curtain";
 
 import { PolygonScanIcon } from "../../assets";
+import { formatUnits } from "ethers/lib/utils";
 
 enum TxTypes {
   deposit,
@@ -193,7 +194,13 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
       setTxDisabled(false);
     },
-    [juiceAmount, signer, txDisabled]
+    [
+      juiceAmount,
+      rawBalances.juice,
+      rawBalances.unstakedJuice,
+      signer,
+      txDisabled,
+    ]
   );
 
   return walletOpen ? (
@@ -443,8 +450,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       onClick={() =>
                         transactionType === "deposit" &&
                         txDisabled === false &&
-                        balances.juice &&
-                        setJuiceAmount(balances.juice)
+                        rawBalances.juice &&
+                        setJuiceAmount(
+                          formatUnits(rawBalances.juice, juiceDecimals)
+                        )
                       }
                     >
                       {balances.juice} JUICE
@@ -633,8 +642,10 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     onClick={() =>
                       transactionType === "withdraw" &&
                       txDisabled === false &&
-                      balances.unstakedJuice &&
-                      setJuiceAmount(balances.unstakedJuice)
+                      rawBalances.unstakedJuice &&
+                      setJuiceAmount(
+                        formatUnits(rawBalances.unstakedJuice, juiceDecimals)
+                      )
                     }
                   >
                     {balances.unstakedJuice} JUICE
