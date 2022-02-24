@@ -47,8 +47,7 @@ export const AvailableStakes = () => {
         Header: "Token",
         accessor: (row): string | undefined => findToken(row.id)?.name,
         id: "tokenIcon",
-        width: "25%",
-        minWidth: "120px",
+
         align: "left",
         Cell: ({
           value,
@@ -65,7 +64,6 @@ export const AvailableStakes = () => {
                   height: "30px",
                   backgroundColor: "rgba(255,255,255,1)",
                   borderRadius: "5px",
-                  position: "relative",
                   overflow: "hidden",
                   p: "3px",
                   flexShrink: 0,
@@ -84,25 +82,33 @@ export const AvailableStakes = () => {
                   />
                 ) : null}
               </Box>
-              <Box css={{ ml: "15px" }}>{value}</Box>
+              <Box
+                css={{
+                  ml: "$3",
+                  display: "none",
+                  "@sm": {
+                    display: "flex",
+                  },
+                }}
+              >
+                {value}
+              </Box>
             </Flex>
           );
         },
       },
       {
         Header: "Ticker",
+        id: "ticker",
         accessor: "id",
         align: "left",
-        width: "15%",
-        minWidth: "50px",
         Cell: ({ value }) => value.split("/")[0],
       },
       {
         Header: "Price",
+        id: "ATcurrentPrice",
         accessor: "currentPrice",
         align: "right",
-        width: "20%",
-        minWidth: "100px",
         Cell: ({ value, row }) => {
           return (
             <Box>
@@ -113,9 +119,9 @@ export const AvailableStakes = () => {
       },
       {
         accessor: "hourlyHistory",
+        id: "hourlyHistory",
         Header: "24H %",
         align: "right",
-        minWidth: "80px",
         Cell: ({ value }) => {
           const oldPrice = value[0].closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
@@ -141,8 +147,6 @@ export const AvailableStakes = () => {
         accessor: "id",
         Header: "",
         align: "right",
-        width: "10%",
-        minWidth: "100px",
         Cell: ({ row }) => {
           return (
             <Button
@@ -175,7 +179,21 @@ export const AvailableStakes = () => {
     <>
       <TableFilter onChange={setFilterValue} />
       <Container css={{ py: "$5" }}>
-        <Heading as="h1">Available Stakes</Heading>
+        <Heading
+          as="h1"
+          css={{
+            flex: 1,
+            fontSize: "$xl",
+            "@md": {
+              fontSize: "$3xl",
+            },
+            "@lg": {
+              fontSize: "$4xl",
+            },
+          }}
+        >
+          Available Stakes
+        </Heading>
         {getData().length === 0 ? (
           <p>You have open stakes in every available token.</p>
         ) : (

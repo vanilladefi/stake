@@ -4,13 +4,17 @@ import Text from "../Text";
 import { ArrowRight } from "../../assets";
 
 const StyledArrow = styled(ArrowRight, {
-  width: "40px",
-  height: "40px",
+  width: "32px",
+  height: "32px",
   padding: "5px",
   boxSizing: "border-box",
+  "@md": {
+    width: "40px",
+    height: "40px",
+  },
 });
 
-const Link = styled(NextLink)
+const Link = styled(NextLink);
 
 export const ArrowLink = ({
   text = "",

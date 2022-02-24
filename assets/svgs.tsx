@@ -59,7 +59,6 @@ export const Diamond = (props: any) => (
     {...props}
   >
     <path
-      style={{ filter: "blur(30px)" }}
       d="M.512 254.714l139.27 141.357 139.27-141.357L139.782.73 70.147 127.722.512 254.714z"
       fill="url(#prefix__paint0_linear_232:18392)"
     />

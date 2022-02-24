@@ -6,7 +6,7 @@ const Container = styled(Box, {
   maxWidth: "$space$layoutPlus",
   marginLeft: "auto",
   marginRight: "auto",
-  px: "$5",
+  px: "$3",
   "@initial": {
     maxWidth: "100%",
   },

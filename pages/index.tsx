@@ -125,8 +125,16 @@ const Home: NextPage = () => {
                 maxWidth: "100%",
                 fontSize: "$6xl",
               },
+              "@sm": {
+                maxWidth: "$lg",
+                fontSize: "$5xl",
+              },
+              "@md": {
+                maxWidth: "$1xl",
+                fontSize: "$6xl",
+              },
               "@lg": {
-                maxWidth: "$5xl",
+                maxWidth: "$3xl",
                 fontSize: "$7xl",
               },
               "@xl": {
