@@ -237,7 +237,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             color: "$primary",
             flexDirection: "column",
             zIndex: "43",
-            padding: "$2 $4",
+            padding: "$2 0",
             height: "44px",
             cursor: "pointer",
             "&:hover": {
@@ -496,6 +496,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 placeholder="0.0"
                 css={{
                   height: "100%",
+                  width: "92.5%", // TODO revise, just to prevent x button on overlaping
                   padding: "1rem 1rem",
                   border: 0,
                   fontSize: "$xxl",
@@ -671,6 +672,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           disabled={txDisabled != false || Number(juiceAmount) == 0}
           css={{
             width: "100%",
+            height: "auto",
+            textAlign: "center",
             boxSizing: "border-box",
             position: "relative",
             zIndex: "43",
