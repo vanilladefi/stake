@@ -63,6 +63,7 @@ const RegularLink: React.FC<{
             "&:hover": {
               color: "text",
             },
+
             display: "flex",
             alignItems: "center",
             ...css,
@@ -82,7 +83,17 @@ const RegularLink: React.FC<{
             "&hover": {
               color: "text",
             },
+            fontSize: "$md",
             alignItems: "center",
+            "@sm": {
+              fontSize: "$sm",
+            },
+            "@md": {
+              fontSize: "$sm",
+            },
+            "@lg": {
+              fontSize: "$md",
+            },
             ...css,
           }}
         >
@@ -181,7 +192,7 @@ const Footer = () => {
             <RegularLink
               href="https://discord.gg/CnPuf2cGQ3"
               newWindow
-              css={{ mr: "$3" }}
+              css={{ mr: "$3", flexShrink: 0 }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
                 <DiscordLogo size="24px" weight="fill" />
@@ -191,7 +202,7 @@ const Footer = () => {
             <RegularLink
               href="https://community.vanilladefi.com/"
               newWindow
-              css={{ mr: "$3" }}
+              css={{ mr: "$3", flexShrink: 0 }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
                 <Notebook size="24px" weight="fill" />
@@ -201,7 +212,7 @@ const Footer = () => {
             <RegularLink
               href="https://t.me/vanilladefi"
               newWindow
-              css={{ mr: "$3" }}
+              css={{ mr: "$3", flexShrink: 0 }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
                 <TelegramLogo size="24px" weight="fill" />
@@ -211,7 +222,7 @@ const Footer = () => {
             <RegularLink
               href="https://www.twitter.com/vanilladefi"
               newWindow
-              css={{ mr: "$3" }}
+              css={{ mr: "$3", flexShrink: 0 }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
                 <TwitterLogo size="24px" weight="fill" />
@@ -221,7 +232,7 @@ const Footer = () => {
             <RegularLink
               href="https://www.github.com/vanilladefi"
               newWindow
-              css={{ mr: "$3" }}
+              css={{ mr: "$3", flexShrink: 0 }}
             >
               <Flex color="text" css={{ mr: "$2" }}>
                 <GithubLogo size="24px" weight="fill" />{" "}
@@ -246,8 +257,10 @@ const Footer = () => {
               css={{
                 color: "$muted",
                 ml: "none",
-                "@sm": {
-                  ml: "auto",
+                textAlign: "left",
+                width: "100%",
+                "@md": {
+                  textAlign: "right",
                 },
               }}
             >
