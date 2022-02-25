@@ -1,5 +1,5 @@
 import type * as Stitches from "@stitches/react";
-import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
+import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "../Link";
@@ -17,7 +17,6 @@ import Text from "../Text";
 import Curtain from "./Curtain";
 
 import { PolygonScanIcon } from "../../assets";
-import { formatUnits } from "ethers/lib/utils";
 
 enum TxTypes {
   deposit,
@@ -194,13 +193,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
       setTxDisabled(false);
     },
-    [
-      juiceAmount,
-      rawBalances.juice,
-      rawBalances.unstakedJuice,
-      signer,
-      txDisabled,
-    ]
+    [juiceAmount, signer, txDisabled]
   );
 
   return walletOpen ? (
@@ -237,7 +230,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             color: "$primary",
             flexDirection: "column",
             zIndex: "43",
-            padding: "$2 0",
+            padding: "$2 $4",
             height: "44px",
             cursor: "pointer",
             "&:hover": {
@@ -450,10 +443,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       onClick={() =>
                         transactionType === "deposit" &&
                         txDisabled === false &&
-                        rawBalances.juice &&
-                        setJuiceAmount(
-                          formatUnits(rawBalances.juice, juiceDecimals)
-                        )
+                        balances.juice &&
+                        setJuiceAmount(balances.juice)
                       }
                     >
                       {balances.juice} JUICE
@@ -496,7 +487,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 placeholder="0.0"
                 css={{
                   height: "100%",
-                  width: "92.5%", // TODO revise, just to prevent x button on overlaping
                   padding: "1rem 1rem",
                   border: 0,
                   fontSize: "$xxl",
@@ -643,10 +633,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     onClick={() =>
                       transactionType === "withdraw" &&
                       txDisabled === false &&
-                      rawBalances.unstakedJuice &&
-                      setJuiceAmount(
-                        formatUnits(rawBalances.unstakedJuice, juiceDecimals)
-                      )
+                      balances.unstakedJuice &&
+                      setJuiceAmount(balances.unstakedJuice)
                     }
                   >
                     {balances.unstakedJuice} JUICE
@@ -672,8 +660,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
           disabled={txDisabled != false || Number(juiceAmount) == 0}
           css={{
             width: "100%",
-            height: "auto",
-            textAlign: "center",
             boxSizing: "border-box",
             position: "relative",
             zIndex: "43",
