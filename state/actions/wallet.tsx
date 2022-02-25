@@ -238,10 +238,10 @@ export const updateBalances = async () => {
         optionalAddress: contractAddress || undefined,
       });
 
-    state.balances.vnl = Number(vnlBalance).toFixed(3);
-    state.balances.eth = Number(ethBalance).toFixed(3);
-    state.balances.matic = Number(maticBalance).toFixed(3);
-    state.balances.juice = Number(juiceBalance).toFixed(3);
+    state.balances.vnl = Number(vnlBalance).toLocaleString();
+    state.balances.eth = Number(ethBalance).toLocaleString();
+    state.balances.matic = Number(maticBalance).toLocaleString();
+    state.balances.juice = Number(juiceBalance).toLocaleString();
 
     state.rawBalances.vnl = parseUnits(vnlBalance || "0", vnlDecimals);
     state.rawBalances.eth = parseUnits(ethBalance || "0");
