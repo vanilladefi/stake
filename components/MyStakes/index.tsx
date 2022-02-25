@@ -71,13 +71,24 @@ export const MyStakes = () => {
                   />
                 ) : null}
               </Box>
-              <Box css={{ ml: "15px" }}>{value}</Box>
+              <Box
+                css={{
+                  ml: "$3",
+                  display: "none",
+                  "@sm": {
+                    display: "flex",
+                  },
+                }}
+              >
+                {value}
+              </Box>
             </Flex>
           );
         },
       },
       {
         Header: "Ticker",
+        id: "ticker",
         accessor: "id",
         align: "left",
         width: "10%",
@@ -89,8 +100,7 @@ export const MyStakes = () => {
         accessor: (row) => row.currentStake?.juiceValue,
         id: "currentStake.juiceValue",
         align: "right",
-        width: "15%",
-        minWidth: "80px",
+
         Cell: ({ value }: { value: string | undefined }) => {
           return <Box>{value || "xxxx"}</Box>;
         },
@@ -112,10 +122,10 @@ export const MyStakes = () => {
       },
       {
         Header: "Price",
+        is: "currentPrice",
         accessor: "currentPrice",
         align: "right",
-        width: "15%",
-        minWidth: "80px",
+
         Cell: ({ value, row }) => {
           return (
             <Box>
@@ -125,10 +135,11 @@ export const MyStakes = () => {
         },
       },
       {
+        id: "history",
         accessor: "hourlyHistory",
         Header: "7D%",
         align: "right",
-        minWidth: "75px",
+
         Cell: ({ value }) => {
           const oldPrice = value[0].closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
@@ -139,6 +150,7 @@ export const MyStakes = () => {
               css={{
                 display: "inline-flex",
                 alignItems: "center",
+                whiteSpace: "nowrap",
                 justifyContent: "center",
                 flexDirection: "row",
                 color: change < 0 ? "$red" : "$green",
@@ -154,8 +166,6 @@ export const MyStakes = () => {
         accessor: "id",
         Header: "",
         align: "right",
-        width: "10%",
-        minWidth: "50px",
         Cell: ({ value, row }) => {
           return (
             <Button
@@ -217,21 +227,32 @@ export const MyStakes = () => {
   return (
     <>
       <Flex
-        column
-        align="start"
-        justify="space-between"
         css={{
-          mb: "$5",
-          mt: "$2",
-          pb: "$2",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          mb: "$3",
+          mt: "$4",
+          pb: "$4",
           borderBottom: "1px solid $extraMuted",
-          "@md": {
-            flexDirection: "row",
-            alignItems: "center",
-          },
         }}
       >
-        <Heading as="h1">My Stakes</Heading>
+        <Heading
+          as="h1"
+          css={{
+            flex: 1,
+            fontSize: "$xl",
+            "@md": {
+              fontSize: "$3xl",
+            },
+            "@lg": {
+              fontSize: "$4xl",
+            },
+          }}
+        >
+          My Stakes
+        </Heading>
         <Box
           css={{ textAlign: "right" }}
           onClick={() => (state.walletOpen = true)}
@@ -274,7 +295,7 @@ export const MyStakes = () => {
         <Box
           css={{
             overflowX: "auto",
-            mb: "$10",
+            mb: "$4",
             "&::-webkit-scrollbar": {
               height: 0,
               background: "transparent",

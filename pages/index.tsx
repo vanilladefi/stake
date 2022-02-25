@@ -35,11 +35,20 @@ const StyledDiamond = styled(Diamond, {
   left: "50%",
   top: "50%",
   transform: "translateY(-50%) translateX(-50%)",
-  width: "200px",
+  width: "140px",
   "& #darkColor": {
     stopColor: "$colors$background",
   },
+  "@sm": {
+    width: "180px",
+  },
+  "@md": {
+    width: "230px",
+  },
   "@lg": {
+    width: "260px",
+  },
+  "@xl": {
     width: "300px",
   },
 });
@@ -125,8 +134,16 @@ const Home: NextPage = () => {
                 maxWidth: "100%",
                 fontSize: "$6xl",
               },
+              "@sm": {
+                maxWidth: "$lg",
+                fontSize: "$5xl",
+              },
+              "@md": {
+                maxWidth: "$1xl",
+                fontSize: "$6xl",
+              },
               "@lg": {
-                maxWidth: "$5xl",
+                maxWidth: "$3xl",
                 fontSize: "$7xl",
               },
               "@xl": {

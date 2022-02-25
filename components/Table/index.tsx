@@ -57,10 +57,16 @@ const TableContainer = styled(Box, {
       padding: "0.5rem",
       borderBottom: "0px solid black",
       borderRight: "0px solid black",
-      py: "$3",
-      px: "$4",
+      py: "$2",
+      px: "$1",
+      fontSize: "$sm",
       "&:last-child": {
         borderRight: 0,
+      },
+      "@lg": {
+        px: "$4",
+        py: "$3",
+        fontSize: "$md",
       },
     },
   },
@@ -133,7 +139,7 @@ function Table<T extends object>({
         const origId = parent
           ? [parent.id, relativeIndex].join(".")
           : relativeIndex;
-        
+
         return (row as any)?.id || origId;
       },
     },
@@ -165,6 +171,7 @@ function Table<T extends object>({
                 <th
                   {...column.getHeaderProps({
                     ...column.getSortByToggleProps(),
+                    className: column.id,
                     style: {
                       minWidth: column.minWidth,
                       width: column.width,
@@ -220,6 +227,7 @@ function Table<T extends object>({
                         return (
                           <td
                             {...cell.getCellProps({
+                              className: cell.column.id,
                               style: {
                                 minWidth: cell.column.minWidth,
                                 width: cell.column.width,

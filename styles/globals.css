@@ -6,9 +6,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+:root {
+  font-size: 14px;
+}
+
+@media (min-width: 48em) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 80em) {
+  :root {
+    font-size: 17px;
+  }
+}
+
 svg {
   flex-shrink: 0;
-  min-width: fit-content;
 }
 
 fieldset {
@@ -58,4 +73,23 @@ fieldset {
   backdrop-filter: blur(24px) !important;
   -moz-backdrop-filter: blur(24px) !important;
   z-index: 10003 !important;
+}
+
+.walletconnect-modal__mobile__toggle a {
+  color: black;
+}
+
+/* Selective hiding on mobile based on column names */
+@media (max-width: 380px) {
+  .tokenIcon {
+    display: none;
+  }
+}
+@media (max-width: 420px) {
+  .ticker {
+    padding-left: 8px !important;
+  }
+  .currentPrice {
+    display: none;
+  }
 }

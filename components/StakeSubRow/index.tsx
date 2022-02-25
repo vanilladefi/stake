@@ -155,6 +155,8 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
     <Flex
       css={{
         flex: 1,
+        flexDirection: "column",
+        flexWrap: "wrap",
         boxShadow: "inset 0px 0px 0px 1px $colors$extraMuted",
         background: "$background",
         position: "relative",
@@ -169,124 +171,261 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
           top: "-5px",
           transform: "rotate(45deg)",
           backgroundColor: "$background",
-          left: "1.55rem",
+          left: ".8rem",
+          "@md": {
+            left: "1.55rem",
+          },
+        },
+        "@sm": {
+          flexDirection: "row",
+          flexWrap: "nowrap",
         },
       }}
     >
-      <Flex
-        css={{
-          p: "0px $5",
-          borderRight: "1px solid $colors$extraMuted",
-          alignItems: "center",
-        }}
-      >
+      <Box css={{ display: "flex", flex: 1, minHeight: "44px" }}>
+        <Flex
+          css={{
+            p: "0px $2",
+            alignItems: "center",
+            "@sm": {
+              borderRight: "1px solid $colors$extraMuted",
+            },
+            "@lg": {
+              p: "0px $4",
+            },
+          }}
+        >
+          <Box
+            css={{
+              position: "relative",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              css={{
+                color: "$muted",
+                fontSize: "$xl",
+                marginBottom: 0,
+                mr: "$2",
+                display: "none",
+                "@lg": {
+                  display: "inline",
+                },
+              }}
+            >
+              Stake
+            </Text>{" "}
+            <Input
+              disabled={stakePending}
+              size="lg"
+              type="number"
+              placeholder="0.0"
+              value={stakeAmount}
+              onChange={(e) => setStakeAmount(e.target.value)}
+              css={{
+                width: "100%",
+                minWidth: "30px",
+                maxWidth: "140px",
+                textAlign: "right",
+                mx: "$3",
+              }}
+            />
+          </Box>
+          <Image
+            alt="Vanilla drop icon"
+            width="20px"
+            height="20px"
+            src="/vanilla-drop.svg"
+          />
+        </Flex>
         <Box
           css={{
-            position: "relative",
-            height: "100%",
+            p: "$2",
             display: "flex",
-            alignItems: "center",
+            flex: 1,
+
+            "@md": {
+              p: "$3",
+            },
           }}
         >
           <Text
             css={{
               color: "$muted",
               fontSize: "$xl",
-              marginBottom: 0,
-              mr: "$2",
+              mr: "$5",
+              alignItems: "center",
+              display: "none",
+              "@xl": {
+                display: "flex",
+              },
             }}
           >
-            Stake
-          </Text>{" "}
-          <Input
-            disabled={stakePending}
-            size="lg"
-            type="number"
-            placeholder="0.0"
-            value={stakeAmount}
-            onChange={(e) => setStakeAmount(e.target.value)}
+            To
+          </Text>
+          <Box
             css={{
+              display: "flex",
               width: "100%",
-              minWidth: "40px",
-              maxWidth: "140px",
-              textAlign: "right",
-              mx: "$3",
+              maxWidth: "280px",
+              backgroundColor: "$tableZebra",
             }}
-          />
+          >
+            <Button
+              onClick={() => setStakePosition("long")}
+              outline
+              disabled={stakePending}
+              uppercase
+              size="md"
+              active={stakePosition === "long"}
+              css={{
+                boxShadow: "none",
+                border: 0,
+                width: "50%",
+                padding: 0,
+                color: stakePosition === "long" ? "$background" : "$muted",
+                backgroundColor:
+                  stakePosition === "long" ? "$text" : "transparent",
+              }}
+            >
+              Long
+            </Button>
+            <Button
+              onClick={() => setStakePosition("short")}
+              outline
+              uppercase
+              disabled={stakePending}
+              size="md"
+              active={stakePosition === "short"}
+              css={{
+                boxShadow: "none",
+                border: 0,
+                width: "50%",
+                padding: 0,
+                color: stakePosition === "short" ? "$background" : "$muted",
+                backgroundColor:
+                  stakePosition === "short" ? "$text" : "transparent",
+              }}
+            >
+              Short
+            </Button>
+          </Box>
+
+          <Flex
+            css={{
+              pl: "$5",
+              alignItems: "center",
+              justifyContent: "left",
+              display: "none",
+              "@lg": {
+                display: "flex",
+              },
+            }}
+          >
+            <Box
+              css={{
+                width: "24px",
+                height: "24px",
+                backgroundColor: "#ffffff",
+                borderRadius: "5px",
+                position: "relative",
+                overflow: "hidden",
+                padding: "3px",
+              }}
+            >
+              {findToken(row.original.id)?.imageUrl ? (
+                <Image
+                  width="18px"
+                  height="18px"
+                  layout="fixed"
+                  objectFit="cover"
+                  src={`/token-assets/${findToken(row.original.id)?.imageUrl}`}
+                  alt="Token icon"
+                />
+              ) : null}
+            </Box>
+            <Box css={{ ml: "10px", lineHeight: "$lg" }}>
+              {findToken(row.original.id)?.name}
+            </Box>
+          </Flex>
         </Box>
-        <Image
-          alt="Vanilla drop icon"
-          width="20px"
-          height="20px"
-          src="/vanilla-drop.svg"
-        />
-      </Flex>
-      <Box css={{ p: "$5" }}>
-        <Text css={{ color: "$muted", fontSize: "$xl", mr: "$5" }}>To</Text>
-        <Button
-          onClick={() => setStakePosition("long")}
-          outline
-          disabled={stakePending}
-          uppercase
-          size="md"
-          css={{
-            width: "20%",
-            maxWidth: "80px",
-          }}
-          active={stakePosition === "long"}
-        >
-          Long
-        </Button>
-        <Button
-          onClick={() => setStakePosition("short")}
-          outline
-          uppercase
-          disabled={stakePending}
-          size="md"
-          css={{
-            width: "20%",
-            maxWidth: "80px",
-          }}
-          active={stakePosition === "short"}
-        >
-          Short
-        </Button>
       </Box>
-      <Flex
+      <Box
         css={{
-          p: "$5",
-          alignItems: "center",
-          flex: 1,
-          borderRight: "1px solid $colors$extraMuted",
+          display: "flex",
+          minHeight: "44px",
+          borderTop: "1px solid $extraMuted",
+          "@sm": {
+            borderTop: "none",
+          },
         }}
       >
-        <Box
-          css={{
-            width: "24px",
-            height: "24px",
-            backgroundColor: "#ffffff",
-            borderRadius: "5px",
-            position: "relative",
-            overflow: "hidden",
-            padding: "3px",
-          }}
-        >
-          {findToken(row.original.id)?.imageUrl ? (
-            <Image
-              width="18px"
-              height="18px"
-              layout="fixed"
-              objectFit="cover"
-              src={`/token-assets/${findToken(row.original.id)?.imageUrl}`}
-              alt="Token icon"
-            />
-          ) : null}
-        </Box>
-        <Box css={{ ml: "10px" }}>{findToken(row.original.id)?.name}</Box>
-      </Flex>
-      {type === "edit" ? (
-        stakePending ? (
-          <Flex justify="center" align="center" css={{ width: "220px" }}>
+        {type === "edit" ? (
+          stakePending ? (
+            <Flex justify="center" align="center">
+              <Link
+                external
+                variant={txLink ? "default" : "subtle"}
+                href={txLink}
+              >
+                {txLink && (
+                  <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />
+                )}
+                Pending...
+              </Link>
+            </Flex>
+          ) : (
+            <>
+              <Button
+                ghost
+                variant="primary"
+                disabled={closingDisabled}
+                onClick={() => handleStake("close")}
+                css={{
+                  color: "$red",
+                  width: "100%",
+                  marginRight: "1px",
+                  height: "auto",
+                  px: "$2",
+                  fontSize: "$md",
+                  fontWeight: 300,
+                  textAlign: "center",
+                  borderRight: "1px solid $extraMuted",
+                  borderLeft: "1px solid $colors$extraMuted",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
+              >
+                Close position
+              </Button>
+
+              <Button
+                ghost
+                variant="primary"
+                disabled={stakingDisabled}
+                onClick={() => handleStake()}
+                css={{
+                  marginRight: "1px",
+                  height: "auto",
+                  px: "$2",
+                  width: "100%",
+                  fontSize: "$md",
+                  fontWeight: 300,
+                  textAlign: "center",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
+              >
+                Save
+              </Button>
+            </>
+          )
+        ) : stakePending ? (
+          <Flex row align="center" justify="center" css={{ width: "135px" }}>
             <Link
               external
               variant={txLink ? "default" : "subtle"}
@@ -297,84 +436,30 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
             </Link>
           </Flex>
         ) : (
-          <>
-            <Button
-              ghost
-              variant="primary"
-              disabled={closingDisabled}
-              onClick={() => handleStake("close")}
-              css={{
-                color: "$red",
-                width: "120px",
-                marginRight: "1px",
-                height: "auto",
-                px: "$2",
-                fontSize: "$md",
-                maxWidth: "80px",
-                fontWeight: 300,
-                textAlign: "center",
-                borderRight: "1px solid $extraMuted",
-                "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                },
-              }}
-            >
-              Close position
-            </Button>
-
-            <Button
-              ghost
-              variant="primary"
-              disabled={stakingDisabled}
-              onClick={() => handleStake()}
-              css={{
-                marginRight: "1px",
-                height: "auto",
-                px: "$8",
-                width: "auto",
-                maxWidth: "100px",
-                fontSize: "$md",
-                fontWeight: 300,
-                textAlign: "center",
-                "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                },
-              }}
-            >
-              Save
-            </Button>
-          </>
-        )
-      ) : stakePending ? (
-        <Flex row align="center" justify="center" css={{ width: "135px" }}>
-          <Link external variant={txLink ? "default" : "subtle"} href={txLink}>
-            {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
-            Pending...
-          </Link>
-        </Flex>
-      ) : (
-        <Button
-          ghost
-          variant="primary"
-          disabled={stakingDisabled}
-          onClick={() => handleStake()}
-          css={{
-            width: "auto",
-            marginRight: "1px",
-            height: "auto",
-            px: "$6",
-            fontSize: "$md",
-            maxWidth: "100px",
-            fontWeight: 300,
-            textAlign: "center",
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-            },
-          }}
-        >
-          Add Stake
-        </Button>
-      )}
+          <Button
+            ghost
+            variant="primary"
+            disabled={stakingDisabled}
+            onClick={() => handleStake()}
+            css={{
+              width: "auto",
+              marginRight: "1px",
+              height: "auto",
+              px: "$6",
+              fontSize: "$md",
+              maxWidth: "100px",
+              fontWeight: 300,
+              textAlign: "center",
+              borderLeft: "1px solid $colors$extraMuted",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            Add Stake
+          </Button>
+        )}
+      </Box>
     </Flex>
   );
 };
