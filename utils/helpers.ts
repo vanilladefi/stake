@@ -14,7 +14,7 @@ export const isValidEmail = (email?: string) =>
 type Nullable<T> = T | null | undefined;
 
 export const formatJuice = (amount: Nullable<ethers.BigNumberish>) =>
-  Number(ethers.utils.formatUnits(amount || 0, juiceDecimals)).toFixed(3);
+  Number(ethers.utils.formatUnits(amount || 0, juiceDecimals)).toLocaleString();
 
 export const parseJuice = (amount: Nullable<string | number>) =>
   ethers.utils.parseUnits(amount?.toString() || '0', juiceDecimals);

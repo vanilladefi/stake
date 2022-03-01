@@ -669,7 +669,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
 
         <Button
           variant="primary"
-          disabled={txDisabled != false || Number(juiceAmount) == 0}
+          disabled={txDisabled != false || +juiceAmount == 0}
           css={{
             width: "100%",
             height: "auto",
@@ -691,9 +691,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
               : handleTx(TxTypes.withdraw)
           }
         >
-          {Number(juiceAmount) > 0 && transactionType === "deposit" ? (
+          {+juiceAmount > 0 && transactionType === "deposit" ? (
             `Deposit ${juiceAmount} JUICE to Juicenet`
-          ) : Number(juiceAmount) > 0 && transactionType === "withdraw" ? (
+          ) : +juiceAmount > 0 && transactionType === "withdraw" ? (
             `Withdraw ${juiceAmount} JUICE from Juicenet`
           ) : (
             <>Enter a JUICE Amount to transfer</>
