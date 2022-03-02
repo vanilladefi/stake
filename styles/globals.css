@@ -78,6 +78,12 @@ fieldset {
 .walletconnect-modal__mobile__toggle a {
   color: black;
 }
+.walletconnect-modal__base {
+  max-height: 74vh;
+}
+.walletconnect-qrcode__image {
+  max-height: 299px;
+}
 
 /* Selective hiding on mobile based on column names */
 @media (max-width: 380px) {
