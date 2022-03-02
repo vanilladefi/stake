@@ -4,8 +4,9 @@ import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "../Link";
 import { Copy, ArrowUp, ArrowDown, XCircle } from "phosphor-react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
+import CountUp from "react-countup";
 import { state, useSnapshot, VanillaEvents } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { emitEvent, getTransactionLink, parseJuice } from "../../utils/helpers";
@@ -86,6 +87,17 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       hideProgressBar: true,
     });
   }, []);
+
+  function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    }, [value]);
+    return ref.current;
+  }
+
+  const prevWalletJuice = usePrevious(balances.juice);
+  const prevUnstakedJuice = usePrevious(balances.unstakedJuice);
 
   const handleTx = useCallback(
     async (type: TxTypes) => {
@@ -456,7 +468,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                         )
                       }
                     >
-                      {balances.juice} JUICE
+                      <CountUp
+                        start={Number(prevWalletJuice)}
+                        end={Number(balances.juice)}
+                        duration={2}
+                        decimals={3}
+                        decimal="."
+                        suffix=" JUICE"
+                      />
                     </Text>
                     {/* <TradeLink href="">Buy</TradeLink> */}
                   </Box>
@@ -649,7 +668,15 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       )
                     }
                   >
-                    {balances.unstakedJuice} JUICE
+                    {/* {balances.unstakedJuice} JUICE */}
+                    <CountUp
+                      start={Number(prevUnstakedJuice)}
+                      end={Number(balances.unstakedJuice)}
+                      duration={2}
+                      decimals={3}
+                      decimal="."
+                      suffix=" JUICE"
+                    />
                   </Text>
                   <Text muted>Unstaked in Juicenet</Text>
                 </>
