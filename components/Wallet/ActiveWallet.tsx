@@ -607,7 +607,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     paddingLeft: ".25rem",
                     transformOrigin: "top",
                     animationDuration: "2s",
-                    animationIterationCount: "infinite",
+                    animationFillMode: "forwards",
+                    animationIterationCount: "1",
                     animationName:
                       transactionType === "deposit" ? "bounce-down" : "none",
                     animationTimingFunction: "ease",
@@ -642,7 +643,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       paddingRight: ".25rem",
                       transformOrigin: "bottom",
                       animationDuration: "2s",
-                      animationIterationCount: "infinite",
+                      animationFillMode: "forwards",
+                      animationIterationCount: "1",
                       animationName:
                         transactionType === "withdraw" ? "bounce-up" : "none",
                       animationTimingFunction: "ease",
