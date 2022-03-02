@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useState, useEffect, useRef } from "react";
 import * as sdk from "@vanilladefi/stake-sdk";
 import { isAddress } from "@vanilladefi/core-sdk";
 import { Row } from "react-table";
@@ -63,6 +63,11 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
   const stakingDisabled = stakePending || !(stakeAmount && +stakeAmount);
   const closingDisabled = stakePending;
+
+  const stakeUnchanged =
+    staked?.sentiment === stakePosition
+      ? staked?.juiceValue === stakeAmount
+      : false;
 
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {
@@ -388,7 +393,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               <Button
                 ghost
                 variant="primary"
-                disabled={stakingDisabled}
+                disabled={stakingDisabled || stakeUnchanged}
                 onClick={() => handleStake()}
                 css={{
                   marginRight: "1px",
