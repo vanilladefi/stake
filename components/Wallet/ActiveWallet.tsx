@@ -89,7 +89,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   }, []);
 
   function usePrevious(value: string | undefined) {
-    const ref = useRef();
+    const ref = useRef<string | undefined>();
     useEffect(() => {
       ref.current = value;
     }, [value]);
