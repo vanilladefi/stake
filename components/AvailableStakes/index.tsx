@@ -158,22 +158,27 @@ export const AvailableStakes = () => {
               size="sm"
               active={row.isExpanded}
               css={{
-                width: "auto",
                 display: "inline-flex",
                 height: "32px",
-                justifyContent: "right",
+                justifyContent: "space-between",
                 alignItems: "center",
                 fontSize: "$sm",
                 lineHeight: "$5",
+                "@md": {
+                  width: "78px",
+                },
               }}
               {...row.getToggleRowExpandedProps()}
             >
               <Text
                 css={{
                   paddingRight: "0.35rem",
-                  display: "inline",
+                  display: "none",
                   lineHeight: "1rem",
                   color: "$link",
+                  "@md": {
+                    display: "inline",
+                  },
                 }}
               >
                 {row.isExpanded ? "Cancel" : "Stake"}
