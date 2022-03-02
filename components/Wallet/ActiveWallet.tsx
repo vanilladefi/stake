@@ -570,70 +570,96 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 padding: "8px",
               }}
             >
-              <>
+              <Button
+                disabled={txDisabled != false}
+                uppercase
+                outline
+                onClick={() => setTransactionType("deposit")}
+                active={transactionType === "deposit"}
+                css={{
+                  boxShadow: "none",
+                  display: "flex",
+                  fontSize: "$xs",
+                  padding: "0 $3",
+                  color:
+                    transactionType === "deposit" ? "$background" : "$muted",
+                  transition: "background-color .15s",
+                  height: "100%",
+                  width: "100%",
+                  backgroundColor:
+                    transactionType === "deposit" ? "$text" : "$tableZebra",
+                }}
+              >
+                <Text
+                  css={{
+                    lineHeight: "$xs",
+                    color: "inherit",
+                  }}
+                  display={{
+                    "@initial": "none",
+                    "@sm": "inline",
+                  }}
+                >
+                  Deposit
+                </Text>
+                <ArrowDown
+                  style={{
+                    paddingLeft: ".25rem",
+                    transformOrigin: "top",
+                    animationDuration: "2s",
+                    animationIterationCount: "infinite",
+                    animationName:
+                      transactionType === "deposit" ? "bounce-down" : "none",
+                    animationTimingFunction: "ease",
+                  }}
+                  size={"21px"}
+                />
+              </Button>
+
+              {rawBalances.unstakedJuice?.gt(0) && (
                 <Button
                   disabled={txDisabled != false}
                   uppercase
+                  onClick={() => setTransactionType("withdraw")}
                   outline
-                  onClick={() => setTransactionType("deposit")}
-                  active={transactionType === "deposit"}
                   css={{
+                    boxShadow: "none",
                     display: "flex",
                     fontSize: "$xs",
+                    color:
+                      transactionType === "withdraw" ? "$background" : "$muted",
                     padding: "0 $3",
-                    opacity: transactionType === "deposit" ? "1" : "0.5",
-                    transition: "opacity .15s",
-                    height: "100%",
+                    transition: "background-color .15s",
                     width: "100%",
-                    borderColor: "1px solid $extraMuted",
+                    height: "100%",
+                    backgroundColor:
+                      transactionType === "withdraw" ? "$text" : "$tableZebra",
                   }}
+                  active={transactionType === "withdraw"}
                 >
-                  <Text
-                    css={{
-                      lineHeight: "$xs",
-                      color: "inherit",
+                  <ArrowUp
+                    style={{
+                      paddingRight: ".25rem",
+                      transformOrigin: "bottom",
+                      animationDuration: "2s",
+                      animationIterationCount: "infinite",
+                      animationName:
+                        transactionType === "withdraw" ? "bounce-up" : "none",
+                      animationTimingFunction: "ease",
                     }}
+                    size={"21px"}
+                  />{" "}
+                  <Text
                     display={{
                       "@initial": "none",
                       "@sm": "inline",
                     }}
+                    css={{ lineHeight: "$xs", color: "inherit" }}
                   >
-                    Deposit
+                    Withdraw
                   </Text>
-                  <ArrowDown style={{ paddingLeft: ".25rem" }} size={"21px"} />
                 </Button>
-
-                {rawBalances.unstakedJuice?.gt(0) && (
-                  <Button
-                    disabled={txDisabled != false}
-                    uppercase
-                    onClick={() => setTransactionType("withdraw")}
-                    outline
-                    css={{
-                      display: "flex",
-                      fontSize: "$xs",
-                      padding: "0 $3",
-                      opacity: transactionType === "withdraw" ? "1" : "0.5",
-                      transition: "opacity .15s",
-                      width: "100%",
-                      height: "100%",
-                      borderColor: "1px solid $extraMuted",
-                    }}
-                    active={transactionType === "withdraw"}
-                  >
-                    <ArrowUp style={{ paddingRight: ".25rem" }} size={"21px"} />{" "}
-                    <Text
-                      display={{
-                        "@initial": "none",
-                        "@sm": "inline",
-                      }}
-                      css={{ lineHeight: "$xs", color: "inherit" }}
-                    >
-                      Withdraw
-                    </Text>
-                  </Button>
-                )}
-              </>
+              )}
             </Box>
           </Box>
 

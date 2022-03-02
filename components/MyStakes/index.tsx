@@ -284,10 +284,7 @@ export const MyStakes = () => {
         >
           My Stakes
         </Heading>
-        <Box
-          css={{ textAlign: "right" }}
-          onClick={() => (state.walletOpen = true)}
-        >
+        <Box css={{ textAlign: "right" }}>
           {(rawBalances.unstakedJuice?.gt(0) ||
             rawBalances.stakedJuice?.gt(0)) && (
             <Box>
@@ -303,6 +300,7 @@ export const MyStakes = () => {
                     textDecoration: "underline",
                   },
                 }}
+                onClick={() => (state.walletOpen = true)}
               >
                 {balances.totalJuice + " JUICE"}
               </Box>
