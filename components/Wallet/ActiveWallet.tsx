@@ -697,8 +697,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             {rawBalances.unstakedJuice?.isZero() &&
               rawBalances.stakedJuice?.isZero() && (
                 <Text muted>
-                  You need to get some $JUICE deposited in Juicenet before you
-                  can start making stakes.
+                  You need to{" "}
+                  {rawBalances.juice?.isZero() && "get $JUICE and then"} deposit
+                  $JUICE to Juicenet before you can start making stakes.
                 </Text>
               )}
           </Box>

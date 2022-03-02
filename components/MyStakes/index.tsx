@@ -318,7 +318,7 @@ export const MyStakes = () => {
         </Box>
         {!rawBalances.unstakedJuice?.gt(0) && !rawBalances.stakedJuice?.gt(0) && (
           <Button variant="primary" onClick={() => (state.walletOpen = true)}>
-            Manage funds
+            Deposit JUICE
           </Button>
         )}
       </Flex>
@@ -358,7 +358,7 @@ export const MyStakes = () => {
               <Text
                 css={{
                   fontSize: "$xl",
-                  p: "$2 0",
+                  p: "$4 0 0",
                 }}
                 muted
               >
