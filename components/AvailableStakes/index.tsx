@@ -3,12 +3,14 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
+import { CaretDown } from "phosphor-react";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { state } from "../../state";
 import { findToken } from "../../utils/helpers";
 import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
+import Text from "../Text";
 import Container from "../Container";
 import Flex from "../Flex";
 import Heading from "../Heading";
@@ -155,10 +157,35 @@ export const AvailableStakes = () => {
               variant="primary"
               size="sm"
               active={row.isExpanded}
-              css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
+              css={{
+                width: "auto",
+                display: "inline-flex",
+                height: "32px",
+                justifyContent: "right",
+                alignItems: "center",
+                fontSize: "$sm",
+                lineHeight: "$5",
+              }}
               {...row.getToggleRowExpandedProps()}
             >
-              {row.isExpanded ? "Collapse" : "Stake"}
+              <Text
+                css={{
+                  paddingRight: "0.35rem",
+                  display: "inline",
+                  lineHeight: "1rem",
+                  color: "$link",
+                }}
+              >
+                {row.isExpanded ? "Cancel" : "Stake"}
+              </Text>
+              <CaretDown
+                style={{
+                  transition: "transform .15s ease-in-out",
+                  transform: row.isExpanded
+                    ? "rotate(-180deg)"
+                    : "rotate(0deg)",
+                }}
+              />
             </Button>
           );
         },

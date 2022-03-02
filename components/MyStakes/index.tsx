@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
+import { CaretDown } from "phosphor-react";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { Stake, state } from "../../state";
 import { fetchStakes } from "../../state/actions/stakes";
@@ -174,10 +175,35 @@ export const MyStakes = () => {
               variant="primary"
               size="sm"
               active={row.isExpanded}
-              css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
+              css={{
+                width: "auto",
+                display: "inline-flex",
+                height: "32px",
+                justifyContent: "right",
+                alignItems: "center",
+                fontSize: "$sm",
+                lineHeight: "$5",
+              }}
               {...row.getToggleRowExpandedProps()}
             >
-              {row.isExpanded ? "Collapse" : "Edit"}
+              <Text
+                css={{
+                  paddingRight: "0.35rem",
+                  display: "inline",
+                  lineHeight: "1rem",
+                  color: "$link",
+                }}
+              >
+                {row.isExpanded ? "Cancel" : "Edit"}
+              </Text>
+              <CaretDown
+                style={{
+                  transition: "transform .15s ease-in-out",
+                  transform: row.isExpanded
+                    ? "rotate(-180deg)"
+                    : "rotate(0deg)",
+                }}
+              />
             </Button>
           );
         },
