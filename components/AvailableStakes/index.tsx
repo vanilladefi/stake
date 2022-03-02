@@ -224,7 +224,7 @@ export const AvailableStakes = () => {
             },
           }}
         >
-          Available Stakes
+          Available Tokens
         </Heading>
         {getData().length === 0 ? (
           <p>You have open stakes in every available token.</p>
