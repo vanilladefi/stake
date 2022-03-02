@@ -228,6 +228,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
             </Text>{" "}
             <Input
               disabled={stakePending}
+              autoFocus
               size="lg"
               type="number"
               placeholder="0.0"
