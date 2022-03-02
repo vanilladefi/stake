@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { FC, useCallback, useState, useEffect, useRef } from "react";
+import React, { FC, useCallback, useState } from "react";
 import * as sdk from "@vanilladefi/stake-sdk";
 import { isAddress } from "@vanilladefi/core-sdk";
 import { Row } from "react-table";
