@@ -35,7 +35,7 @@ const TableContainer = styled(Box, {
     borderSpacing: 0,
     border: "0px solid black",
     tr: {
-      "&:nth-child(odd)": {
+      "&:nth-child(4n+1), &:nth-of-type(4n+1) + *": {
         "& td": {
           backgroundColor: "$tableZebra",
         },
@@ -46,12 +46,7 @@ const TableContainer = styled(Box, {
         },
       },
     },
-    "& th": {
-      textTransform: "uppercase",
-      fontWeight: 200,
-      fontSize: "$lg",
-      color: "$muted",
-    },
+
     "& th,td": {
       margin: 0,
       padding: "0.5rem",
@@ -60,6 +55,7 @@ const TableContainer = styled(Box, {
       py: "$2",
       px: "$1",
       fontSize: "$sm",
+      overflow: "hidden",
       "&:last-child": {
         borderRight: 0,
       },
@@ -68,6 +64,12 @@ const TableContainer = styled(Box, {
         py: "$3",
         fontSize: "$md",
       },
+    },
+    "& th": {
+      textTransform: "uppercase",
+      fontWeight: 200,
+      color: "$muted",
+      backgroundColor: "transparent",
     },
   },
 });
@@ -245,32 +247,26 @@ function Table<T extends object>({
                     If the row is in an expanded state, render a row with a
                     column that fills the entire length of the table.
                   */}
-                  <AnimatePresence>
-                    {row.isExpanded && renderRowSubComponent ? (
-                      <motion.tr
-                        {...rowProps}
-                        key={key}
-                        transition={{ type: "spring", duration: 0.3 }}
-                        initial={{ opacity: 0, y: -8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -8 }}
-                      >
-                        <td
-                          colSpan={visibleColumns.length}
-                          style={{ padding: 0 }}
-                        >
-                          {/*
-                          Inside it, call our renderRowSubComponent function. In reality,
-                          you could pass whatever you want as props to
-                          a component like this, including the entire
-                          table instance. But for this example, we'll just
-                          pass the row
-                        */}
-                          {renderRowSubComponent({ row })}
-                        </td>
-                      </motion.tr>
-                    ) : null}
-                  </AnimatePresence>
+
+                  <tr {...rowProps}>
+                    <td colSpan={visibleColumns.length} style={{ padding: 0 }}>
+                      <AnimatePresence initial={false}>
+                        {row.isExpanded && renderRowSubComponent && (
+                          <motion.div
+                            initial="collapsed"
+                            animate="open"
+                            exit="collapsed"
+                            variants={{
+                              open: { opacity: 1, height: "auto", y: 0 },
+                              collapsed: { opacity: 0, height: 0, y: -8 },
+                            }}
+                          >
+                            {renderRowSubComponent({ row })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </td>
+                  </tr>
                 </React.Fragment>
               );
             })
