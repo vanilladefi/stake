@@ -155,7 +155,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
     <Flex justify="center" align="center" css={{ px: "$5" }}>
       <Link external variant={txLink ? "default" : "subtle"} href={txLink}>
         {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
-        <Text css={{ color: 'inherit', fontSize: '$md' }}>Pending...</Text>
+        <Text css={{ color: "inherit", fontSize: "$md" }}>Pending...</Text>
       </Link>
     </Flex>
   );
@@ -365,7 +365,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       <Box
         css={{
           display: "flex",
-          justifyContent: 'center',
+          justifyContent: "center",
           minHeight: "44px",
           borderTop: "1px solid $extraMuted",
           "@sm": {
