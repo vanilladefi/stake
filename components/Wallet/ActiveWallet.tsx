@@ -88,13 +88,23 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     });
   }, []);
 
-  function usePrevious(value) {
+  function usePrevious(value: string | undefined) {
     const ref = useRef();
     useEffect(() => {
       ref.current = value;
     }, [value]);
     return ref.current;
   }
+
+  useEffect(() => {
+    const close = (e: { key: string }) => {
+      if (e.key === "Escape") {
+        state.walletOpen = false;
+      }
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, []);
 
   const prevWalletJuice = usePrevious(balances.juice);
   const prevUnstakedJuice = usePrevious(balances.unstakedJuice);
