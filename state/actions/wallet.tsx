@@ -6,7 +6,7 @@ import {
 import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
 import { toast } from "react-toastify";
-import { persistedKeys, ref, state, subscribeKey, VanillaEvents } from "..";
+import { ref, state, subscribeKey, VanillaEvents } from "..";
 import { correctNetwork, getHexaDecimalChainId } from "../../lib/config";
 import { emitEvent, formatJuice, parseJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
@@ -69,17 +69,17 @@ export const disconnect = (soft?: boolean) => {
   const { modal } = snapshot(state);
   if (!soft) {
     modal?.clearCachedProvider();
+    state.providerName = null;
     if (window_ethereum) {
       window.ethereum = window_ethereum;
     }
   }
 
   state.signer = null;
-  if (!soft) state.walletAddress = null;
+  state.walletAddress = null;
   state.walletOpen = false;
   state.truncatedWalletAddress = null;
 
-  !soft && localStorage.removeItem(persistedKeys.walletAddress);
   state.balances = {};
   state.rawBalances = {};
 };
@@ -144,8 +144,6 @@ export const initWalletSubscriptions = () => {
     updateBalances();
     updateTruncatedAddress();
 
-    persistWalletAddress();
-
     const { signer, polygonProvider } = snapshot(state);
 
     // subscribe to juice transactions
@@ -181,15 +179,6 @@ export const initWalletSubscriptions = () => {
       updateProviderName();
     }
   });
-};
-
-export const persistWalletAddress = () => {
-  const persistedAddress = localStorage.getItem(persistedKeys.walletAddress);
-  if (state.walletAddress !== persistedAddress)
-    localStorage.setItem(
-      persistedKeys.walletAddress,
-      JSON.stringify(state.walletAddress)
-    );
 };
 
 export const updateProviderName = async () => {
