@@ -137,7 +137,7 @@ export const MyStakes = () => {
       {
         id: "history",
         accessor: "hourlyHistory",
-        Header: "7D%",
+        Header: "24H %",
         align: "right",
 
         Cell: ({ value }) => {
