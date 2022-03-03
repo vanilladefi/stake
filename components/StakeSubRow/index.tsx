@@ -151,6 +151,15 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
     ]
   );
 
+  const PendingView = (
+    <Flex justify="center" align="center" css={{ px: "$5" }}>
+      <Link external variant={txLink ? "default" : "subtle"} href={txLink}>
+        {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
+        <Text css={{ color: 'inherit', fontSize: '$md' }}>Pending...</Text>
+      </Link>
+    </Flex>
+  );
+
   return (
     <Flex
       css={{
@@ -355,6 +364,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       <Box
         css={{
           display: "flex",
+          justifyContent: 'center',
           minHeight: "44px",
           borderTop: "1px solid $extraMuted",
           "@sm": {
@@ -364,18 +374,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       >
         {type === "edit" ? (
           stakePending ? (
-            <Flex justify="center" align="center">
-              <Link
-                external
-                variant={txLink ? "default" : "subtle"}
-                href={txLink}
-              >
-                {txLink && (
-                  <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />
-                )}
-                Pending...
-              </Link>
-            </Flex>
+            PendingView
           ) : (
             <>
               <Button
@@ -425,16 +424,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
             </>
           )
         ) : stakePending ? (
-          <Flex row align="center" justify="center" css={{ width: "135px" }}>
-            <Link
-              external
-              variant={txLink ? "default" : "subtle"}
-              href={txLink}
-            >
-              {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
-              Pending...
-            </Link>
-          </Flex>
+          PendingView
         ) : (
           <Button
             ghost
@@ -443,7 +433,6 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
             onClick={() => handleStake()}
             css={{
               width: "auto",
-              marginRight: "1px",
               height: "auto",
               px: "$6",
               fontSize: "$md",
@@ -451,6 +440,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               fontWeight: 300,
               textAlign: "center",
               borderLeft: "1px solid $colors$extraMuted",
+              borderRight: "1px solid $colors$extraMuted",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
               },
