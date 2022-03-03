@@ -1,16 +1,16 @@
 import { isAddress, vnlDecimals } from "@vanilladefi/core-sdk";
 import {
   getBasicWalletDetails,
-  getJuiceStakingContract,
+  getJuiceStakingContract
 } from "@vanilladefi/stake-sdk";
 import { BigNumber, providers } from "ethers";
-import { snapshot } from "valtio";
+import { parseUnits } from "ethers/lib/utils";
 import { toast } from "react-toastify";
+import { snapshot } from "valtio";
 import { ref, state, subscribeKey, VanillaEvents } from "..";
 import { correctNetwork, getHexaDecimalChainId } from "../../lib/config";
 import { emitEvent, formatJuice, parseJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
-import { parseUnits } from "ethers/lib/utils";
 
 let lockedWalletToast: any;
 
