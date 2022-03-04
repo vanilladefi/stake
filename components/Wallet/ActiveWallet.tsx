@@ -4,8 +4,9 @@ import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
 import Link from "../Link";
 import { Copy, ArrowUp, ArrowDown, XCircle } from "phosphor-react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
+import CountUp from "react-countup";
 import { state, useSnapshot, VanillaEvents } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { emitEvent, getTransactionLink, parseJuice } from "../../utils/helpers";
@@ -86,6 +87,27 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       hideProgressBar: true,
     });
   }, []);
+
+  function usePrevious(value: string | undefined) {
+    const ref = useRef<string | undefined>();
+    useEffect(() => {
+      ref.current = value;
+    }, [value]);
+    return ref.current;
+  }
+
+  useEffect(() => {
+    const close = (e: { key: string }) => {
+      if (e.key === "Escape") {
+        state.walletOpen = false;
+      }
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
+  const prevWalletJuice = usePrevious(balances.juice);
+  const prevUnstakedJuice = usePrevious(balances.unstakedJuice);
 
   const handleTx = useCallback(
     async (type: TxTypes) => {
@@ -456,7 +478,14 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                         )
                       }
                     >
-                      {balances.juice} JUICE
+                      <CountUp
+                        start={Number(prevWalletJuice)}
+                        end={Number(balances.juice)}
+                        duration={2}
+                        decimals={3}
+                        decimal="."
+                        suffix=" JUICE"
+                      />
                     </Text>
                     {/* <TradeLink href="">Buy</TradeLink> */}
                   </Box>
@@ -541,70 +570,98 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 padding: "8px",
               }}
             >
-              <>
+              <Button
+                disabled={txDisabled != false}
+                uppercase
+                outline
+                onClick={() => setTransactionType("deposit")}
+                active={transactionType === "deposit"}
+                css={{
+                  boxShadow: "none",
+                  display: "flex",
+                  fontSize: "$xs",
+                  padding: "0 $3",
+                  color:
+                    transactionType === "deposit" ? "$background" : "$muted",
+                  transition: "background-color .15s",
+                  height: "100%",
+                  width: "100%",
+                  backgroundColor:
+                    transactionType === "deposit" ? "$text" : "$tableZebra",
+                }}
+              >
+                <Text
+                  css={{
+                    lineHeight: "$xs",
+                    color: "inherit",
+                  }}
+                  display={{
+                    "@initial": "none",
+                    "@sm": "inline",
+                  }}
+                >
+                  Deposit
+                </Text>
+                <ArrowDown
+                  style={{
+                    paddingLeft: ".25rem",
+                    transformOrigin: "top",
+                    animationDuration: "2s",
+                    animationFillMode: "forwards",
+                    animationIterationCount: "1",
+                    animationName:
+                      transactionType === "deposit" ? "bounce-down" : "none",
+                    animationTimingFunction: "ease",
+                  }}
+                  size={"21px"}
+                />
+              </Button>
+
+              {rawBalances.unstakedJuice?.gt(0) && (
                 <Button
                   disabled={txDisabled != false}
                   uppercase
+                  onClick={() => setTransactionType("withdraw")}
                   outline
-                  onClick={() => setTransactionType("deposit")}
-                  active={transactionType === "deposit"}
                   css={{
+                    boxShadow: "none",
                     display: "flex",
                     fontSize: "$xs",
+                    color:
+                      transactionType === "withdraw" ? "$background" : "$muted",
                     padding: "0 $3",
-                    opacity: transactionType === "deposit" ? "1" : "0.5",
-                    transition: "opacity .15s",
-                    height: "100%",
+                    transition: "background-color .15s",
                     width: "100%",
-                    borderColor: "1px solid $extraMuted",
+                    height: "100%",
+                    backgroundColor:
+                      transactionType === "withdraw" ? "$text" : "$tableZebra",
                   }}
+                  active={transactionType === "withdraw"}
                 >
-                  <Text
-                    css={{
-                      lineHeight: "$xs",
-                      color: "inherit",
+                  <ArrowUp
+                    style={{
+                      paddingRight: ".25rem",
+                      transformOrigin: "bottom",
+                      animationDuration: "2s",
+                      animationFillMode: "forwards",
+                      animationIterationCount: "1",
+                      animationName:
+                        transactionType === "withdraw" ? "bounce-up" : "none",
+                      animationTimingFunction: "ease",
                     }}
+                    size={"21px"}
+                  />{" "}
+                  <Text
                     display={{
                       "@initial": "none",
                       "@sm": "inline",
                     }}
+                    css={{ lineHeight: "$xs", color: "inherit" }}
                   >
-                    Deposit
+                    Withdraw
                   </Text>
-                  <ArrowDown style={{ paddingLeft: ".25rem" }} size={"21px"} />
                 </Button>
-
-                {rawBalances.unstakedJuice?.gt(0) && (
-                  <Button
-                    disabled={txDisabled != false}
-                    uppercase
-                    onClick={() => setTransactionType("withdraw")}
-                    outline
-                    css={{
-                      display: "flex",
-                      fontSize: "$xs",
-                      padding: "0 $3",
-                      opacity: transactionType === "withdraw" ? "1" : "0.5",
-                      transition: "opacity .15s",
-                      width: "100%",
-                      height: "100%",
-                      borderColor: "1px solid $extraMuted",
-                    }}
-                    active={transactionType === "withdraw"}
-                  >
-                    <ArrowUp style={{ paddingRight: ".25rem" }} size={"21px"} />{" "}
-                    <Text
-                      display={{
-                        "@initial": "none",
-                        "@sm": "inline",
-                      }}
-                      css={{ lineHeight: "$xs", color: "inherit" }}
-                    >
-                      Withdraw
-                    </Text>
-                  </Button>
-                )}
-              </>
+              )}
             </Box>
           </Box>
 
@@ -649,7 +706,15 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       )
                     }
                   >
-                    {balances.unstakedJuice} JUICE
+                    {/* {balances.unstakedJuice} JUICE */}
+                    <CountUp
+                      start={Number(prevUnstakedJuice)}
+                      end={Number(balances.unstakedJuice)}
+                      duration={2}
+                      decimals={3}
+                      decimal="."
+                      suffix=" JUICE"
+                    />
                   </Text>
                   <Text muted>Unstaked in Juicenet</Text>
                 </>
@@ -660,8 +725,9 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
             {rawBalances.unstakedJuice?.isZero() &&
               rawBalances.stakedJuice?.isZero() && (
                 <Text muted>
-                  You need to get some $JUICE deposited in Juicenet before you
-                  can start making stakes.
+                  You need to{" "}
+                  {rawBalances.juice?.isZero() && "get $JUICE and then"} deposit
+                  $JUICE to Juicenet before you can start making stakes.
                 </Text>
               )}
           </Box>

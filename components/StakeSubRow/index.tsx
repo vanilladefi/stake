@@ -64,6 +64,11 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const stakingDisabled = stakePending || !(stakeAmount && +stakeAmount);
   const closingDisabled = stakePending;
 
+  const stakeUnchanged =
+    staked?.sentiment === stakePosition
+      ? staked?.juiceValue === stakeAmount
+      : false;
+
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {
       if (type === "modify" && stakingDisabled) return;
@@ -152,10 +157,19 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   );
 
   const PendingView = (
-    <Flex justify="center" align="center" css={{ px: "$5" }}>
-      <Link external variant={txLink ? "default" : "subtle"} href={txLink}>
+    <Flex
+      justify="center"
+      align="center"
+      css={{ px: "$5", borderLeft: "1px solid $extraMuted" }}
+    >
+      <Link
+        external
+        variant={txLink ? "default" : "subtle"}
+        href={txLink}
+        css={{ color: txLink ? "$link" : "$muted" }}
+      >
         {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
-        <Text css={{ color: 'inherit', fontSize: '$md' }}>Pending...</Text>
+        <Text css={{ color: "inherit", fontSize: "$md" }}>Pending...</Text>
       </Link>
     </Flex>
   );
@@ -167,24 +181,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         flexDirection: "column",
         flexWrap: "wrap",
         boxShadow: "inset 0px 0px 0px 1px $colors$extraMuted",
-        background: "$background",
         position: "relative",
-        "&::before": {
-          display: "block",
-          content: "",
-          width: "10px",
-          height: "10px",
-          borderTop: "1px solid $colors$extraMuted",
-          borderLeft: "1px solid $colors$extraMuted",
-          position: "absolute",
-          top: "-5px",
-          transform: "rotate(45deg)",
-          backgroundColor: "$background",
-          left: ".8rem",
-          "@md": {
-            left: "1.55rem",
-          },
-        },
         "@sm": {
           flexDirection: "row",
           flexWrap: "nowrap",
@@ -228,6 +225,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
             </Text>{" "}
             <Input
               disabled={stakePending}
+              autoFocus
               size="lg"
               type="number"
               placeholder="0.0"
@@ -364,7 +362,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       <Box
         css={{
           display: "flex",
-          justifyContent: 'center',
+          justifyContent: "center",
           minHeight: "44px",
           borderTop: "1px solid $extraMuted",
           "@sm": {
@@ -404,7 +402,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               <Button
                 ghost
                 variant="primary"
-                disabled={stakingDisabled}
+                disabled={stakingDisabled || stakeUnchanged}
                 onClick={() => handleStake()}
                 css={{
                   marginRight: "1px",

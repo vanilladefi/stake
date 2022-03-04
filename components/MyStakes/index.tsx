@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
+import { CaretDown } from "phosphor-react";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { Stake, state } from "../../state";
 import { fetchStakes } from "../../state/actions/stakes";
@@ -174,10 +175,40 @@ export const MyStakes = () => {
               variant="primary"
               size="sm"
               active={row.isExpanded}
-              css={{ width: "auto", fontSize: "$sm", lineHeight: "$5" }}
+              css={{
+                display: "inline-flex",
+                height: "32px",
+                justifyContent: "space-between",
+                alignItems: "center",
+                fontSize: "$sm",
+                lineHeight: "$5",
+                "@sm": {
+                  width: "78px",
+                },
+              }}
               {...row.getToggleRowExpandedProps()}
             >
-              {row.isExpanded ? "Collapse" : "Edit"}
+              <Text
+                css={{
+                  paddingRight: "0.35rem",
+                  display: "none",
+                  lineHeight: "1rem",
+                  color: "$link",
+                  "@sm": {
+                    display: "inline",
+                  },
+                }}
+              >
+                Edit
+              </Text>
+              <CaretDown
+                style={{
+                  transition: "transform .15s ease-in-out",
+                  transform: row.isExpanded
+                    ? "rotate(-180deg)"
+                    : "rotate(0deg)",
+                }}
+              />
             </Button>
           );
         },
@@ -253,10 +284,7 @@ export const MyStakes = () => {
         >
           My Stakes
         </Heading>
-        <Box
-          css={{ textAlign: "right" }}
-          onClick={() => (state.walletOpen = true)}
-        >
+        <Box css={{ textAlign: "right" }}>
           {(rawBalances.unstakedJuice?.gt(0) ||
             rawBalances.stakedJuice?.gt(0)) && (
             <Box>
@@ -272,6 +300,7 @@ export const MyStakes = () => {
                     textDecoration: "underline",
                   },
                 }}
+                onClick={() => (state.walletOpen = true)}
               >
                 {balances.totalJuice + " JUICE"}
               </Box>
@@ -287,7 +316,7 @@ export const MyStakes = () => {
         </Box>
         {!rawBalances.unstakedJuice?.gt(0) && !rawBalances.stakedJuice?.gt(0) && (
           <Button variant="primary" onClick={() => (state.walletOpen = true)}>
-            Manage funds
+            Deposit JUICE
           </Button>
         )}
       </Flex>
@@ -327,7 +356,7 @@ export const MyStakes = () => {
               <Text
                 css={{
                   fontSize: "$xl",
-                  p: "$2 0",
+                  p: "$4 0 0",
                 }}
                 muted
               >
