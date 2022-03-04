@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
+import { retry } from "ts-retry";
 import { useSnapshot } from "valtio";
 import { CaretDown } from "phosphor-react";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
@@ -37,10 +38,17 @@ export const AvailableStakes = () => {
   useEffect(() => {
     const id = setTimeout(() => {
       if (!fetching) {
-        executeQuery({ requestPolicy: "network-only" });
+        retry(() => {
+          console.log(_data)
+          return executeQuery(
+            { requestPolicy: "network-only" }
+          )
+        },
+        { until: () => _data !== undefined })
       }
     }, 3000);
     return () => clearTimeout(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetching, executeQuery]);
 
   const columns: Column<ColumnType>[] = useMemo(

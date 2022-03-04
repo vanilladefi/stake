@@ -6,9 +6,13 @@ import {
 import { BigNumber, providers } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import { toast } from "react-toastify";
+import { retryAsync } from 'ts-retry';
 import { snapshot } from "valtio";
 import { ref, state, subscribeKey, VanillaEvents } from "..";
-import { correctNetwork, getHexaDecimalChainId } from "../../lib/config";
+import {
+  correctNetwork,
+  getHexaDecimalChainId
+} from "../../lib/config";
 import { emitEvent, formatJuice, parseJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
 
@@ -220,12 +224,13 @@ export const updateBalances = async () => {
     const contractAddress = isAddress(
       process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
     );
-    let { vnlBalance, ethBalance, maticBalance, juiceBalance } =
-      await getBasicWalletDetails(walletAddress, {
+    let { vnlBalance, ethBalance, maticBalance, juiceBalance } = await retryAsync(
+      async () => await getBasicWalletDetails(walletAddress, {
         polygonProvider: polygonProvider || undefined,
         ethereumProvider: ethereumProvider || undefined,
         optionalAddress: contractAddress || undefined,
-      });
+      })
+    );
 
     state.balances.vnl = Number(vnlBalance).toLocaleString();
     state.balances.eth = Number(ethBalance).toLocaleString();
