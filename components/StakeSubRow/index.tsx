@@ -74,6 +74,8 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
       ? parseJuice(stakeAmount).eq(staked?.rawJuiceValue)
       : false;
 
+  const stakeLength = stakeAmount.toString().length;
+
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {
       if (type === "modify" && stakingDisabled) return;
@@ -241,6 +243,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
                 minWidth: "30px",
                 maxWidth: "140px",
                 textAlign: "right",
+                fontSize: stakeLength > 8 ? "$sm" : "$lg",
                 mx: "$3",
               }}
             />
