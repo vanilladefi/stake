@@ -69,7 +69,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
   const stakeUnchanged =
     staked?.sentiment === stakePosition
-      ? staked?.juiceValue === stakeAmount
+      ? parseJuice(stakeAmount).eq(staked?.rawJuiceValue)
       : false;
 
   const handleStake = useCallback(
