@@ -4,9 +4,9 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { Provider } from "urql";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Provider } from "urql";
 import Box from "../components/Box";
 import Footer from "../components/Footer";
 import Navigation from "../components/Navigation";
@@ -15,7 +15,7 @@ import { state, useSnapshot } from "../state";
 import {
   connectWallet,
   ensureCorrectChain,
-  initWalletSubscriptions,
+  initWalletSubscriptions
 } from "../state/actions/wallet";
 import { darkTheme } from "../stitches.config";
 import "../styles/globals.css";
@@ -51,10 +51,14 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     window.ethereum.on("accountsChanged", connectWallet);
     window.ethereum.on("chainChanged", ensureCorrectChain);
+    window.addEventListener('offline', () => state.online = false);
+    window.addEventListener('online', () => state.online = true);
 
     return () => {
       window.ethereum.removeListener("accountsChanged", connectWallet);
       window.ethereum.removeListener("chainChanged", ensureCorrectChain);
+      window.removeEventListener('offline', () => state.online = false);
+      window.removeEventListener('online', () => state.online = true);
     };
   }, [signer]);
 
