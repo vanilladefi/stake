@@ -56,7 +56,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const staked = row.original.currentStake;
 
   const [stakeAmount, setStakeAmount] = useState(
-    formatUnits(staked?.rawJuiceValue, juiceDecimals) || ""
+    staked?.rawJuiceValue
+      ? formatUnits(staked?.rawJuiceValue, juiceDecimals)
+      : 0
   );
   const [stakePosition, setStakePosition] = useState<"long" | "short">(
     staked?.sentiment || "long"
