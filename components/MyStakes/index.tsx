@@ -1,9 +1,9 @@
 import { BigNumber, ethers } from "ethers";
 import Image from "next/image";
+import { CaretDown } from "phosphor-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
-import { CaretDown } from "phosphor-react";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { Stake, state } from "../../state";
 import { fetchStakes } from "../../state/actions/stakes";
@@ -342,7 +342,7 @@ export const MyStakes = () => {
           </Button>
         )}
       </Flex>
-      {tableData || (!tableData && stakesLoading) ? (
+      {tableData || stakesLoading ? (
         <Box
           css={{
             overflowX: "auto",

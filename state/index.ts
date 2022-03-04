@@ -4,7 +4,7 @@ import { subscribeKey } from "valtio/utils";
 import Web3Modal from "web3modal";
 import { defaultEthereumProvider, defaultPolygonProvider } from "../lib/config";
 
-type PrimitiveBalanceTypes = "eth" | "vnl" | "juice" | "matic"
+type PrimitiveBalanceTypes = "eth" | "vnl" | "juice" | "matic";
 type JuicenetBalanceTypes = "unstakedJuice" | "stakedJuice" | "totalJuice";
 
 export type Balances = {
@@ -12,8 +12,8 @@ export type Balances = {
 };
 
 export type RawBalances = {
-  [key in PrimitiveBalanceTypes | JuicenetBalanceTypes]?: BigNumber
-}
+  [key in PrimitiveBalanceTypes | JuicenetBalanceTypes]?: BigNumber;
+};
 
 export enum Sentiment {
   long = "long",
@@ -33,29 +33,28 @@ export type Stake = {
 export type AlertOpts = {
   title: string;
   body?: string | JSX.Element;
-  onConfirm?: () => void | Promise<void>,
-  onCancel?: () => void,
-  confirmDisabled?: boolean,
-  confirmText?: string
-  cancelText?: string
-}
-
+  onConfirm?: () => void | Promise<void>;
+  onCancel?: () => void;
+  confirmDisabled?: boolean;
+  confirmText?: string;
+  cancelText?: string;
+};
 
 type State = {
   ethereumProvider:
-  | providers.JsonRpcProvider
-  | providers.Web3Provider
-  | providers.WebSocketProvider
-  | providers.Provider
-  | providers.BaseProvider
-  | null;
+    | providers.JsonRpcProvider
+    | providers.Web3Provider
+    | providers.WebSocketProvider
+    | providers.Provider
+    | providers.BaseProvider
+    | null;
   polygonProvider:
-  | providers.JsonRpcProvider
-  | providers.Web3Provider
-  | providers.WebSocketProvider
-  | providers.Provider
-  | providers.BaseProvider
-  | null;
+    | providers.JsonRpcProvider
+    | providers.Web3Provider
+    | providers.WebSocketProvider
+    | providers.Provider
+    | providers.BaseProvider
+    | null;
   providerName: string | null;
   signer: Signer | null;
   balances: Balances;
@@ -66,6 +65,7 @@ type State = {
   stakes: Stake[] | null;
   alert: AlertOpts | null;
   walletOpen: boolean;
+  online: boolean;
 };
 
 export const initialState: State = {
@@ -81,6 +81,7 @@ export const initialState: State = {
   alert: null,
   stakes: null,
   walletOpen: false,
+  online: true,
 };
 
 const persistedKeys = {
@@ -88,8 +89,8 @@ const persistedKeys = {
 };
 
 enum VanillaEvents {
-  stakesChanged = 'vanilla-StakesChanged',
-  balancesChanged = 'vanilla-BalancesChanged',
+  stakesChanged = "vanilla-StakesChanged",
+  balancesChanged = "vanilla-BalancesChanged",
 }
 
 const state = proxy<State>(initialState);
@@ -102,5 +103,5 @@ export {
   snapshot,
   ref,
   persistedKeys,
-  VanillaEvents
+  VanillaEvents,
 };
