@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { FC, useCallback, useState } from "react";
 import * as sdk from "@vanilladefi/stake-sdk";
-import { isAddress } from "@vanilladefi/core-sdk";
+import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
 import { Row } from "react-table";
 import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
@@ -22,6 +22,7 @@ import Text from "../Text";
 
 import { PolygonScanIcon } from "../../assets";
 import { BigNumber } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -54,7 +55,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
   const staked = row.original.currentStake;
 
-  const [stakeAmount, setStakeAmount] = useState(staked?.juiceValue || "");
+  const [stakeAmount, setStakeAmount] = useState(
+    formatUnits(staked?.rawJuiceValue, juiceDecimals) || ""
+  );
   const [stakePosition, setStakePosition] = useState<"long" | "short">(
     staked?.sentiment || "long"
   );
