@@ -11,6 +11,7 @@ import {
   emitEvent,
   findToken,
   getTransactionLink,
+  limitJuiceAmount,
   parseJuice,
 } from "../../utils/helpers";
 import Box from "../Box";
@@ -57,8 +58,8 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
   const [stakeAmount, setStakeAmount] = useState(
     staked?.rawJuiceValue
-      ? formatUnits(staked?.rawJuiceValue, juiceDecimals)
-      : 0
+      ? formatUnits(staked.rawJuiceValue, juiceDecimals)
+      : ""
   );
   const [stakePosition, setStakePosition] = useState<"long" | "short">(
     staked?.sentiment || "long"
@@ -70,11 +71,8 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const closingDisabled = stakePending;
 
   const stakeUnchanged =
-    staked?.sentiment === stakePosition
-      ? parseJuice(stakeAmount).eq(staked?.rawJuiceValue)
-      : false;
-
-  const stakeLength = stakeAmount.toString().length;
+    staked?.sentiment === stakePosition &&
+    parseJuice(stakeAmount).eq(staked.rawJuiceValue);
 
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {
@@ -237,13 +235,13 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               type="number"
               placeholder="0.0"
               value={stakeAmount}
-              onChange={(e) => setStakeAmount(e.target.value)}
+              onChange={(e) => setStakeAmount(limitJuiceAmount(e.target.value))}
               css={{
                 width: "100%",
                 minWidth: "30px",
                 maxWidth: "140px",
                 textAlign: "right",
-                fontSize: stakeLength > 8 ? "$sm" : "$lg",
+                fontSize: stakeAmount.length > 8 ? "$sm" : "$lg",
                 mx: "$3",
               }}
             />

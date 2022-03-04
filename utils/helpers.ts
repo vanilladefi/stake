@@ -37,3 +37,12 @@ export const getTransactionLink = (txHash: string) => {
   const transactionLink = `${explorerUrl}/tx/${txHash}`
   return transactionLink;
 }
+
+export const limitJuiceAmount = (str: string) => {
+  let [int = "0", frac = ''] = str.split(".");
+  if (frac.length > juiceDecimals) {
+    frac = frac.slice(0, juiceDecimals);
+  }
+  const amount = frac ? `${int}.${frac}` : int;
+  return amount
+}

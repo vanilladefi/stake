@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import CountUp from "react-countup";
 import { state, useSnapshot, VanillaEvents } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
-import { emitEvent, getTransactionLink, parseJuice } from "../../utils/helpers";
+import { emitEvent, getTransactionLink, limitJuiceAmount, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Input from "../Input";
@@ -520,7 +520,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                 autoFocus
                 disabled={txDisabled === false ? false : true}
                 value={juiceAmount}
-                onChange={(e) => setJuiceAmount(e.target.value)}
+                onChange={(e) => setJuiceAmount(limitJuiceAmount(e.target.value))}
                 size="xl"
                 placeholder="0.0"
                 css={{
