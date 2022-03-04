@@ -199,7 +199,7 @@ export const MyStakes = () => {
                   },
                 }}
               >
-                {row.isExpanded ? "Cancel" : "Edit"}
+                Edit
               </Text>
               <CaretDown
                 style={{

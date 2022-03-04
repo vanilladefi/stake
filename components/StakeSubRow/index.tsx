@@ -157,8 +157,17 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   );
 
   const PendingView = (
-    <Flex justify="center" align="center" css={{ px: "$5" }}>
-      <Link external variant={txLink ? "default" : "subtle"} href={txLink}>
+    <Flex
+      justify="center"
+      align="center"
+      css={{ px: "$5", borderLeft: "1px solid $extraMuted" }}
+    >
+      <Link
+        external
+        variant={txLink ? "default" : "subtle"}
+        href={txLink}
+        css={{ color: txLink ? "$link" : "$muted" }}
+      >
         {txLink && <PolygonScanIcon css={{ mr: "$2" }} fill="inherit" />}
         <Text css={{ color: "inherit", fontSize: "$md" }}>Pending...</Text>
       </Link>
