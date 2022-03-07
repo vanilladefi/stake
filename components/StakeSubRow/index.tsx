@@ -11,7 +11,7 @@ import {
   emitEvent,
   findToken,
   getTransactionLink,
-  limitJuiceAmount,
+  filterJuiceAmount,
   parseJuice,
 } from "../../utils/helpers";
 import Box from "../Box";
@@ -232,10 +232,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               disabled={stakePending}
               autoFocus
               size="lg"
-              type="number"
               placeholder="0.0"
               value={stakeAmount}
-              onChange={(e) => setStakeAmount(limitJuiceAmount(e.target.value))}
+              onChange={(e) => setStakeAmount(filterJuiceAmount(e.target.value))}
               css={{
                 width: "100%",
                 minWidth: "30px",

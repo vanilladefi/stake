@@ -38,11 +38,16 @@ export const getTransactionLink = (txHash: string) => {
   return transactionLink;
 }
 
-export const limitJuiceAmount = (str: string) => {
+export const filterJuiceAmount = (str: string) => {
+  str = str.replace(/([^\d.])/gi, '')
+  
   let [int = "0", frac = ''] = str.split(".");
+  const hasDot = str.includes('.')
+
   if (frac.length > juiceDecimals) {
     frac = frac.slice(0, juiceDecimals);
   }
-  const amount = frac ? `${int}.${frac}` : int;
+
+  let amount = `${int}${hasDot ? '.': ''}${frac}`;
   return amount
 }
