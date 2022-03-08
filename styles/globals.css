@@ -86,11 +86,6 @@ fieldset {
 }
 
 /* Selective hiding on mobile based on column names */
-@media (max-width: 380px) {
-  .tokenIcon {
-    display: none;
-  }
-}
 @media (max-width: 420px) {
   .ticker {
     padding-left: 8px !important;

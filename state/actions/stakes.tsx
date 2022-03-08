@@ -45,6 +45,7 @@ export const fetchStakes = async () => {
         juiceValue: formatJuice(st.juiceValue),
         rawJuiceStake: st.juiceStake,
         rawJuiceValue: st.juiceValue,
+        juiceChange: st.juiceValue.sub(st.juiceStake).toNumber(),
         sentiment:
           res[idx].sentiment === true ? Sentiment.long : Sentiment.short,
       };

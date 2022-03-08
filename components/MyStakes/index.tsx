@@ -33,9 +33,10 @@ export const MyStakes = () => {
     () => [
       {
         Header: "Token",
-        accessor: (row): string | undefined => findToken(row.id)?.name,
-        id: "tokenIcon",
-        width: "25%",
+        accessor: (row): string | undefined =>
+          findToken(row.id)?.id.split("/")[0],
+        id: "token",
+        width: "10%",
         minWidth: "40px",
         align: "left",
         Cell: ({
@@ -88,15 +89,6 @@ export const MyStakes = () => {
         },
       },
       {
-        Header: "Ticker",
-        id: "ticker",
-        accessor: "id",
-        align: "left",
-        width: "10%",
-        minWidth: "50px",
-        Cell: ({ value }) => value.split("/")[0],
-      },
-      {
         Header: "Stake",
         accessor: (row) => row.currentStake?.juiceValue,
         id: "currentStake.juiceValue",
@@ -107,12 +99,38 @@ export const MyStakes = () => {
         },
       },
       {
+        Header: "Juiced",
+        accessor: ({ currentStake }) => currentStake?.juiceChange,
+        id: "currentStake.juiceDelta",
+        align: "right",
+        Cell: ({ row }: { row: Row<ColumnType> }) => {
+          const { rawJuiceStake, juiceChange } =
+          row.original.currentStake || {};
+      
+          let percentage = "0";
+          if (rawJuiceStake && juiceChange) {
+            let _percentage = (juiceChange * 100) / rawJuiceStake.toNumber(); // `rawJuiceStake.toNumber()` might overflow though
+            percentage = _percentage.toFixed(2);
+          } else {
+            percentage = "0";
+          }
+          return (
+            <Box
+              css={{
+                color: +percentage < 0 ? "$red" : "$green",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {percentage} %
+            </Box>
+          );
+        },
+      },
+      {
         Header: "Sentiment",
         accessor: (row) => row.currentStake?.sentiment,
         id: "currentStake.sentiment",
         align: "right",
-        width: "15%",
-        minWidth: "80px",
         Cell: ({ value }: { value: string | undefined }) => {
           return (
             <Text css={{ textTransform: "capitalize", color: "$muted" }}>
@@ -183,7 +201,7 @@ export const MyStakes = () => {
                 fontSize: "$sm",
                 lineHeight: "$5",
                 "@sm": {
-                  width: "78px",
+                  width: "60px",
                 },
               }}
               {...row.getToggleRowExpandedProps()}
