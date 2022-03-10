@@ -108,9 +108,19 @@ export enum AssetPair_OrderBy {
   Timestamp = 'timestamp'
 }
 
+/** The block at which the query should be executed. */
 export type Block_Height = {
+  /** Value containing a block hash */
   hash?: Maybe<Scalars['Bytes']>;
+  /** Value containing a block number */
   number?: Maybe<Scalars['Int']>;
+  /**
+   * Value containing the minimum block number.
+   * In the case of `number_gte`, the query will be executed on the latest block only if
+   * the subgraph has progressed to or past the minimum block number.
+   * Defaults to the latest block when omitted.
+   *
+   */
   number_gte?: Maybe<Scalars['Int']>;
 };
 
@@ -236,6 +246,7 @@ export enum HourlyPriceHistory_OrderBy {
   Timestamp = 'timestamp'
 }
 
+/** Defines the order direction, either ascending or descending */
 export enum OrderDirection {
   Asc = 'asc',
   Desc = 'desc'

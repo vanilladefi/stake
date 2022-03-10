@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
@@ -18,6 +18,7 @@ import Link from "../Link";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
+import { formatUnits } from "ethers/lib/utils";
 
 export const MyStakes = () => {
   const { stakes, rawBalances, balances } = useSnapshot(state);
@@ -33,9 +34,10 @@ export const MyStakes = () => {
     () => [
       {
         Header: "Token",
-        accessor: (row): string | undefined => findToken(row.id)?.name,
-        id: "tokenIcon",
-        width: "25%",
+        accessor: (row): string | undefined =>
+          findToken(row.id)?.id.split("/")[0],
+        id: "token",
+        width: "10%",
         minWidth: "40px",
         align: "left",
         Cell: ({
@@ -88,15 +90,6 @@ export const MyStakes = () => {
         },
       },
       {
-        Header: "Ticker",
-        id: "ticker",
-        accessor: "id",
-        align: "left",
-        width: "10%",
-        minWidth: "50px",
-        Cell: ({ value }) => value.split("/")[0],
-      },
-      {
         Header: "Stake",
         accessor: (row) => row.currentStake?.juiceValue,
         id: "currentStake.juiceValue",
@@ -107,12 +100,41 @@ export const MyStakes = () => {
         },
       },
       {
+        Header: "Juiced",
+        accessor: ({ currentStake }) => currentStake?.juiceChange,
+        id: "currentStake.juiceDelta",
+        align: "right",
+        Cell: ({ row }: { row: Row<ColumnType> }) => {
+          const { rawJuiceStake, juiceChange } =
+            row.original.currentStake || {};
+
+          let percentage = "0";
+          if (rawJuiceStake && juiceChange) {
+            let v = BigNumber.from(juiceChange)
+              .mul(10 ** 4)
+              .div(rawJuiceStake);
+
+            percentage = Number(formatUnits(v, 2)).toFixed(2);
+          } else {
+            percentage = "0";
+          }
+          return (
+            <Box
+              css={{
+                color: +percentage < 0 ? "$red" : "$green",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {percentage} %
+            </Box>
+          );
+        },
+      },
+      {
         Header: "Sentiment",
         accessor: (row) => row.currentStake?.sentiment,
         id: "currentStake.sentiment",
         align: "right",
-        width: "15%",
-        minWidth: "80px",
         Cell: ({ value }: { value: string | undefined }) => {
           return (
             <Text css={{ textTransform: "capitalize", color: "$muted" }}>
@@ -183,7 +205,7 @@ export const MyStakes = () => {
                 fontSize: "$sm",
                 lineHeight: "$5",
                 "@sm": {
-                  width: "78px",
+                  width: "60px",
                 },
               }}
               {...row.getToggleRowExpandedProps()}

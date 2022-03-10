@@ -1093,12 +1093,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "Block_height",
-        "description": null,
+        "description": "The block at which the query should be executed.",
         "fields": null,
         "inputFields": [
           {
             "name": "hash",
-            "description": null,
+            "description": "Value containing a block hash",
             "type": {
               "kind": "SCALAR",
               "name": "Bytes",
@@ -1110,7 +1110,7 @@
           },
           {
             "name": "number",
-            "description": null,
+            "description": "Value containing a block number",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -1122,7 +1122,7 @@
           },
           {
             "name": "number_gte",
-            "description": null,
+            "description": "Value containing the minimum block number. \nIn the case of `number_gte`, the query will be executed on the latest block only if\nthe subgraph has progressed to or past the minimum block number.\nDefaults to the latest block when omitted.\n",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -2693,7 +2693,7 @@
       {
         "kind": "ENUM",
         "name": "OrderDirection",
-        "description": null,
+        "description": "Defines the order direction, either ascending or descending",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -4532,7 +4532,7 @@
       },
       {
         "name": "derivedFrom",
-        "description": null,
+        "description": "creates a virtual field on the entity that may be queried but cannot be set manually through the mappings API.",
         "isRepeatable": false,
         "locations": [
           "FIELD_DEFINITION"
@@ -4542,9 +4542,13 @@
             "name": "field",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -4554,7 +4558,7 @@
       },
       {
         "name": "entity",
-        "description": null,
+        "description": "Marks the GraphQL type as indexable entity.  Each type that should be an entity is required to be annotated with this directive.",
         "isRepeatable": false,
         "locations": [
           "OBJECT"
@@ -4645,7 +4649,7 @@
       },
       {
         "name": "subgraphId",
-        "description": null,
+        "description": "Defined a Subgraph ID for an object type",
         "isRepeatable": false,
         "locations": [
           "OBJECT"
@@ -4655,9 +4659,13 @@
             "name": "id",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,

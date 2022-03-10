@@ -49,7 +49,6 @@ export const AvailableStakes = () => {
         Header: "Token",
         accessor: (row): string | undefined => findToken(row.id)?.name,
         id: "tokenIcon",
-
         align: "left",
         Cell: ({
           value,
@@ -103,7 +102,7 @@ export const AvailableStakes = () => {
         Header: "Ticker",
         id: "ticker",
         accessor: "id",
-        align: "left",
+        align: "right",
         Cell: ({ value }) => value.split("/")[0],
       },
       {
