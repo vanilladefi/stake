@@ -18,7 +18,6 @@ import Link from "../Link";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
-import { formatUnits } from "ethers/lib/utils";
 
 export const MyStakes = () => {
   const { stakes, rawBalances, balances } = useSnapshot(state);
@@ -113,8 +112,10 @@ export const MyStakes = () => {
             let v = BigNumber.from(juiceChange)
               .mul(10 ** 4)
               .div(rawJuiceStake);
-
-            percentage = Number(formatUnits(v, 2)).toFixed(2);
+            /*
+             v is a percentage multiplied by 10**2, having about 4 precise points and safe to convert to number
+            */
+            percentage = (v.toNumber() / 100).toFixed(2);
           } else {
             percentage = "0";
           }
