@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
@@ -105,12 +105,17 @@ export const MyStakes = () => {
         align: "right",
         Cell: ({ row }: { row: Row<ColumnType> }) => {
           const { rawJuiceStake, juiceChange } =
-          row.original.currentStake || {};
-      
+            row.original.currentStake || {};
+
           let percentage = "0";
           if (rawJuiceStake && juiceChange) {
-            let _percentage = (juiceChange * 100) / rawJuiceStake.toNumber(); // `rawJuiceStake.toNumber()` might overflow though
-            percentage = _percentage.toFixed(2);
+            let v = BigNumber.from(juiceChange)
+              .mul(10 ** 4)
+              .div(rawJuiceStake);
+            /*
+             v is a percentage multiplied by 10**2, having about 4 precise points and safe to convert to number
+            */
+            percentage = (v.toNumber() / 100).toFixed(2);
           } else {
             percentage = "0";
           }

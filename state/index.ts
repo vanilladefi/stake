@@ -24,7 +24,7 @@ export type Stake = {
   id: string;
   juiceStake: string;
   juiceValue: string;
-  juiceChange: number,
+  juiceChange: string,
   rawJuiceStake: BigNumber;
   rawJuiceValue: BigNumber;
   sentiment: Sentiment;
