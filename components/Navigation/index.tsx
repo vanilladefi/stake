@@ -102,7 +102,9 @@ const DesktopNavigation = () => {
               size="15px"
             />
           </NavLink> */}
-
+          <NavLink css={{ py: "$8" }} href="/juicers">
+            Juicers
+          </NavLink>
           <NavLink css={{ py: "$8" }} href="/litepaper">
             Litepaper
           </NavLink>
@@ -221,6 +223,9 @@ const MobileNavigation = () => {
                 size="15px"
               />
             </NavLink> */}
+            <NavLink css={{ py: "$3" }} href="/juicers">
+              Juicers
+            </NavLink>
             <NavLink css={{ py: "$3", alignItems: "center" }} href="/litepaper">
               Litepaper
             </NavLink>
