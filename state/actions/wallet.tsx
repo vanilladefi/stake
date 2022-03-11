@@ -6,11 +6,8 @@ import {
 import { BigNumber, providers } from "ethers";
 import { snapshot } from "valtio";
 import { toast } from "react-toastify";
-import { persistedKeys, ref, state, subscribeKey, VanillaEvents } from "..";
-import {
-  correctNetwork,
-  getHexaDecimalChainId,
-} from "../../lib/config";
+import { ref, state, subscribeKey, VanillaEvents } from "..";
+import { correctNetwork, getHexaDecimalChainId } from "../../lib/config";
 import { emitEvent, formatJuice, parseJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
 import { parseUnits } from "ethers/lib/utils";
@@ -20,14 +17,18 @@ let lockedWalletToast: any;
 interface ConnectOptions {
   skipLockedWalletCheck?: boolean;
 }
-let window_ethereum: any
+let window_ethereum: any;
 
 export const connectWallet = async (opts?: ConnectOptions) => {
   const { skipLockedWalletCheck } = opts || {};
   const { modal } = snapshot(state);
   try {
     // Handle metamask locked state
-    if (typeof window !== undefined && !skipLockedWalletCheck) {
+    if (
+      typeof window !== undefined &&
+      !skipLockedWalletCheck &&
+      modal?.cachedProvider === "injected"
+    ) {
       const isUnlocked = window.ethereum?._metamask?.isUnlocked;
       if (isUnlocked && (await isUnlocked()) === false) {
         const isToastActive = toast.isActive(lockedWalletToast);
@@ -46,7 +47,7 @@ export const connectWallet = async (opts?: ConnectOptions) => {
 
     const polygonProvider = await modal?.connect();
 
-    window_ethereum = window.ethereum
+    window_ethereum = window.ethereum;
     window.ethereum = polygonProvider;
 
     const web3Provider = new providers.Web3Provider(polygonProvider);
@@ -58,7 +59,7 @@ export const connectWallet = async (opts?: ConnectOptions) => {
     state.walletAddress = await signer?.getAddress();
 
     updateBalances();
-    updateProviderName()
+    updateProviderName();
   } catch (error) {
     console.warn("Connection error: ", error);
   }
@@ -68,17 +69,17 @@ export const disconnect = (soft?: boolean) => {
   const { modal } = snapshot(state);
   if (!soft) {
     modal?.clearCachedProvider();
+    state.providerName = null;
     if (window_ethereum) {
-      window.ethereum = window_ethereum
+      window.ethereum = window_ethereum;
     }
   }
 
   state.signer = null;
-  if (!soft) state.walletAddress = null;
+  state.walletAddress = null;
   state.walletOpen = false;
   state.truncatedWalletAddress = null;
 
-  !soft && localStorage.removeItem(persistedKeys.walletAddress);
   state.balances = {};
   state.rawBalances = {};
 };
@@ -99,11 +100,10 @@ export const ensureCorrectChain = (force?: true): boolean => {
   try {
     const { signer, walletAddress } = snapshot(state);
     const _chainId: number | string | undefined = window.ethereum?.chainId;
-    let chainId: string 
-    if (typeof _chainId === 'string' && _chainId.startsWith('0x')) {
-      chainId = _chainId
-    }
-    else {
+    let chainId: string;
+    if (typeof _chainId === "string" && _chainId.startsWith("0x")) {
+      chainId = _chainId;
+    } else {
       chainId = getHexaDecimalChainId(Number(_chainId || 0));
     }
     if (chainId !== correctNetwork.chainId) {
@@ -144,8 +144,6 @@ export const initWalletSubscriptions = () => {
     updateBalances();
     updateTruncatedAddress();
 
-    persistWalletAddress();
-
     const { signer, polygonProvider } = snapshot(state);
 
     // subscribe to juice transactions
@@ -178,22 +176,13 @@ export const initWalletSubscriptions = () => {
     if (modal?.cachedProvider) {
       // TODO see if we can remove this or make run only once
       connectWallet({ skipLockedWalletCheck: true });
-      updateProviderName()
+      updateProviderName();
     }
   });
 };
 
-export const persistWalletAddress = () => {
-  const persistedAddress = localStorage.getItem(persistedKeys.walletAddress);
-  if (state.walletAddress !== persistedAddress)
-    localStorage.setItem(
-      persistedKeys.walletAddress,
-      JSON.stringify(state.walletAddress)
-    );
-};
-
 export const updateProviderName = async () => {
-  const { modal } = snapshot(state)
+  const { modal } = snapshot(state);
   let name = null;
   switch (modal?.cachedProvider) {
     case "injected": {
@@ -209,7 +198,7 @@ export const updateProviderName = async () => {
     }
   }
   state.providerName = name;
-}
+};
 
 export const updateBalances = async () => {
   const { polygonProvider, ethereumProvider, walletAddress } = snapshot(state);
