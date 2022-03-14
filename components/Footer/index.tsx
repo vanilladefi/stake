@@ -12,6 +12,7 @@ import Box from "../Box";
 import Container from "../Container";
 import Flex from "../Flex";
 import Navigation from "../Navigation";
+import Leaderboard from "../Leaderboard";
 import Stack from "../Stack";
 import Text from "../Text";
 
@@ -114,6 +115,7 @@ const Footer = () => {
         flexDirection: "column",
       }}
     >
+      <Leaderboard />
       <Navigation />
       <Container css={{ flex: 1, paddingTop: "$8" }}>
         <Flex css={{ flexWrap: "wrap" }}>

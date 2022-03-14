@@ -1,34 +1,20 @@
 import { FC, useMemo } from "react";
 import { Column } from "react-table";
-import { useSnapshot } from "valtio";
-import { state } from "../../state";
 import Box from "../Box";
 import Container from "../Container";
 import Text from "../Text";
 import Heading from "../Heading";
 import Table from "../Table";
 
-interface IJuiceList {
-  title?: string;
-  noDataMessage?: string;
-  getData: () => JuicerColumn[];
-}
-
 export interface JuicerColumn {
-  rank?: number,
+  rank?: number;
   juicer: string;
   juiceAmount: string;
-  performanceHourly?: string
-  performanceWeekly?: string
+  performanceHourly?: string;
+  performanceWeekly?: string;
 }
 
-export const JuicerList: FC<IJuiceList> = ({
-  title,
-  noDataMessage,
-  getData,
-}) => {
-  const {} = useSnapshot(state);
-
+const Leaderboard: FC = () => {
   const columns: Column<JuicerColumn>[] = useMemo(
     () => [
       {
@@ -38,7 +24,7 @@ export const JuicerList: FC<IJuiceList> = ({
         width: "5%",
         align: "center",
         Cell: ({ value, row }: { value: JuicerColumn["rank"]; row: any }) => {
-          return <Text muted>{value || row.index}</Text>;
+          return <Text muted>{value || row.index + 1}</Text>;
         },
       },
       {
@@ -49,7 +35,7 @@ export const JuicerList: FC<IJuiceList> = ({
         minWidth: "40px",
         align: "left",
         Cell: ({ value }: { value: JuicerColumn["juicer"] }) => {
-          return <Box as="a">{value}</Box>;
+          return <Text>{value}</Text>;
         },
       },
       {
@@ -101,7 +87,6 @@ export const JuicerList: FC<IJuiceList> = ({
         accessor: "juiceAmount",
         id: "juiceAmount",
         align: "right",
-
         Cell: ({ value }: { value: JuicerColumn["juiceAmount"] }) => {
           return <Box>{value || "xxxx"}</Box>;
         },
@@ -109,6 +94,41 @@ export const JuicerList: FC<IJuiceList> = ({
     ],
     []
   );
+
+  const data = useMemo(() => {
+    return [
+      {
+        juicer: "mama's boy",
+        juiceAmount: "12345.5",
+        performanceHourly: "5.5",
+        performanceWeekly: "-6.8",
+      },
+      {
+        juicer: "Someoneelse.eth",
+        juiceAmount: "12345.5",
+        performanceHourly: "22.56",
+        performanceWeekly: "-5.33",
+      },
+      {
+        juicer: "mama's boy",
+        juiceAmount: "12345.5",
+        performanceHourly: "5.5",
+        performanceWeekly: "-6.8",
+      },
+      {
+        juicer: "Someoneelse.eth",
+        juiceAmount: "12345.5",
+        performanceHourly: "22.56",
+        performanceWeekly: "-5.33",
+      },
+      {
+        juicer: "mama's boy",
+        juiceAmount: "12345.5",
+        performanceHourly: "5.5",
+        performanceWeekly: "-6.8",
+      }
+    ];
+  }, []);
 
   return (
     <>
@@ -126,10 +146,10 @@ export const JuicerList: FC<IJuiceList> = ({
             },
           }}
         >
-          {title || "Juicers"}
+          {"Leaderboard"}
         </Heading>
-        {getData().length === 0 ? (
-          <p>{noDataMessage || "No juicers to display"}.</p>
+        {data.length === 0 ? (
+          <p>{"No juicers to display"}.</p>
         ) : (
           <Box
             css={{
@@ -140,13 +160,12 @@ export const JuicerList: FC<IJuiceList> = ({
               },
             }}
           >
-            <Table
-              columns={columns}
-              data={getData()}
-            />
+            <Table columns={columns} data={data} />
           </Box>
         )}
       </Container>
     </>
   );
 };
+
+export default Leaderboard
