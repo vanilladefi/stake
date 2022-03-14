@@ -115,7 +115,9 @@ const Footer = () => {
         flexDirection: "column",
       }}
     >
-      <Leaderboard />
+      <Box css={{ borderBottom: "1px solid $extraMuted" }}>
+        <Leaderboard />
+      </Box>
       <Navigation />
       <Container css={{ flex: 1, paddingTop: "$8" }}>
         <Flex css={{ flexWrap: "wrap" }}>
