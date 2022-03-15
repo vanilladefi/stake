@@ -1,10 +1,16 @@
-import { FC, useMemo } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Column } from "react-table";
 import Box from "../Box";
 import Container from "../Container";
 import Text from "../Text";
 import Heading from "../Heading";
 import Table from "../Table";
+import { getLeaderboard } from "@vanilladefi/stake-sdk";
+import { epoch, isAddress } from "@vanilladefi/core-sdk";
+import { useSnapshot } from "valtio";
+import { state } from "../../state";
+import { formatJuice } from "../../utils/helpers";
+import { BigNumber } from "ethers";
 
 export interface JuicerColumn {
   rank?: number;
@@ -39,51 +45,7 @@ const Leaderboard: FC = () => {
         },
       },
       {
-        Header: "24H %",
-        accessor: "performanceHourly",
-        id: "performanceHourly",
-        align: "right",
-
-        Cell: ({ value }: { value: JuicerColumn["performanceHourly"] }) => {
-          return (
-            <Box
-              css={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "row",
-                color: value && +value > 0 ? "$green" : "$red",
-              }}
-            >
-              {value || 0} %
-            </Box>
-          );
-        },
-      },
-      {
-        Header: "7D %",
-        accessor: "performanceWeekly",
-        id: "performanceWeekly",
-        align: "right",
-
-        Cell: ({ value }: { value: JuicerColumn["performanceWeekly"] }) => {
-          return (
-            <Box
-              css={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "row",
-                color: value && +value > 0 ? "$green" : "$red",
-              }}
-            >
-              {value || 0} %
-            </Box>
-          );
-        },
-      },
-      {
-        Header: "Stake",
+        Header: "Delta",
         accessor: "juiceAmount",
         id: "juiceAmount",
         align: "right",
@@ -95,40 +57,45 @@ const Leaderboard: FC = () => {
     []
   );
 
-  const data = useMemo(() => {
-    return [
-      {
-        juicer: "mama's boy",
-        juiceAmount: "12345.5",
-        performanceHourly: "5.5",
-        performanceWeekly: "-6.8",
-      },
-      {
-        juicer: "Someoneelse.eth",
-        juiceAmount: "12345.5",
-        performanceHourly: "22.56",
-        performanceWeekly: "-5.33",
-      },
-      {
-        juicer: "mama's boy",
-        juiceAmount: "12345.5",
-        performanceHourly: "5.5",
-        performanceWeekly: "-6.8",
-      },
-      {
-        juicer: "Someoneelse.eth",
-        juiceAmount: "12345.5",
-        performanceHourly: "22.56",
-        performanceWeekly: "-5.33",
-      },
-      {
-        juicer: "mama's boy",
-        juiceAmount: "12345.5",
-        performanceHourly: "5.5",
-        performanceWeekly: "-6.8",
-      }
-    ];
-  }, []);
+  const [data, setData] = useState<JuicerColumn[] | null>(null);
+
+  const { signer, polygonProvider } = useSnapshot(state);
+
+  const updateLeaderboard = useCallback(async () => {
+    const optionalAddress =
+      isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || "";
+
+    type LeaderBoard = [[string, BigNumber]]; // TODO fix in sdk
+
+    /*
+    const provider = signer?.provider || polygonProvider || window.ethereum;
+    const before7D = await getBlockByTimestamp(
+      Date.now() - 7 * 24 * 60 * 60,
+      provider
+    );
+
+    const before1D = await getBlockByTimestamp(
+      Date.now() - 24 * 60 * 60,
+      provider
+    );
+    */
+
+    const leaderboard = (await getLeaderboard(epoch, "latest", 10, {
+      signerOrProvider: signer || polygonProvider || undefined,
+      optionalAddress,
+    })) as unknown as LeaderBoard;
+
+    const _data = leaderboard.map(([user, delta]) => ({
+      juicer: user,
+      juiceAmount: formatJuice(delta),
+    }));
+
+    setData(_data);
+  }, [polygonProvider, signer]);
+
+  useEffect(() => {
+    updateLeaderboard();
+  }, [updateLeaderboard]);
 
   return (
     <>
@@ -148,7 +115,7 @@ const Leaderboard: FC = () => {
         >
           {"Leaderboard"}
         </Heading>
-        {data.length === 0 ? (
+        {data && data.length === 0 ? (
           <p>{"No juicers to display"}.</p>
         ) : (
           <Box
@@ -160,7 +127,7 @@ const Leaderboard: FC = () => {
               },
             }}
           >
-            <Table columns={columns} data={data} />
+            <Table columns={columns} data={data || []} isLoading={!data} />
           </Box>
         )}
       </Container>
@@ -168,4 +135,4 @@ const Leaderboard: FC = () => {
   );
 };
 
-export default Leaderboard
+export default Leaderboard;
