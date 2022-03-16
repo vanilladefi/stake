@@ -82,40 +82,38 @@ const Leaderboard: FC = () => {
   const { signer, polygonProvider } = useSnapshot(state);
 
   const updateLeaderboard = useCallback(async () => {
-    const optionalAddress =
-      isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || "";
-
-    type LeaderBoard = [
-      [string, BigNumber] | { user: string; delta: BigNumber }
-    ]; // TODO fix in sdk
-
-    const provider = signer?.provider || polygonProvider || window.ethereum;
-    const before7D = await getBlockByTimestamp(
-      Date.now() - 7 * 24 * 60 * 60,
-      provider
-    );
-
-    const before1D = await getBlockByTimestamp(
-      Date.now() - 24 * 60 * 60,
-      provider
-    );
-
-    const from =
-      dataRange === "weekly"
-        ? before7D
-        : dataRange === "daily"
-        ? before1D
-        : epoch;
-
-    let _data: JuicerColumn[];
-
     try {
+      const optionalAddress =
+        isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || "";
+
+      type LeaderBoard = [
+        [string, BigNumber] | { user: string; delta: BigNumber }
+      ]; // TODO fix in sdk
+
+      const provider = signer?.provider || polygonProvider || window.ethereum;
+      const before7D = await getBlockByTimestamp(
+        Date.now() - 7 * 24 * 60 * 60,
+        provider
+      );
+
+      const before1D = await getBlockByTimestamp(
+        Date.now() - 24 * 60 * 60,
+        provider
+      );
+
+      const from =
+        dataRange === "weekly"
+          ? before7D
+          : dataRange === "daily"
+          ? before1D
+          : epoch;
+
       const leaderboard = (await getLeaderboard(from, "latest", 10, {
         signerOrProvider: signer || polygonProvider || undefined,
         optionalAddress,
       })) as unknown as LeaderBoard;
 
-      _data = leaderboard.map((val) => {
+      const _data: JuicerColumn[] = leaderboard.map((val) => {
         let user: string;
         let delta: BigNumber;
         if (val instanceof Array) {
@@ -129,32 +127,29 @@ const Leaderboard: FC = () => {
           juiceAmount: formatJuice(delta),
         };
       });
-    } catch (error) {
-      console.warn(error);
-      // ? maybe show error view here
-      _data = []
-    }
 
-    if (dataRange === "weekly") {
-      setWeeklyData(_data);
-    } else if (dataRange === "daily") {
-      setDialyData(_data);
-    } else {
-      setAllTimeData(_data);
+      if (dataRange === "weekly") {
+        setWeeklyData(_data);
+      } else if (dataRange === "daily") {
+        setDialyData(_data);
+      } else {
+        setAllTimeData(_data);
+      }
+    } catch (error) {
+      console.warn(error)
     }
   }, [dataRange, polygonProvider, signer]);
-
   useEffect(() => {
     updateLeaderboard();
   }, [updateLeaderboard]);
 
   useEffect(() => {
-    const DURATION = 10_000
-    const interval = setInterval(updateLeaderboard, DURATION)
+    const DURATION = 10_000;
+    const interval = setInterval(updateLeaderboard, DURATION);
     return () => {
-      clearInterval(interval)
-    }
-  }, [updateLeaderboard])
+      clearInterval(interval);
+    };
+  }, [updateLeaderboard]);
 
   const segmentData: ISegmentControl["data"] = [
     {
