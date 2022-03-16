@@ -9,8 +9,10 @@ import { getLeaderboard } from "@vanilladefi/stake-sdk";
 import { epoch, isAddress } from "@vanilladefi/core-sdk";
 import { useSnapshot } from "valtio";
 import { state } from "../../state";
-import { formatJuice } from "../../utils/helpers";
+import { formatJuice, getBlockByTimestamp } from "../../utils/helpers";
 import { BigNumber } from "ethers";
+import Flex from "../Flex";
+import SegmentControl, { ISegmentControl } from "../SegmentControl";
 
 export interface JuicerColumn {
   rank?: number;
@@ -45,7 +47,7 @@ const Leaderboard: FC = () => {
         },
       },
       {
-        Header: "Delta",
+        Header: "Juice Delta",
         accessor: "juiceAmount",
         id: "juiceAmount",
         align: "right",
@@ -58,6 +60,24 @@ const Leaderboard: FC = () => {
   );
 
   const [data, setData] = useState<JuicerColumn[] | null>(null);
+  const [dataRange, setDataRange] = useState<"all-time" | "daily" | "weekly">(
+    "all-time"
+  );
+
+  // Kinda like cache, so we don't have to show loaders on switching data type every time
+  const [allTimeData, setAllTimeData] = useState<JuicerColumn[]>();
+  const [dialyData, setDialyData] = useState<JuicerColumn[]>();
+  const [weeklyData, setWeeklyData] = useState<JuicerColumn[]>();
+
+  useEffect(() => {
+    if (dataRange === "all-time") {
+      setData(allTimeData || null);
+    } else if (dataRange === "daily") {
+      setData(dialyData || null);
+    } else if (dataRange === "weekly") {
+      setData(weeklyData || null);
+    }
+  }, [allTimeData, dataRange, dialyData, weeklyData]);
 
   const { signer, polygonProvider } = useSnapshot(state);
 
@@ -65,9 +85,10 @@ const Leaderboard: FC = () => {
     const optionalAddress =
       isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || "";
 
-    type LeaderBoard = [[string, BigNumber]]; // TODO fix in sdk
+    type LeaderBoard = [
+      [string, BigNumber] | { user: string; delta: BigNumber }
+    ]; // TODO fix in sdk
 
-    /*
     const provider = signer?.provider || polygonProvider || window.ethereum;
     const before7D = await getBlockByTimestamp(
       Date.now() - 7 * 24 * 60 * 60,
@@ -78,43 +99,103 @@ const Leaderboard: FC = () => {
       Date.now() - 24 * 60 * 60,
       provider
     );
-    */
 
-    const leaderboard = (await getLeaderboard(epoch, "latest", 10, {
-      signerOrProvider: signer || polygonProvider || undefined,
-      optionalAddress,
-    })) as unknown as LeaderBoard;
+    const from =
+      dataRange === "weekly"
+        ? before7D
+        : dataRange === "daily"
+        ? before1D
+        : epoch;
 
-    const _data = leaderboard.map(([user, delta]) => ({
-      juicer: user,
-      juiceAmount: formatJuice(delta),
-    }));
+    let _data: JuicerColumn[];
 
-    setData(_data);
-  }, [polygonProvider, signer]);
+    try {
+      const leaderboard = (await getLeaderboard(from, "latest", 10, {
+        signerOrProvider: signer || polygonProvider || undefined,
+        optionalAddress,
+      })) as unknown as LeaderBoard;
+
+      _data = leaderboard.map((val) => {
+        let user: string;
+        let delta: BigNumber;
+        if (val instanceof Array) {
+          [user, delta] = val;
+        } else {
+          ({ user, delta } = val);
+        }
+
+        return {
+          juicer: user,
+          juiceAmount: formatJuice(delta),
+        };
+      });
+    } catch (error) {
+      console.warn(error);
+      // ? maybe show error view here
+      _data = []
+    }
+
+    if (dataRange === "weekly") {
+      setWeeklyData(_data);
+    } else if (dataRange === "daily") {
+      setDialyData(_data);
+    } else {
+      setAllTimeData(_data);
+    }
+  }, [dataRange, polygonProvider, signer]);
 
   useEffect(() => {
     updateLeaderboard();
   }, [updateLeaderboard]);
 
+  useEffect(() => {
+    const DURATION = 10_000
+    const interval = setInterval(updateLeaderboard, DURATION)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [updateLeaderboard])
+
+  const segmentData: ISegmentControl["data"] = [
+    {
+      label: "All time",
+      key: "all-time",
+    },
+    {
+      label: "Weekly",
+      key: "weekly",
+    },
+    {
+      label: "Daily",
+      key: "daily",
+    },
+  ];
+
   return (
     <>
       <Container css={{ py: "$5" }}>
-        <Heading
-          as="h1"
-          css={{
-            flex: 1,
-            fontSize: "$xl",
-            "@md": {
-              fontSize: "$3xl",
-            },
-            "@lg": {
-              fontSize: "$4xl",
-            },
-          }}
-        >
-          {"Leaderboard"}
-        </Heading>
+        <Flex row wrap justify="end">
+          <Heading
+            as="h1"
+            css={{
+              display: "inline-block",
+              flex: 1,
+              fontSize: "$xl",
+              "@md": {
+                fontSize: "$3xl",
+              },
+              "@lg": {
+                fontSize: "$4xl",
+              },
+            }}
+          >
+            {"Leaderboard"}
+          </Heading>
+          <SegmentControl
+            data={segmentData}
+            onChanged={(option) => setDataRange(option.key as any)}
+          />
+        </Flex>
         {data && data.length === 0 ? (
           <p>{"No juicers to display"}.</p>
         ) : (
