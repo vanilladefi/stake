@@ -144,7 +144,7 @@ const Leaderboard: FC = () => {
   }, [updateLeaderboard]);
 
   useEffect(() => {
-    const DURATION = 10_000;
+    const DURATION = 30_000; // refetch after every 30s
     const interval = setInterval(updateLeaderboard, DURATION);
     return () => {
       clearInterval(interval);
