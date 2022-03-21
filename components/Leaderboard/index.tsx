@@ -52,7 +52,7 @@ const Leaderboard: FC<ILeaderboard> = ({
         },
       },
       {
-        Header: "Juice Delta",
+        Header: "Juice Pressed",
         accessor: "juiceAmount",
         id: "juiceAmount",
         align: "right",
@@ -93,13 +93,13 @@ const Leaderboard: FC<ILeaderboard> = ({
       key: "all-time",
     });
   }
-  if (dailyData) {
+  if (weeklyData) {
     segmentData.push({
       label: "Weekly",
       key: "weekly",
     });
   }
-  if (weeklyData) {
+  if (dailyData) {
     segmentData.push({
       label: "Daily",
       key: "daily",

@@ -162,7 +162,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       urqlState: ssrCache.extractData(),
       leaderboard: await fetchLeaderboard(),
     },
-    revalidate: 60 * 60, // rebuild every hour
+    revalidate: 10 * 60, // rebuild every 10 minutes
   };
 };
 
