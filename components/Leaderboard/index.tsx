@@ -5,15 +5,10 @@ import Container from "../Container";
 import Text from "../Text";
 import Heading from "../Heading";
 import Table from "../Table";
-import { getLeaderboard } from "@vanilladefi/stake-sdk";
-import { epoch, isAddress } from "@vanilladefi/core-sdk";
-import { useSnapshot } from "valtio";
-import { state } from "../../state";
-import { formatJuice, getBlockByTimestamp } from "../../utils/helpers";
-import { BigNumber } from "ethers";
 import Flex from "../Flex";
-import SegmentControl, { ISegmentControl } from "../SegmentControl";
+import SegmentControl from "../SegmentControl";
 
+export type LeaderboardRange = "all-time" | "daily" | "weekly";
 export interface JuicerColumn {
   rank?: number;
   juicer: string;
@@ -22,7 +17,17 @@ export interface JuicerColumn {
   performanceWeekly?: string;
 }
 
-const Leaderboard: FC = () => {
+export interface ILeaderboard {
+  allTimeData?: JuicerColumn[];
+  weeklyData?: JuicerColumn[];
+  dailyData?: JuicerColumn[];
+}
+
+const Leaderboard: FC<ILeaderboard> = ({
+  allTimeData,
+  weeklyData,
+  dailyData,
+}) => {
   const columns: Column<JuicerColumn>[] = useMemo(
     () => [
       {
@@ -59,116 +64,51 @@ const Leaderboard: FC = () => {
     []
   );
 
-  const [data, setData] = useState<JuicerColumn[] | null>(null);
-  const [dataRange, setDataRange] = useState<"all-time" | "daily" | "weekly">(
-    "all-time"
-  );
+  const [dataRange, setDataRange] = useState<LeaderboardRange>("all-time");
 
-  // Kinda like cache, so we don't have to show loaders on switching data type every time
-  const [allTimeData, setAllTimeData] = useState<JuicerColumn[]>();
-  const [dialyData, setDialyData] = useState<JuicerColumn[]>();
-  const [weeklyData, setWeeklyData] = useState<JuicerColumn[]>();
-
-  useEffect(() => {
+  const getData = useCallback(() => {
     if (dataRange === "all-time") {
-      setData(allTimeData || null);
+      return allTimeData;
     } else if (dataRange === "daily") {
-      setData(dialyData || null);
+      return dailyData;
     } else if (dataRange === "weekly") {
-      setData(weeklyData || null);
+      return weeklyData;
     }
-  }, [allTimeData, dataRange, dialyData, weeklyData]);
+  }, [allTimeData, dailyData, dataRange, weeklyData]);
 
-  const { signer, polygonProvider } = useSnapshot(state);
-
-  const updateLeaderboard = useCallback(async () => {
-    try {
-      const optionalAddress =
-        isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || "";
-
-      type LeaderBoard = [
-        [string, BigNumber] | { user: string; delta: BigNumber }
-      ]; // TODO fix in sdk
-
-      const provider = signer?.provider || polygonProvider || window.ethereum;
-      const before7D = await getBlockByTimestamp(
-        Date.now() - 7 * 24 * 60 * 60,
-        provider
-      );
-
-      const before1D = await getBlockByTimestamp(
-        Date.now() - 24 * 60 * 60,
-        provider
-      );
-
-      const from =
-        dataRange === "weekly"
-          ? before7D
-          : dataRange === "daily"
-          ? before1D
-          : epoch;
-
-      const leaderboard = (await getLeaderboard(from, "latest", 10, {
-        signerOrProvider: signer || polygonProvider || undefined,
-        optionalAddress,
-      })) as unknown as LeaderBoard;
-
-      const _data: JuicerColumn[] = leaderboard.map((val) => {
-        let user: string;
-        let delta: BigNumber;
-        if (val instanceof Array) {
-          [user, delta] = val;
-        } else {
-          ({ user, delta } = val);
-        }
-
-        return {
-          juicer: user,
-          juiceAmount: formatJuice(delta),
-        };
-      });
-
-      if (dataRange === "weekly") {
-        setWeeklyData(_data);
-      } else if (dataRange === "daily") {
-        setDialyData(_data);
-      } else {
-        setAllTimeData(_data);
-      }
-    } catch (error) {
-      console.warn(error)
-    }
-  }, [dataRange, polygonProvider, signer]);
-  useEffect(() => {
-    updateLeaderboard();
-  }, [updateLeaderboard]);
+  const [data, setData] = useState<JuicerColumn[] | null>(getData() || null);
 
   useEffect(() => {
-    const DURATION = 30_000; // refetch after every 30s
-    const interval = setInterval(updateLeaderboard, DURATION);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [updateLeaderboard]);
+    const _data = getData();
+    setData(_data || []);
+  }, [getData]);
 
-  const segmentData: ISegmentControl["data"] = [
-    {
+  const segmentData: { label: string; key: LeaderboardRange }[] = [];
+
+  if (!(allTimeData && dailyData && weeklyData)) return null;
+
+  if (allTimeData) {
+    segmentData.push({
       label: "All time",
       key: "all-time",
-    },
-    {
+    });
+  }
+  if (dailyData) {
+    segmentData.push({
       label: "Weekly",
       key: "weekly",
-    },
-    {
+    });
+  }
+  if (weeklyData) {
+    segmentData.push({
       label: "Daily",
       key: "daily",
-    },
-  ];
+    });
+  }
 
   return (
     <>
-      <Container css={{ py: "$5" }}>
+      <Container css={{ py: "$5", borderTop: "1px solid $extraMuted" }}>
         <Flex row wrap justify="end">
           <Heading
             as="h1"

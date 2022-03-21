@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { InferGetStaticPropsType} from "next";
 import dynamic from "next/dynamic";
 import {
   CommunityIcon,
@@ -19,6 +19,8 @@ import Text from "../components/Text";
 import EmailForm from "../components/EmailForm";
 import { styled } from "../stitches.config";
 import { ArrowLink } from "../components/ArrowLink";
+import { fetchLeaderboard } from "../utils/fetch-leaderboard";
+import Leaderboard from '../components/Leaderboard';
 
 const ActiveWallet = dynamic(
   () => import("../components/Wallet/ActiveWallet"),
@@ -28,92 +30,17 @@ const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
   ssr: false,
 });
 
-const StyledDiamond = styled(Diamond, {
-  position: "absolute",
-  minWidth: "auto",
-  overflow: "visible",
-  left: "50%",
-  top: "50%",
-  transform: "translateY(-50%) translateX(-50%)",
-  width: "140px",
-  "& #darkColor": {
-    stopColor: "$colors$background",
-  },
-  "@sm": {
-    width: "180px",
-  },
-  "@md": {
-    width: "230px",
-  },
-  "@lg": {
-    width: "260px",
-  },
-  "@xl": {
-    width: "300px",
-  },
-});
 
-const SectionHeading = ({
-  text = "",
-  muted = false,
-  topSegment = false,
-}: {
-  text?: string;
-  muted?: boolean;
-  topSegment?: boolean;
-}) => (
-  <Heading
-    as="h3"
-    css={{
-      padding: "0",
-      margin: "0",
-      marginBottom: topSegment ? 0 : "$5",
-      color: muted ? "$muted" : undefined,
-      // '@initial': {
-      fontSize: "$2xl",
-      lineHeight: "1.1",
-      // },
-      "@md": {
-        fontSize: "$2xl",
-      },
-    }}
-  >
-    {text}
-  </Heading>
-);
+export const getStaticProps = async () => {
+  return {
+    props: {
+      leaderboard: await fetchLeaderboard(),
+    },
+    revalidate: 60 * 60 // revalidate every hour
+  };
+};
 
-const SectionDescription = ({
-  text = "",
-  muted = false,
-}: {
-  text?: string;
-  muted?: boolean;
-}) => (
-  <Text
-    as="div"
-    css={{
-      fontSize: "$xl",
-      color: muted ? "$muted" : "$textSecondary",
-      "@md": {
-        fontSize: "$xxl",
-      },
-    }}
-  >
-    {text}
-  </Text>
-);
-
-const StyledOne = styled(One, { color: "$textSecondary" });
-const StyledTwo = styled(Two, { color: "$textSecondary" });
-const StyledThree = styled(Three, { color: "$textSecondary" });
-
-const StyledJuiceFlow = styled(JuiceFlow, {
-  width: "100%",
-  minWidth: "auto",
-  maxWidth: "400px",
-});
-
-const Home: NextPage = () => {
+const Home = ({ leaderboard }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       <WalletModal />
@@ -549,8 +476,94 @@ const Home: NextPage = () => {
           </Flex>
         </Container>
       </Flex>
+      {leaderboard && <Leaderboard {...leaderboard} />}
     </>
   );
 };
+
+export const StyledDiamond = styled(Diamond, {
+  position: "absolute",
+  minWidth: "auto",
+  overflow: "visible",
+  left: "50%",
+  top: "50%",
+  transform: "translateY(-50%) translateX(-50%)",
+  width: "140px",
+  "& #darkColor": {
+    stopColor: "$colors$background",
+  },
+  "@sm": {
+    width: "180px",
+  },
+  "@md": {
+    width: "230px",
+  },
+  "@lg": {
+    width: "260px",
+  },
+  "@xl": {
+    width: "300px",
+  },
+});
+
+const SectionHeading = ({
+  text = "",
+  muted = false,
+  topSegment = false,
+}: {
+  text?: string;
+  muted?: boolean;
+  topSegment?: boolean;
+}) => (
+  <Heading
+    as="h3"
+    css={{
+      padding: "0",
+      margin: "0",
+      marginBottom: topSegment ? 0 : "$5",
+      color: muted ? "$muted" : undefined,
+      // '@initial': {
+      fontSize: "$2xl",
+      lineHeight: "1.1",
+      // },
+      "@md": {
+        fontSize: "$2xl",
+      },
+    }}
+  >
+    {text}
+  </Heading>
+);
+
+export const SectionDescription = ({
+  text = "",
+  muted = false,
+}: {
+  text?: string;
+  muted?: boolean;
+}) => (
+  <Text
+    as="div"
+    css={{
+      fontSize: "$xl",
+      color: muted ? "$muted" : "$textSecondary",
+      "@md": {
+        fontSize: "$xxl",
+      },
+    }}
+  >
+    {text}
+  </Text>
+);
+
+export const StyledOne = styled(One, { color: "$textSecondary" });
+export const StyledTwo = styled(Two, { color: "$textSecondary" });
+export const StyledThree = styled(Three, { color: "$textSecondary" });
+
+export const StyledJuiceFlow = styled(JuiceFlow, {
+  width: "100%",
+  minWidth: "auto",
+  maxWidth: "400px",
+});
 
 export default Home;
