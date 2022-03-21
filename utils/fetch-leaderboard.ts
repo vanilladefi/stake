@@ -49,7 +49,7 @@ export const getLeaderboardData = async (range: "all-time" | "weekly" | "daily")
 
                 let juicer: string;
                 try {
-                    juicer = (await provider?.lookupAddress?.(user)) || user;
+                    juicer = (await state.ethereumProvider?.lookupAddress?.(user)) || user;
                 } catch (error) {
                     juicer = user;
                 }
