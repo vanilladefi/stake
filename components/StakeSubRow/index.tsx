@@ -105,7 +105,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
         );
         const tx = await sdk.modifyStake(stake, {
           signerOrProvider: signer,
-          optionalAddress: contractAddress || "",
+          optionalAddress: contractAddress || undefined,
         });
 
         const _txLink = getTransactionLink(tx.hash);

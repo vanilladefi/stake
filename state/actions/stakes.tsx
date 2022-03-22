@@ -31,7 +31,7 @@ export const fetchStakes = async () => {
 
   const res = await getAllStakes(walletAddress, _tokens, {
     signerOrProvider: signer || (polygonProvider as any),
-    optionalAddress: contractAddress || "",
+    optionalAddress: contractAddress || undefined,
   });
 
   let _stakes: Stake[] = [];

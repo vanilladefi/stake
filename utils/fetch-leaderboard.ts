@@ -3,12 +3,12 @@ import { getLeaderboard } from '@vanilladefi/stake-sdk';
 import { BigNumber } from 'ethers';
 import { state } from '../state';
 import { formatJuice, getBlockByTimestamp } from './helpers';
-import type { ILeaderboard, JuicerColumn } from '../components/Leaderboard';
+import type { ILeaderboard, JuicerColumn, LeaderboardRange } from '../components/Leaderboard';
 
-export const getLeaderboardData = async (range: "all-time" | "weekly" | "daily"): Promise<JuicerColumn[] | undefined> => {
+export const getLeaderboardData = async (range: LeaderboardRange): Promise<JuicerColumn[] | undefined> => {
     try {
         const optionalAddress =
-            isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "") || "";
+            isAddress(process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || "");
 
         type LeaderBoard = [[string, BigNumber] | { user: string; delta: BigNumber }]; // TODO fix in sdk
 
@@ -34,7 +34,7 @@ export const getLeaderboardData = async (range: "all-time" | "weekly" | "daily")
 
         const leaderboard = (await getLeaderboard(from, "latest", 10, {
             signerOrProvider: provider,
-            optionalAddress,
+            optionalAddress: optionalAddress || undefined,
         })) as unknown as LeaderBoard;
 
         const data = await Promise.all(
@@ -69,7 +69,6 @@ export const getLeaderboardData = async (range: "all-time" | "weekly" | "daily")
 }
 
 export const fetchLeaderboard = async (): Promise<ILeaderboard> => {
-    console.log('fetching leaderboard data...')
     return {
         allTimeData: await getLeaderboardData('all-time'),
         weeklyData: await getLeaderboardData('weekly'),
