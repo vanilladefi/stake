@@ -102,7 +102,6 @@ const DesktopNavigation = () => {
               size="15px"
             />
           </NavLink> */}
-
           <NavLink css={{ py: "$8" }} href="/litepaper">
             Litepaper
           </NavLink>

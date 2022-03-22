@@ -14,6 +14,11 @@ const Flex = styled(Box, {
         flexDirection: "column",
       },
     },
+    wrap: {
+      true: {
+        flexWrap: 'wrap'
+      }
+    },
     fluid: {
       true: {
         width: "100%",

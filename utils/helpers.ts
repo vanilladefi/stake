@@ -1,5 +1,5 @@
 import { juiceDecimals } from "@vanilladefi/core-sdk";
-import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 import { correctNetwork } from '../lib/config';
 import { VanillaEvents } from '../state';
 import tokens from "../tokens";
@@ -36,4 +36,15 @@ export const getTransactionLink = (txHash: string) => {
   }
   const transactionLink = `${explorerUrl}/tx/${txHash}`
   return transactionLink;
+}
+
+export const getBlockByTimestamp = async (timestamp: number, provider: providers.Provider) => {
+  const latest =
+    (await provider.getBlock("latest")).timestamp
+  const before = (await provider.getBlock(await provider.getBlockNumber() - 100)).timestamp;
+
+  const blockTime = (latest - before) / 100
+
+  const block = (await provider.getBlockNumber()) - ((Date.now() - timestamp) / blockTime)
+  return Math.floor(block)
 }

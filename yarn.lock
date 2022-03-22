@@ -1950,19 +1950,19 @@
   resolved "https://registry.yarnpkg.com/@urql/introspection/-/introspection-0.3.0.tgz#545f2425b68d95892afa5961433a19aab1867268"
   integrity sha512-dw87YiSmCgEUFnWj7fYu+wnrFcSEhYyQ8DykTvL1UzCKPm9uLDeey1z0yiSxZeX2qP9oD+TSGIq+61AZHhQO0w==
 
-"@vanilladefi/core-sdk@^2.2.1-beta.0":
-  version "2.2.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@vanilladefi/core-sdk/-/core-sdk-2.2.1-beta.0.tgz#d8814b64243494f8d259da51b28e9c7fde486052"
-  integrity sha512-DASqHWl/DUSNPe5gH4b2JbH+tnarYgXMSMMzhD1TxN/k36/A1ghWZtv5MPqqPmQ+SdPGFEbjcgyo+ZNNS6fl4g==
+"@vanilladefi/core-sdk@^2.2.1-beta.1":
+  version "2.2.1-beta.1"
+  resolved "https://registry.yarnpkg.com/@vanilladefi/core-sdk/-/core-sdk-2.2.1-beta.1.tgz#cd9b0ca9bae2c6f318d556d62ae524966afaf4f5"
+  integrity sha512-kRyUL17Zb2kmyb9T4oZVDVAGy+G542AJ7KAMgcoSxpy/1qieI4VwasQDxEirib4dBtKNSE7iCsdzaMbYSBLCCA==
   dependencies:
     "@vanilladefi/trade-contracts" "^1.1.27"
 
-"@vanilladefi/stake-sdk@^2.2.1-beta.0":
-  version "2.2.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@vanilladefi/stake-sdk/-/stake-sdk-2.2.1-beta.0.tgz#295a10a59e37fff4e50dbd2af02af1560861cf58"
-  integrity sha512-6btaNsYTqauLqicRKMcrudVKyFhmuFnz6J3ZJko0wQ71Oj3B4GY/OTa+iXuym0zmwaYnPFEcXS6qeYEpD9pKrA==
+"@vanilladefi/stake-sdk@^2.2.1-beta.1":
+  version "2.2.1-beta.1"
+  resolved "https://registry.yarnpkg.com/@vanilladefi/stake-sdk/-/stake-sdk-2.2.1-beta.1.tgz#17f98915b4dc535389e1b425880fb2fbd110c39d"
+  integrity sha512-e76z+697oBLoCVL+uE6Fmnvx0vR5xHoAXzk+RJmsRnqd60V9iFGYehgc+NVsRO4nn0+5asTLykw8Bc3Qu9TXeQ==
   dependencies:
-    "@vanilladefi/core-sdk" "^2.2.1-beta.0"
+    "@vanilladefi/core-sdk" "^2.2.1-beta.1"
     "@vanilladefi/trade-contracts" "^1.1.27"
     ethers "^5.5.2"
 

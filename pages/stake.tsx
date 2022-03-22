@@ -1,7 +1,7 @@
 import { isAddress } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { GetStaticProps } from "next";
-import { useEffect } from "react";
+import { FC, useEffect } from "react";
 import { snapshot, useSnapshot } from "valtio";
 import { JuicingIcon } from "../assets";
 import { ArrowLink } from "../components/ArrowLink";
@@ -10,6 +10,7 @@ import Box from "../components/Box";
 import Container from "../components/Container";
 import Flex from "../components/Flex";
 import Heading from "../components/Heading";
+import Leaderboard, { ILeaderboard } from "../components/Leaderboard";
 import { MyStakes } from "../components/MyStakes";
 import Stack from "../components/Stack";
 import Text from "../components/Text";
@@ -18,8 +19,8 @@ import { state, VanillaEvents } from "../state";
 import { fetchStakes } from "../state/actions/stakes";
 import { connectWallet } from "../state/actions/wallet";
 import client, { ssrCache } from "../urql";
+import { fetchLeaderboard } from "../utils/fetch-leaderboard";
 import { emitEvent } from "../utils/helpers";
-
 
 const StakingIntro = () => (
   <Stack
@@ -92,7 +93,7 @@ const StakingIntro = () => (
   </Stack>
 );
 
-const Stake = () => {
+const Stake: FC<{ leaderboard?: ILeaderboard }> = ({ leaderboard }) => {
   const { walletAddress, signer, polygonProvider } = useSnapshot(state);
 
   useEffect(() => {
@@ -144,6 +145,7 @@ const Stake = () => {
         <Container>{walletAddress ? <MyStakes /> : <StakingIntro />}</Container>
       </Flex>
       <AvailableStakes />
+      {leaderboard && <Leaderboard {...leaderboard} />}
     </>
   );
 };
@@ -151,20 +153,17 @@ const Stake = () => {
 export const getStaticProps: GetStaticProps = async (context) => {
   try {
     await client.query(GetAssetPairsDocument).toPromise();
-    return {
-      props: {
-        // urql uses this to rehydrate cache
-        urqlState: ssrCache.extractData(),
-      },
-      revalidate: 60,
-    };
   } catch (err) {
-    console.log(err);
-    return {
-      props: {},
-      revalidate: 60,
-    };
+    console.warn(err);
   }
+  return {
+    props: {
+      // urql uses this to rehydrate cache
+      urqlState: ssrCache.extractData(),
+      leaderboard: await fetchLeaderboard(),
+    },
+    revalidate: 10 * 60, // rebuild every 10 minutes
+  };
 };
 
 export default Stake;
