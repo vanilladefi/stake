@@ -37,3 +37,17 @@ export const getTransactionLink = (txHash: string) => {
   const transactionLink = `${explorerUrl}/tx/${txHash}`
   return transactionLink;
 }
+
+export const filterJuiceAmount = (str: string) => {
+  str = str.replace(/([^\d.])/gi, '')
+  
+  let [int = "0", frac = ''] = str.split(".");
+  const hasDot = str.includes('.')
+
+  if (frac.length > juiceDecimals) {
+    frac = frac.slice(0, juiceDecimals);
+  }
+
+  let amount = `${int}${hasDot ? '.': ''}${frac}`;
+  return amount
+}

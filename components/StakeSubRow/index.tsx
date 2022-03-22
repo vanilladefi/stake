@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { FC, useCallback, useState } from "react";
 import * as sdk from "@vanilladefi/stake-sdk";
-import { isAddress } from "@vanilladefi/core-sdk";
+import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
 import { Row } from "react-table";
 import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
@@ -11,6 +11,7 @@ import {
   emitEvent,
   findToken,
   getTransactionLink,
+  filterJuiceAmount,
   parseJuice,
 } from "../../utils/helpers";
 import Box from "../Box";
@@ -22,6 +23,7 @@ import Text from "../Text";
 
 import { PolygonScanIcon } from "../../assets";
 import { BigNumber } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -54,7 +56,11 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
   const staked = row.original.currentStake;
 
-  const [stakeAmount, setStakeAmount] = useState(staked?.juiceValue || "");
+  const [stakeAmount, setStakeAmount] = useState(
+    staked?.rawJuiceValue
+      ? formatUnits(staked.rawJuiceValue, juiceDecimals)
+      : ""
+  );
   const [stakePosition, setStakePosition] = useState<"long" | "short">(
     staked?.sentiment || "long"
   );
@@ -65,9 +71,8 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const closingDisabled = stakePending;
 
   const stakeUnchanged =
-    staked?.sentiment === stakePosition
-      ? staked?.juiceValue === stakeAmount
-      : false;
+    staked?.sentiment === stakePosition &&
+    parseJuice(stakeAmount).eq(staked.rawJuiceValue);
 
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {
@@ -227,15 +232,15 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               disabled={stakePending}
               autoFocus
               size="lg"
-              type="number"
               placeholder="0.0"
               value={stakeAmount}
-              onChange={(e) => setStakeAmount(e.target.value)}
+              onChange={(e) => setStakeAmount(filterJuiceAmount(e.target.value))}
               css={{
                 width: "100%",
                 minWidth: "30px",
                 maxWidth: "140px",
                 textAlign: "right",
+                fontSize: stakeAmount.length > 8 ? "$sm" : "$lg",
                 mx: "$3",
               }}
             />
