@@ -1,23 +1,23 @@
 import { ethers } from "ethers";
 import Image from "next/image";
+import { CaretDown } from "phosphor-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { retry } from "ts-retry";
 import { useSnapshot } from "valtio";
-import { CaretDown } from "phosphor-react";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { state } from "../../state";
 import { findToken } from "../../utils/helpers";
 import valueUSD from "../../utils/valueUSD";
 import Box from "../Box";
 import Button from "../Button";
-import Text from "../Text";
 import Container from "../Container";
 import Flex from "../Flex";
 import Heading from "../Heading";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import TableFilter from "../TableFilter";
+import Text from "../Text";
 
 export const AvailableStakes = () => {
   const { stakes } = useSnapshot(state);
