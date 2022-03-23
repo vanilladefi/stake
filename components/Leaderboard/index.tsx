@@ -1,12 +1,11 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Column } from "react-table";
 import Box from "../Box";
-import Container from "../Container";
-import Text from "../Text";
-import Heading from "../Heading";
-import Table from "../Table";
 import Flex from "../Flex";
+import Heading from "../Heading";
 import SegmentControl from "../SegmentControl";
+import Table from "../Table";
+import Text from "../Text";
 
 export type LeaderboardRange = "all-time" | "daily" | "weekly";
 export interface JuicerColumn {
@@ -108,45 +107,43 @@ const Leaderboard: FC<ILeaderboard> = ({
 
   return (
     <>
-      <Container css={{ py: "$5", borderTop: "1px solid $extraMuted" }}>
-        <Flex row wrap justify="end">
-          <Heading
-            as="h1"
-            css={{
-              display: "inline-block",
-              flex: 1,
-              fontSize: "$xl",
-              "@md": {
-                fontSize: "$3xl",
-              },
-              "@lg": {
-                fontSize: "$4xl",
-              },
-            }}
-          >
-            {"Leaderboard"}
-          </Heading>
-          <SegmentControl
-            data={segmentData}
-            onChanged={(option) => setDataRange(option.key as any)}
-          />
-        </Flex>
-        {data && data.length === 0 ? (
-          <p>{"No juicers to display"}.</p>
-        ) : (
-          <Box
-            css={{
-              overflowX: "auto",
-              "&::-webkit-scrollbar": {
-                height: 0,
-                background: "transparent",
-              },
-            }}
-          >
-            <Table columns={columns} data={data || []} isLoading={!data} />
-          </Box>
-        )}
-      </Container>
+      <Flex row wrap justify="end">
+        <Heading
+          as="h1"
+          css={{
+            display: "inline-block",
+            flex: 1,
+            fontSize: "$xl",
+            "@md": {
+              fontSize: "$3xl",
+            },
+            "@lg": {
+              fontSize: "$4xl",
+            },
+          }}
+        >
+          {"Leaderboard"}
+        </Heading>
+        <SegmentControl
+          data={segmentData}
+          onChanged={(option) => setDataRange(option.key as any)}
+        />
+      </Flex>
+      {data && data.length === 0 ? (
+        <p>{"No juicers to display"}.</p>
+      ) : (
+        <Box
+          css={{
+            overflowX: "auto",
+            "&::-webkit-scrollbar": {
+              height: 0,
+              background: "transparent",
+            },
+          }}
+        >
+          <Table columns={columns} data={data || []} isLoading={!data} />
+        </Box>
+      )}
     </>
   );
 };

@@ -141,7 +141,9 @@ export type HourlyPriceHistory = {
 export type HourlyPriceHistory_Filter = {
   assetPair?: Maybe<Scalars['String']>;
   assetPair_contains?: Maybe<Scalars['String']>;
+  assetPair_contains_nocase?: Maybe<Scalars['String']>;
   assetPair_ends_with?: Maybe<Scalars['String']>;
+  assetPair_ends_with_nocase?: Maybe<Scalars['String']>;
   assetPair_gt?: Maybe<Scalars['String']>;
   assetPair_gte?: Maybe<Scalars['String']>;
   assetPair_in?: Maybe<Array<Scalars['String']>>;
@@ -149,10 +151,14 @@ export type HourlyPriceHistory_Filter = {
   assetPair_lte?: Maybe<Scalars['String']>;
   assetPair_not?: Maybe<Scalars['String']>;
   assetPair_not_contains?: Maybe<Scalars['String']>;
+  assetPair_not_contains_nocase?: Maybe<Scalars['String']>;
   assetPair_not_ends_with?: Maybe<Scalars['String']>;
+  assetPair_not_ends_with_nocase?: Maybe<Scalars['String']>;
   assetPair_not_in?: Maybe<Array<Scalars['String']>>;
   assetPair_not_starts_with?: Maybe<Scalars['String']>;
+  assetPair_not_starts_with_nocase?: Maybe<Scalars['String']>;
   assetPair_starts_with?: Maybe<Scalars['String']>;
+  assetPair_starts_with_nocase?: Maybe<Scalars['String']>;
   closingPrice?: Maybe<Scalars['BigInt']>;
   closingPrice_gt?: Maybe<Scalars['BigInt']>;
   closingPrice_gte?: Maybe<Scalars['BigInt']>;
@@ -211,7 +217,9 @@ export type HourlyPriceHistory_Filter = {
   openingPrice_not_in?: Maybe<Array<Scalars['BigInt']>>;
   test?: Maybe<Scalars['String']>;
   test_contains?: Maybe<Scalars['String']>;
+  test_contains_nocase?: Maybe<Scalars['String']>;
   test_ends_with?: Maybe<Scalars['String']>;
+  test_ends_with_nocase?: Maybe<Scalars['String']>;
   test_gt?: Maybe<Scalars['String']>;
   test_gte?: Maybe<Scalars['String']>;
   test_in?: Maybe<Array<Scalars['String']>>;
@@ -219,10 +227,14 @@ export type HourlyPriceHistory_Filter = {
   test_lte?: Maybe<Scalars['String']>;
   test_not?: Maybe<Scalars['String']>;
   test_not_contains?: Maybe<Scalars['String']>;
+  test_not_contains_nocase?: Maybe<Scalars['String']>;
   test_not_ends_with?: Maybe<Scalars['String']>;
+  test_not_ends_with_nocase?: Maybe<Scalars['String']>;
   test_not_in?: Maybe<Array<Scalars['String']>>;
   test_not_starts_with?: Maybe<Scalars['String']>;
+  test_not_starts_with_nocase?: Maybe<Scalars['String']>;
   test_starts_with?: Maybe<Scalars['String']>;
+  test_starts_with_nocase?: Maybe<Scalars['String']>;
   timestamp?: Maybe<Scalars['BigInt']>;
   timestamp_gt?: Maybe<Scalars['BigInt']>;
   timestamp_gte?: Maybe<Scalars['BigInt']>;
