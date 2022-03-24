@@ -1,5 +1,7 @@
+import { BigNumber } from "ethers";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { Column } from "react-table";
+import { Row } from "react-table";
+import { formatJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Flex from "../Flex";
 import Heading from "../Heading";
@@ -27,7 +29,7 @@ const Leaderboard: FC<ILeaderboard> = ({
   weeklyData,
   dailyData,
 }) => {
-  const columns: Column<JuicerColumn>[] = useMemo(
+  const columns = useMemo(
     () => [
       {
         Header: "Rank",
@@ -53,10 +55,20 @@ const Leaderboard: FC<ILeaderboard> = ({
       {
         Header: "Juice Pressed",
         accessor: "juiceAmount",
+        sortType: (rowA: Row, rowB: Row, _columnId: String, desc: boolean) => {
+          const diff: BigNumber = BigNumber.from(rowA.values.juiceAmount).sub(BigNumber.from(rowB.values.juiceAmount))
+          if (diff.isZero()) {
+            return 0
+          } else if (desc && diff.gt(0)) {
+            return 1
+          } else {
+            return -1
+          }
+        },
         id: "juiceAmount",
         align: "right",
         Cell: ({ value }: { value: JuicerColumn["juiceAmount"] }) => {
-          return <Box>{value || "xxxx"}</Box>;
+          return <Box>{formatJuice(BigNumber.from(value)) || "xxxx"}</Box>;
         },
       },
     ],

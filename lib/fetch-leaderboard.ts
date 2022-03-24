@@ -7,7 +7,7 @@ import type {
   LeaderboardRange,
 } from "../components/Leaderboard";
 import { state } from "../state";
-import { formatJuice, getBlockByTimestamp } from "../utils/helpers";
+import { getBlockByTimestamp } from "../utils/helpers";
 import { juiceEpoch } from "./config";
 
 export const getLeaderboardData = async (
@@ -60,7 +60,7 @@ export const getLeaderboardData = async (
 
         return {
           juicer,
-          juiceAmount: formatJuice(delta),
+          juiceAmount: delta.toString(),
         };
       })
     );
