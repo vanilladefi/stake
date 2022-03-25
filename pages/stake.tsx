@@ -14,11 +14,10 @@ import { MyStakes } from "../components/MyStakes";
 import Stack from "../components/Stack";
 import Text from "../components/Text";
 import { GetAssetPairsDocument } from "../generated/graphql";
-import { state, VanillaEvents } from "../state";
+import { state } from "../state";
 import { fetchStakes } from "../state/actions/stakes";
 import { connectWallet } from "../state/actions/wallet";
 import client, { ssrCache } from "../urql";
-import { emitEvent } from "../utils/helpers";
 
 
 const StakingIntro = () => (
@@ -111,7 +110,7 @@ const Stake = () => {
       const { walletAddress } = snapshot(state);
       // Check that the event was created by the logged in user
       if (user.toLowerCase() === walletAddress?.toLowerCase()) {
-        emitEvent(VanillaEvents.stakesChanged);
+        fetchStakes();
       }
     };
 
@@ -123,16 +122,6 @@ const Stake = () => {
       contract.off("StakeRemoved", onStakesChange);
     };
   }, [polygonProvider, signer, walletAddress]);
-
-  useEffect(() => {
-    const onStakesChange = () => {
-      fetchStakes();
-    };
-    window.addEventListener(VanillaEvents.stakesChanged, onStakesChange);
-    return () => {
-      window.removeEventListener(VanillaEvents.stakesChanged, onStakesChange);
-    };
-  }, []);
 
   return (
     <>

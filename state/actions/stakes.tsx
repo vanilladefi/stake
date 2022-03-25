@@ -1,5 +1,6 @@
 import { isAddress, Token } from "@vanilladefi/core-sdk";
 import { getAllStakes } from "@vanilladefi/stake-sdk";
+import { retryAsync } from 'ts-retry';
 import { snapshot } from "valtio";
 import { Sentiment, Stake, state } from "..";
 import tokens from "../../tokens";
@@ -29,10 +30,15 @@ export const fetchStakes = async () => {
     process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
   );
 
-  const res = await getAllStakes(walletAddress, _tokens, {
-    signerOrProvider: signer || (polygonProvider as any),
-    optionalAddress: contractAddress || "",
-  });
+  const res = await retryAsync(
+    async () => {
+      console.log(_tokens)
+      return await getAllStakes(walletAddress, _tokens, {
+        signerOrProvider: signer || (polygonProvider as any),
+        optionalAddress: contractAddress || "",
+      })
+    }
+  );
 
   let _stakes: Stake[] = [];
 
