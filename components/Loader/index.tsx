@@ -1,12 +1,25 @@
+import { useEffect, useState } from "react";
 import { keyframes, styled } from "../../stitches.config";
 import Box from "../Box";
 
 const gradientAnimation = keyframes({
   "0%": {
+    backgroundPosition: "-400% 50%"
+  },
+  "50%": {
     backgroundPosition: "0% 50%"
   },
   "100%": {
-    backgroundPosition: "100% 50%"
+    backgroundPosition: "400% 50%"
+  }
+})
+
+const fadeInAnimation = keyframes({
+  "0%": {
+    opacity: "0"
+  },
+  "100%": {
+    opacity: "1"
   }
 })
 
@@ -18,9 +31,28 @@ const Loader = styled(Box, {
   width: "100%",
   minWidth: "150px",
   minHeight: "1em",
-  background: "linear-gradient(90deg, rgba(241,235,212,0.2), rgba(16,7,15,0.2), rgba(241,235,212,0.2))",
+  opacity: 0,
+  background: "linear-gradient(90deg, rgba(241,235,212,0.1), rgba(16,7,15,0.15), rgba(241,235,212,0.1))",
   backgroundSize: "400% 400%",
-  animation: `${gradientAnimation} 2s linear infinite`
+  animationName: `${gradientAnimation}, ${fadeInAnimation}`,
+  animationDuration: "12s, 1s",
+  animationTimingFunction: "linear, ease",
+  animationIterationCount: "infinite, 1",
+  animationFillMode: "forwards"
 })
+
+export const LoaderWithDelay = () => {
+  const delay = 200;
+  const [show, setVisibility] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisibility(true), delay);
+    return () => {
+      clearTimeout(timer);
+    };
+  });
+
+  return show ? <Loader /> : null;
+};
 
 export default Loader

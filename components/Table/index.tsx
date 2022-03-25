@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-key */
+import { AnimatePresence, motion } from "framer-motion";
 import { matchSorter } from "match-sorter";
 import { ArrowDown, ArrowUp } from "phosphor-react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -9,13 +10,12 @@ import {
   useExpanded,
   useGlobalFilter,
   useSortBy,
-  useTable,
+  useTable
 } from "react-table";
-import { motion, AnimatePresence } from "framer-motion";
 import { styled } from "../../stitches.config";
 import Box from "../Box";
 import Flex from "../Flex";
-import Loader from "../Loader";
+import { LoaderWithDelay } from "../Loader";
 
 /**
  * There's some boilter plate here
@@ -275,7 +275,7 @@ function Table<T extends object>({
               {headerGroups[headerGroups.length - 1].headers.map((_column) => {
                 return (
                   <td key={_column.id}>
-                    <Loader />
+                    <LoaderWithDelay />
                   </td>
                 );
               })}
