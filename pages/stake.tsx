@@ -15,11 +15,11 @@ import { MyStakes } from "../components/MyStakes";
 import Stack from "../components/Stack";
 import Text from "../components/Text";
 import { GetAssetPairsDocument } from "../generated/graphql";
+import { fetchLeaderboard } from "../lib/fetch-leaderboard";
 import { state, VanillaEvents } from "../state";
 import { fetchStakes } from "../state/actions/stakes";
 import { connectWallet } from "../state/actions/wallet";
 import client, { ssrCache } from "../urql";
-import { fetchLeaderboard } from "../utils/fetch-leaderboard";
 import { emitEvent } from "../utils/helpers";
 
 const StakingIntro = () => (
@@ -145,7 +145,17 @@ const Stake: FC<{ leaderboard?: ILeaderboard }> = ({ leaderboard }) => {
         <Container>{walletAddress ? <MyStakes /> : <StakingIntro />}</Container>
       </Flex>
       <AvailableStakes />
-      {leaderboard && <Leaderboard {...leaderboard} />}
+      <Flex
+        css={{
+          py: "$5",
+          width: "100%",
+          borderTop: "1px solid $extraMuted",
+        }}
+      >
+        <Container>
+          {leaderboard && <Leaderboard {...leaderboard} />}
+        </Container>
+      </Flex>
     </>
   );
 };
