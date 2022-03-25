@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { keyframes, styled } from "../../stitches.config";
 import Box from "../Box";
 
@@ -37,8 +38,21 @@ const Loader = styled(Box, {
   animationDuration: "12s, 1s",
   animationTimingFunction: "linear, ease",
   animationIterationCount: "infinite, 1",
-  animationDelay: "0, 400ms",
   animationFillMode: "forwards"
 })
+
+export const LoaderWithDelay = () => {
+  const delay = 200;
+  const [show, setVisibility] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisibility(true), delay);
+    return () => {
+      clearTimeout(timer);
+    };
+  });
+
+  return show ? <Loader /> : null;
+};
 
 export default Loader

@@ -2,7 +2,7 @@ import type * as Stitches from "@stitches/react";
 import { state, useSnapshot } from "../../state";
 import { connectWallet } from "../../state/actions/wallet";
 import Box from "../Box";
-import Loader from "../Loader";
+import { LoaderWithDelay } from "../Loader";
 
 const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
   const { walletAddress, truncatedWalletAddress, walletOpen } =
@@ -53,7 +53,7 @@ const WalletButton: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
       {walletAddress ? (
         <>
           <Box css={walletButtonStyles}>
-            {truncatedWalletAddress ? truncatedWalletAddress : <Loader />}
+            {truncatedWalletAddress ? truncatedWalletAddress : <LoaderWithDelay />}
           </Box>
         </>
       ) : (

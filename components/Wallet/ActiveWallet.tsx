@@ -2,23 +2,23 @@ import type * as Stitches from "@stitches/react";
 import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
 import { ContractTransaction } from "ethers";
-import Link from "../Link";
-import { Copy, ArrowUp, ArrowDown, XCircle } from "phosphor-react";
-import { useCallback, useState, useRef, useEffect } from "react";
-import { toast } from "react-toastify";
+import { formatUnits } from "ethers/lib/utils";
+import { ArrowDown, ArrowUp, Copy, XCircle } from "phosphor-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CountUp from "react-countup";
+import { toast } from "react-toastify";
+import { PolygonScanIcon } from "../../assets";
 import { state, useSnapshot, VanillaEvents } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { emitEvent, getTransactionLink, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Input from "../Input";
-import Loader from "../Loader";
+import Link from "../Link";
+import { LoaderWithDelay } from "../Loader";
 import Text from "../Text";
 import Curtain from "./Curtain";
 
-import { PolygonScanIcon } from "../../assets";
-import { formatUnits } from "ethers/lib/utils";
 
 enum TxTypes {
   deposit,
@@ -420,7 +420,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     </Text>
                   </>
                 ) : (
-                  <Loader />
+                  <LoaderWithDelay />
                 )}
               </Box>
               <Box
@@ -439,7 +439,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     </Text>
                   </>
                 ) : (
-                  <Loader />
+                  <LoaderWithDelay />
                 )}
               </Box>
             </Box>
@@ -492,7 +492,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                   <Text muted>In your wallet</Text>
                 </>
               ) : (
-                <Loader />
+                <LoaderWithDelay />
               )}
             </Box>
           </Box>
@@ -719,7 +719,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                   <Text muted>Unstaked in Juicenet</Text>
                 </>
               ) : (
-                <Loader />
+                <LoaderWithDelay />
               )}
             </Box>
             {rawBalances.unstakedJuice?.isZero() &&
