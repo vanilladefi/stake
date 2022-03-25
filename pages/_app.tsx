@@ -3,8 +3,8 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { ToastContainer } from "react-toastify";
+import { ReactText, useEffect, useRef } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Provider } from "urql";
 import Box from "../components/Box";
@@ -33,19 +33,22 @@ const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const shareImg = "/images/share-image.png";
+
   if (pageProps.urqlState) {
     ssrCache.restoreData(pageProps.urqlState);
   }
+
   const router = useRouter();
   const origin = useOrigin();
-  const shareImg = "/images/share-image.png";
+  const { signer, online } = useSnapshot(state);
+  const offlineToastId = useRef<ReactText | null>(null);
 
   // One time initializations
   useEffect(() => {
     initWalletSubscriptions();
   }, []);
 
-  const { signer } = useSnapshot(state);
   useEffect(() => {
     if (!signer || !window.ethereum) return;
 
@@ -61,6 +64,16 @@ function MyApp({ Component, pageProps }: AppProps) {
       window.removeEventListener('online', () => state.online = true);
     };
   }, [signer]);
+
+  // Offline indicator
+  useEffect(() => {
+    if (!online) {
+      offlineToastId.current = toast.error("You are offline", { autoClose: false, closeOnClick: false })
+    } else if (offlineToastId.current) {
+      toast.dismiss(offlineToastId.current.toString())
+      offlineToastId.current = null
+    }
+  }, [online])
 
   return (
     <>
