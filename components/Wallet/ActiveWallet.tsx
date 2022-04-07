@@ -1,24 +1,24 @@
 import type * as Stitches from "@stitches/react";
 import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
-import { ContractTransaction } from "ethers";
-import Link from "../Link";
-import { Copy, ArrowUp, ArrowDown, XCircle } from "phosphor-react";
-import { useCallback, useState, useRef, useEffect } from "react";
-import { toast } from "react-toastify";
+import { ContractTransaction, ethers } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
+import { ArrowDown, ArrowUp, Copy, XCircle } from "phosphor-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CountUp from "react-countup";
+import { toast } from "react-toastify";
+import { PolygonScanIcon } from "../../assets";
 import { state, useSnapshot, VanillaEvents } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
 import { emitEvent, getTransactionLink, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Input from "../Input";
+import Link from "../Link";
 import Loader from "../Loader";
 import Text from "../Text";
 import Curtain from "./Curtain";
 
-import { PolygonScanIcon } from "../../assets";
-import { formatUnits } from "ethers/lib/utils";
 
 enum TxTypes {
   deposit,
@@ -479,8 +479,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       }
                     >
                       <CountUp
-                        start={Number(prevWalletJuice)}
-                        end={Number(balances.juice)}
+                        start={Number(prevWalletJuice) > 0 ? Number(prevWalletJuice) : 0}
+                        end={Number(ethers.utils.formatUnits(rawBalances.juice || 0, juiceDecimals))}
                         duration={2}
                         decimals={3}
                         decimal="."
@@ -709,7 +709,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     {/* {balances.unstakedJuice} JUICE */}
                     <CountUp
                       start={Number(prevUnstakedJuice)}
-                      end={Number(balances.unstakedJuice)}
+                      end={Number(ethers.utils.formatUnits(rawBalances.unstakedJuice || 0, juiceDecimals))}
                       duration={2}
                       decimals={3}
                       decimal="."
