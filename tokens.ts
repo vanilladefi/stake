@@ -43,7 +43,7 @@ const tokens = [
     decimals: 8,
     priceFeed: "0x3710abeb1A0Fc7C2EC59C26c8DAA7a448ff6125A",
     address: "0x6f8a06447Ff6FcF75d803135a7de15CE88C1d4ec",
-    imageUrl: null,
+    imageUrl: "SHIB.png",
     name: "Shiba Inu coin",
   },
   {
