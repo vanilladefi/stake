@@ -1,7 +1,7 @@
 import type * as Stitches from "@stitches/react";
 import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
 import { getJuiceStakingContract } from "@vanilladefi/stake-sdk";
-import { ContractTransaction, ethers } from "ethers";
+import { ContractTransaction } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import { ArrowDown, ArrowUp, Copy, XCircle } from "phosphor-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { PolygonScanIcon } from "../../assets";
 import { state, useSnapshot, VanillaEvents } from "../../state";
 import { connectWallet, disconnect } from "../../state/actions/wallet";
-import { emitEvent, getTransactionLink, parseJuice } from "../../utils/helpers";
+import { emitEvent, getTransactionLink, getUnlocalizedJuiceString, parseJuice } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
 import Input from "../Input";
@@ -106,8 +106,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     return () => window.removeEventListener("keydown", close);
   }, []);
 
-  const prevWalletJuice = usePrevious(ethers.utils.formatUnits(rawBalances.juice || 0, juiceDecimals));
-  const prevUnstakedJuice = usePrevious(ethers.utils.formatUnits(rawBalances.unstakedJuice || 0, juiceDecimals));
+  const prevWalletJuice = usePrevious(getUnlocalizedJuiceString(rawBalances.juice));
+  const prevUnstakedJuice = usePrevious(getUnlocalizedJuiceString(rawBalances.unstakedJuice));
 
   const handleTx = useCallback(
     async (type: TxTypes) => {
@@ -480,7 +480,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                     >
                       <CountUp
                         start={Number(prevWalletJuice) > 0 ? Number(prevWalletJuice) : 0}
-                        end={Number(ethers.utils.formatUnits(rawBalances.juice || 0, juiceDecimals))}
+                        end={Number(getUnlocalizedJuiceString(rawBalances.juice))}
                         duration={2}
                         decimals={3}
                         decimal="."
@@ -708,7 +708,7 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                   >
                     <CountUp
                       start={Number(prevUnstakedJuice)}
-                      end={Number(ethers.utils.formatUnits(rawBalances.unstakedJuice || 0, juiceDecimals))}
+                      end={Number(getUnlocalizedJuiceString(rawBalances.unstakedJuice))}
                       duration={2}
                       decimals={3}
                       decimal="."
