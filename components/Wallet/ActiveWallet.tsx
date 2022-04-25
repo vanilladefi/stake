@@ -106,8 +106,8 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
     return () => window.removeEventListener("keydown", close);
   }, []);
 
-  const prevWalletJuice = usePrevious(balances.juice);
-  const prevUnstakedJuice = usePrevious(balances.unstakedJuice);
+  const prevWalletJuice = usePrevious(ethers.utils.formatUnits(rawBalances.juice || 0, juiceDecimals));
+  const prevUnstakedJuice = usePrevious(ethers.utils.formatUnits(rawBalances.unstakedJuice || 0, juiceDecimals));
 
   const handleTx = useCallback(
     async (type: TxTypes) => {
@@ -706,7 +706,6 @@ const ActiveWallet: React.FC<{ css?: Stitches.CSS }> = ({ css }) => {
                       )
                     }
                   >
-                    {/* {balances.unstakedJuice} JUICE */}
                     <CountUp
                       start={Number(prevUnstakedJuice)}
                       end={Number(ethers.utils.formatUnits(rawBalances.unstakedJuice || 0, juiceDecimals))}

@@ -39,6 +39,8 @@ export type AssetPairHourlyHistoryArgs = {
 };
 
 export type AssetPair_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: Maybe<BlockChangedFilter>;
   blockNumber?: Maybe<Scalars['BigInt']>;
   blockNumber_gt?: Maybe<Scalars['BigInt']>;
   blockNumber_gte?: Maybe<Scalars['BigInt']>;
@@ -108,19 +110,13 @@ export enum AssetPair_OrderBy {
   Timestamp = 'timestamp'
 }
 
-/** The block at which the query should be executed. */
+export type BlockChangedFilter = {
+  number_gte: Scalars['Int'];
+};
+
 export type Block_Height = {
-  /** Value containing a block hash */
   hash?: Maybe<Scalars['Bytes']>;
-  /** Value containing a block number */
   number?: Maybe<Scalars['Int']>;
-  /**
-   * Value containing the minimum block number.
-   * In the case of `number_gte`, the query will be executed on the latest block only if
-   * the subgraph has progressed to or past the minimum block number.
-   * Defaults to the latest block when omitted.
-   *
-   */
   number_gte?: Maybe<Scalars['Int']>;
 };
 
@@ -139,6 +135,8 @@ export type HourlyPriceHistory = {
 };
 
 export type HourlyPriceHistory_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: Maybe<BlockChangedFilter>;
   assetPair?: Maybe<Scalars['String']>;
   assetPair_contains?: Maybe<Scalars['String']>;
   assetPair_contains_nocase?: Maybe<Scalars['String']>;

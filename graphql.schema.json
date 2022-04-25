@@ -223,6 +223,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "_change_block",
+            "description": "Filter for the block changed event.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "BlockChangedFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "blockNumber",
             "description": null,
             "type": {
@@ -1092,13 +1104,40 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "BlockChangedFilter",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "number_gte",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "Block_height",
-        "description": "The block at which the query should be executed.",
+        "description": null,
         "fields": null,
         "inputFields": [
           {
             "name": "hash",
-            "description": "Value containing a block hash",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Bytes",
@@ -1110,7 +1149,7 @@
           },
           {
             "name": "number",
-            "description": "Value containing a block number",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -1122,7 +1161,7 @@
           },
           {
             "name": "number_gte",
-            "description": "Value containing the minimum block number. \nIn the case of `number_gte`, the query will be executed on the latest block only if\nthe subgraph has progressed to or past the minimum block number.\nDefaults to the latest block when omitted.\n",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -1330,6 +1369,18 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "_change_block",
+            "description": "Filter for the block changed event.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "BlockChangedFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "assetPair",
             "description": null,
