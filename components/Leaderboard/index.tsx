@@ -47,7 +47,8 @@ const Leaderboard: FC<ILeaderboard> = ({
         accessor: "juicer",
         id: "juicer",
         width: "10%",
-        minWidth: "40px",
+        minWidth: "140px",
+        whiteSpace: 'nowrap',
         align: "left",
         Cell: ({ value }: { value: JuicerColumn["juicer"] }) => {
           return <Text>{value}</Text>;
