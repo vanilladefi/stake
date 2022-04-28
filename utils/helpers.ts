@@ -1,4 +1,4 @@
-import { juiceDecimals } from "@vanilladefi/core-sdk";
+import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
 import { BigNumberish, ethers, providers } from "ethers";
 import { correctNetwork } from "../lib/config";
 import { VanillaEvents } from "../state";
@@ -58,4 +58,10 @@ export const getUnlocalizedJuiceString = (
   juiceAmount?: BigNumberish
 ): string => {
   return ethers.utils.formatUnits(juiceAmount || 0, juiceDecimals);
+};
+
+export const getTruncatedAddress = (address: string) => {
+  return isAddress(address)
+    ? `${address?.substring(0, 6)}…${address?.substring(address.length - 4)}`
+    : address;
 };
