@@ -2,23 +2,24 @@ import type { InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
 import {
   CommunityIcon,
-  Diamond, JuiceFlow,
+  Diamond,
+  JuiceFlow,
   JuiceSignalIcon,
   JuicingIcon,
   One,
   Three,
-  Two
+  Two,
 } from "../assets";
-import { ArrowLink } from "../components/ArrowLink";
 import Box from "../components/Box";
 import Container from "../components/Container";
 import EmailForm from "../components/EmailForm";
 import Flex from "../components/Flex";
 import Heading from "../components/Heading";
-import Leaderboard from '../components/Leaderboard';
 import Text from "../components/Text";
-import { fetchLeaderboard } from "../lib/fetch-leaderboard";
 import { styled } from "../stitches.config";
+import { ArrowLink } from "../components/ArrowLink";
+import { fetchLeaderboard } from "../lib/fetch-leaderboard";
+import Leaderboard from "../components/Leaderboard";
 
 const ActiveWallet = dynamic(
   () => import("../components/Wallet/ActiveWallet"),
@@ -28,17 +29,20 @@ const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
   ssr: false,
 });
 
-
 export const getStaticProps = async () => {
+  const skip = process.env.SKIP_LEADERBOARD === "true";
+
   return {
     props: {
-      leaderboard: await fetchLeaderboard(),
+      leaderboard: skip ? null : await fetchLeaderboard(),
     },
-    revalidate: 10 * 60 // rebuild every 10 minutes
+    revalidate: 10 * 60, // rebuild every 10 minutes
   };
 };
 
-const Home = ({ leaderboard }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home = ({
+  leaderboard,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       <WalletModal />
@@ -484,9 +488,7 @@ const Home = ({ leaderboard }: InferGetStaticPropsType<typeof getStaticProps>) =
           },
         }}
       >
-        <Container>
-          {leaderboard && <Leaderboard {...leaderboard} />}
-        </Container>
+        <Container>{leaderboard && <Leaderboard {...leaderboard} />}</Container>
       </Flex>
     </>
   );

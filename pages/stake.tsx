@@ -152,9 +152,7 @@ const Stake: FC<{ leaderboard?: ILeaderboard }> = ({ leaderboard }) => {
           borderTop: "1px solid $extraMuted",
         }}
       >
-        <Container>
-          {leaderboard && <Leaderboard {...leaderboard} />}
-        </Container>
+        <Container>{leaderboard && <Leaderboard {...leaderboard} />}</Container>
       </Flex>
     </>
   );
@@ -166,11 +164,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
   } catch (err) {
     console.warn(err);
   }
+  const skip = process.env.SKIP_LEADERBOARD === "true";
   return {
     props: {
       // urql uses this to rehydrate cache
       urqlState: ssrCache.extractData(),
-      leaderboard: await fetchLeaderboard(),
+      leaderboard: skip ? null : await fetchLeaderboard(),
     },
     revalidate: 10 * 60, // rebuild every 10 minutes
   };
