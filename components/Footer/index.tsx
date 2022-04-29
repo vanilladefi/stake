@@ -151,6 +151,12 @@ const Footer = () => {
           >
             <RegularLink
               css={{ justifyContent: "flex-end" }}
+              href="https://vanilla-profitmining.vercel.app/"
+            >
+              Profit Mining (deprecated)
+            </RegularLink>
+            <RegularLink
+              css={{ justifyContent: "flex-end" }}
               href="/privacy-policy"
             >
               Privacy Policy
