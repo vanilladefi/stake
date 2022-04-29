@@ -1,4 +1,10 @@
-import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange } from 'urql';
+import {
+  cacheExchange,
+  createClient,
+  dedupExchange,
+  fetchExchange,
+  ssrExchange,
+} from "urql";
 
 // let client: Client;
 
@@ -32,13 +38,8 @@ const isServerSide = typeof window === "undefined";
 export const ssrCache = ssrExchange({ isClient: !isServerSide });
 
 const client = createClient({
-  url: 'https://api.thegraph.com/subgraphs/name/valstu/chainlink-polygon-price-feed',
-  exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange]
+  url: "https://api.thegraph.com/subgraphs/name/vanilladefi/vanilla-chainlink-polygon-price-feed-dev-v1",
+  exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
 });
-
-
-
-
-
 
 export default client;

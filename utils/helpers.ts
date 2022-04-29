@@ -1,7 +1,7 @@
-import { juiceDecimals } from "@vanilladefi/core-sdk";
-import { ethers, providers } from "ethers";
-import { correctNetwork } from '../lib/config';
-import { VanillaEvents } from '../state';
+import { isAddress, juiceDecimals } from "@vanilladefi/core-sdk";
+import { BigNumberish, ethers, providers } from "ethers";
+import { correctNetwork } from "../lib/config";
+import { VanillaEvents } from "../state";
 import tokens from "../tokens";
 
 // RFC 2822 email spec
@@ -17,34 +17,51 @@ export const formatJuice = (amount: Nullable<ethers.BigNumberish>) =>
   Number(ethers.utils.formatUnits(amount || 0, juiceDecimals)).toLocaleString();
 
 export const parseJuice = (amount: Nullable<string | number>) =>
-  ethers.utils.parseUnits(amount?.toString() || '0', juiceDecimals);
+  ethers.utils.parseUnits(amount?.toString() || "0", juiceDecimals);
 
 export const findToken = (nameOrId: string): typeof tokens[0] | undefined => {
-  const id = nameOrId.split('/')[0].trim()
-  return tokens.find(token => token.id === id || token.alias === id)
-}
+  const id = nameOrId.split("/")[0].trim();
+  return tokens.find((token) => token.id === id || token.alias === id);
+};
 
 export const emitEvent = (eventType: VanillaEvents) => {
-  const event = new Event(eventType)
-  window.dispatchEvent(event)
-}
+  const event = new Event(eventType);
+  window.dispatchEvent(event);
+};
 
 export const getTransactionLink = (txHash: string) => {
-  let explorerUrl = correctNetwork.blockExplorerUrls[0]
-  if (explorerUrl.endsWith('/')) {
-    explorerUrl = explorerUrl.slice(0, -1)
+  let explorerUrl = correctNetwork.blockExplorerUrls[0];
+  if (explorerUrl.endsWith("/")) {
+    explorerUrl = explorerUrl.slice(0, -1);
   }
-  const transactionLink = `${explorerUrl}/tx/${txHash}`
+  const transactionLink = `${explorerUrl}/tx/${txHash}`;
   return transactionLink;
-}
+};
 
-export const getBlockByTimestamp = async (timestamp: number, provider: providers.Provider) => {
-  const latest =
-    (await provider.getBlock("latest")).timestamp
-  const before = (await provider.getBlock(await provider.getBlockNumber() - 100)).timestamp;
+export const getBlockByTimestamp = async (
+  timestamp: number,
+  provider: providers.Provider
+) => {
+  const latest = (await provider.getBlock("latest")).timestamp;
+  const before = (
+    await provider.getBlock((await provider.getBlockNumber()) - 100)
+  ).timestamp;
 
-  const blockTime = (latest - before) / 100
+  const blockTime = (latest - before) / 100;
 
-  const block = (await provider.getBlockNumber()) - ((Date.now() - timestamp) / blockTime)
-  return Math.floor(block)
-}
+  const block =
+    (await provider.getBlockNumber()) - (Date.now() - timestamp) / blockTime;
+  return Math.floor(block);
+};
+
+export const getUnlocalizedJuiceString = (
+  juiceAmount?: BigNumberish
+): string => {
+  return ethers.utils.formatUnits(juiceAmount || 0, juiceDecimals);
+};
+
+export const getTruncatedAddress = (address: string) => {
+  return isAddress(address)
+    ? `${address?.substring(0, 6)}…${address?.substring(address.length - 4)}`
+    : address;
+};

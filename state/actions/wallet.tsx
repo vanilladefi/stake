@@ -1,16 +1,16 @@
 import { isAddress, vnlDecimals } from "@vanilladefi/core-sdk";
 import {
   getBasicWalletDetails,
-  getJuiceStakingContract,
+  getJuiceStakingContract
 } from "@vanilladefi/stake-sdk";
 import { BigNumber, providers } from "ethers";
-import { snapshot } from "valtio";
+import { parseUnits } from "ethers/lib/utils";
 import { toast } from "react-toastify";
+import { snapshot } from "valtio";
 import { ref, state, subscribeKey, VanillaEvents } from "..";
 import { correctNetwork, getHexaDecimalChainId } from "../../lib/config";
-import { emitEvent, formatJuice, parseJuice } from "../../utils/helpers";
+import { emitEvent, formatJuice, getTruncatedAddress, parseJuice } from "../../utils/helpers";
 import { showDialog } from "./dialog";
-import { parseUnits } from "ethers/lib/utils";
 
 let lockedWalletToast: any;
 
@@ -281,9 +281,7 @@ export const updateTruncatedAddress = () => {
   const { walletAddress } = snapshot(state);
   ensureCorrectChain();
   state.truncatedWalletAddress = walletAddress
-    ? `${walletAddress?.substring(0, 6)}…${walletAddress?.substring(
-        walletAddress.length - 4
-      )}`
+    ? getTruncatedAddress(walletAddress)
     : null;
 };
 

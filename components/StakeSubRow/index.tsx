@@ -1,16 +1,19 @@
+import { isAddress } from "@vanilladefi/core-sdk";
+import * as sdk from "@vanilladefi/stake-sdk";
+import { BigNumber } from "ethers";
 import Image from "next/image";
 import React, { FC, useCallback, useState } from "react";
-import * as sdk from "@vanilladefi/stake-sdk";
-import { isAddress } from "@vanilladefi/core-sdk";
 import { Row } from "react-table";
 import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
+import { PolygonScanIcon } from "../../assets";
 import { Stake, state, VanillaEvents } from "../../state";
 import { connectWallet } from "../../state/actions/wallet";
 import {
   emitEvent,
   findToken,
   getTransactionLink,
+  getUnlocalizedJuiceString,
   parseJuice,
 } from "../../utils/helpers";
 import Box from "../Box";
@@ -19,9 +22,6 @@ import Flex from "../Flex";
 import Input from "../Input";
 import Link from "../Link";
 import Text from "../Text";
-
-import { PolygonScanIcon } from "../../assets";
-import { BigNumber } from "ethers";
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -54,7 +54,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
   const staked = row.original.currentStake;
 
-  const [stakeAmount, setStakeAmount] = useState(staked?.juiceValue || "");
+  const [stakeAmount, setStakeAmount] = useState(
+    staked ? getUnlocalizedJuiceString(staked.rawJuiceValue) : undefined
+  );
   const [stakePosition, setStakePosition] = useState<"long" | "short">(
     staked?.sentiment || "long"
   );
@@ -65,9 +67,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const closingDisabled = stakePending;
 
   const stakeUnchanged =
-    staked?.sentiment === stakePosition
-      ? staked?.juiceValue === stakeAmount
-      : false;
+    staked &&
+    staked.sentiment === stakePosition &&
+    staked.rawJuiceValue.eq(parseJuice(stakeAmount))
 
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {

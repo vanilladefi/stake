@@ -1,7 +1,8 @@
+import { isAddress } from "@vanilladefi/core-sdk";
 import { BigNumber } from "ethers";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Column } from "react-table";
-import { formatJuice } from "../../utils/helpers";
+import { formatJuice, getTruncatedAddress } from "../../utils/helpers";
 import Box from "../Box";
 import Flex from "../Flex";
 import Heading from "../Heading";
@@ -46,7 +47,8 @@ const Leaderboard: FC<ILeaderboard> = ({
         accessor: "juicer",
         id: "juicer",
         width: "10%",
-        minWidth: "40px",
+        minWidth: "140px",
+        whiteSpace: 'nowrap',
         align: "left",
         Cell: ({ value }: { value: JuicerColumn["juicer"] }) => {
           return <Text>{value}</Text>;
@@ -91,7 +93,12 @@ const Leaderboard: FC<ILeaderboard> = ({
 
   useEffect(() => {
     const _data = getData();
-    setData(_data || []);
+    setData(_data && _data.map(value => {
+      if (isAddress(value.juicer)) {
+        value.juicer = getTruncatedAddress(value.juicer)
+      }
+      return value
+    }) || []);
   }, [getData]);
 
   const segmentData: { label: string; key: LeaderboardRange }[] = [];

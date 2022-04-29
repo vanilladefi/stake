@@ -10,7 +10,7 @@ export const chainId: number =
 export const getHexaDecimalChainId = (chainId: number) =>
   `0x${chainId.toString(16)}`;
 
-export const juiceEpoch = process.env.NEXT_PUBLIC_EPOCH || 24925931;
+export const juiceEpoch = process.env.NEXT_PUBLIC_EPOCH || 26846930;
 
 export const getWeb3ModalNetworkName = (networkName: string) => {
   let web3ModalNetworkName = "matic";

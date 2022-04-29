@@ -1,9 +1,10 @@
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
+import { formatUnits } from "ethers/lib/utils";
 import Image from "next/image";
+import { CaretDown } from "phosphor-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
-import { CaretDown } from "phosphor-react";
 import { useGetAssetPairsQuery } from "../../generated/graphql";
 import { Stake, state } from "../../state";
 import { fetchStakes } from "../../state/actions/stakes";
@@ -18,7 +19,6 @@ import Link from "../Link";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
-import { formatUnits } from "ethers/lib/utils";
 
 export const MyStakes = () => {
   const { stakes, rawBalances, balances } = useSnapshot(state);
@@ -148,11 +148,10 @@ export const MyStakes = () => {
         is: "currentPrice",
         accessor: "currentPrice",
         align: "right",
-
         Cell: ({ value, row }) => {
           return (
             <Box>
-              {valueUSD(ethers.utils.formatUnits(value, row.original.decimals))}
+              {valueUSD(formatUnits(value, row.original.decimals))}
             </Box>
           );
         },
@@ -162,7 +161,17 @@ export const MyStakes = () => {
         accessor: "hourlyHistory",
         Header: "24H %",
         align: "right",
+        sortType: (rowA, rowB, _columnId, desc) => {
+          const oldPriceA = rowA.values.hourlyHistory[0].closingPrice;
+          const newPriceA = rowA.values.hourlyHistory[rowA.values.hourlyHistory.length - 1].closingPrice;
+          const changeA = (newPriceA - oldPriceA) / oldPriceA;
 
+          const oldPriceB = rowB.values.hourlyHistory[0].closingPrice;
+          const newPriceB = rowB.values.hourlyHistory[rowB.values.hourlyHistory.length - 1].closingPrice;
+          const changeB = (newPriceB - oldPriceB) / oldPriceB;
+
+          return changeA - changeB
+        },
         Cell: ({ value }) => {
           const oldPrice = value[0].closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
