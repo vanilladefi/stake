@@ -14,7 +14,7 @@ import {
   findToken,
   getTransactionLink,
   getUnlocalizedJuiceString,
-  parseJuice
+  parseJuice,
 } from "../../utils/helpers";
 import Box from "../Box";
 import Button from "../Button";
@@ -22,7 +22,6 @@ import Flex from "../Flex";
 import Input from "../Input";
 import Link from "../Link";
 import Text from "../Text";
-
 
 export type ColumnType = {
   __typename?: "AssetPair";
@@ -55,7 +54,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
 
   const staked = row.original.currentStake;
 
-  const [stakeAmount, setStakeAmount] = useState(getUnlocalizedJuiceString(staked?.rawJuiceValue || 0));
+  const [stakeAmount, setStakeAmount] = useState(
+    staked ? getUnlocalizedJuiceString(staked.rawJuiceValue) : undefined
+  );
   const [stakePosition, setStakePosition] = useState<"long" | "short">(
     staked?.sentiment || "long"
   );
@@ -66,9 +67,9 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const closingDisabled = stakePending;
 
   const stakeUnchanged =
-    staked?.sentiment === stakePosition
-      ? staked?.juiceValue === stakeAmount
-      : false;
+    staked &&
+    staked.sentiment === stakePosition &&
+    staked.rawJuiceValue.eq(parseJuice(stakeAmount))
 
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {
