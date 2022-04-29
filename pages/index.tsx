@@ -31,7 +31,7 @@ const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
 export const getStaticProps = async () => {
   const skip =
     process.env.NODE_ENV === "development" &&
-    process.env.SKIP_LEADERBOARD_IN_DEV === "true";
+    process.env.SKIP_LEADERBOARD === "true";
 
   return {
     props: {
