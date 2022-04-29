@@ -143,6 +143,7 @@ const Footer = () => {
               marginLeft: "auto",
               alignSelf: "flex-start",
               width: "50%",
+              mb: "$6",
               order: 3,
               "@md": {
                 order: 2,
