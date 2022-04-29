@@ -2,12 +2,13 @@ import type { InferGetStaticPropsType } from "next";
 import dynamic from "next/dynamic";
 import {
   CommunityIcon,
-  Diamond, JuiceFlow,
+  Diamond,
+  JuiceFlow,
   JuiceSignalIcon,
   JuicingIcon,
   One,
   Three,
-  Two
+  Two,
 } from "../assets";
 import Box from "../components/Box";
 import Container from "../components/Container";
@@ -29,9 +30,7 @@ const WalletModal = dynamic(() => import("../components/Wallet/WalletModal"), {
 });
 
 export const getStaticProps = async () => {
-  const skip =
-    process.env.NODE_ENV === "development" &&
-    process.env.SKIP_LEADERBOARD === "true";
+  const skip = process.env.SKIP_LEADERBOARD === "true";
 
   return {
     props: {
@@ -489,9 +488,7 @@ const Home = ({
           },
         }}
       >
-        <Container>
-          {leaderboard && <Leaderboard {...leaderboard} />}
-        </Container>
+        <Container>{leaderboard && <Leaderboard {...leaderboard} />}</Container>
       </Flex>
     </>
   );
