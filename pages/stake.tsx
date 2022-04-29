@@ -166,11 +166,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   } catch (err) {
     console.warn(err);
   }
+  const skip =
+    process.env.NODE_ENV === "development" &&
+    process.env.SKIP_LEADERBOARD_IN_DEV === "true";
   return {
     props: {
       // urql uses this to rehydrate cache
       urqlState: ssrCache.extractData(),
-      leaderboard: await fetchLeaderboard(),
+      leaderboard: skip ? null : await fetchLeaderboard(),
     },
     revalidate: 10 * 60, // rebuild every 10 minutes
   };
