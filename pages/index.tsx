@@ -9,18 +9,15 @@ import {
   Three,
   Two
 } from "../assets";
-import { ArrowLink } from "../components/ArrowLink";
 import Box from "../components/Box";
 import Container from "../components/Container";
 import EmailForm from "../components/EmailForm";
 import Flex from "../components/Flex";
 import Heading from "../components/Heading";
-import Leaderboard from '../components/Leaderboard';
 import Text from "../components/Text";
-import { fetchLeaderboard } from "../lib/fetch-leaderboard";
 import { styled } from "../stitches.config";
 import { ArrowLink } from "../components/ArrowLink";
-import { fetchLeaderboard } from "../utils/fetch-leaderboard";
+import { fetchLeaderboard } from "../lib/fetch-leaderboard";
 import Leaderboard from "../components/Leaderboard";
 
 const ActiveWallet = dynamic(
