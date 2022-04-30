@@ -143,12 +143,19 @@ const Footer = () => {
               marginLeft: "auto",
               alignSelf: "flex-start",
               width: "50%",
+              mb: "$6",
               order: 3,
               "@md": {
                 order: 2,
               },
             }}
           >
+            <RegularLink
+              css={{ justifyContent: "flex-end" }}
+              href="https://vanilla-profitmining.vercel.app/"
+            >
+              Profit Mining (deprecated)
+            </RegularLink>
             <RegularLink
               css={{ justifyContent: "flex-end" }}
               href="/privacy-policy"
