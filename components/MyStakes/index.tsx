@@ -161,13 +161,13 @@ export const MyStakes = () => {
         accessor: "hourlyHistory",
         Header: "24H %",
         align: "right",
-        sortType: (rowA, rowB, _columnId, desc) => {
-          const oldPriceA = rowA.values.hourlyHistory[0].closingPrice;
-          const newPriceA = rowA.values.hourlyHistory[rowA.values.hourlyHistory.length - 1].closingPrice;
+        sortType: (rowA, rowB, _columnId) => {
+          const oldPriceA = rowA.values.history[0].closingPrice;
+          const newPriceA = rowA.values.history[rowA.values.history.length - 1].closingPrice;
           const changeA = (newPriceA - oldPriceA) / oldPriceA;
 
-          const oldPriceB = rowB.values.hourlyHistory[0].closingPrice;
-          const newPriceB = rowB.values.hourlyHistory[rowB.values.hourlyHistory.length - 1].closingPrice;
+          const oldPriceB = rowB.values.history[0].closingPrice;
+          const newPriceB = rowB.values.history[rowB.values.history.length - 1].closingPrice;
           const changeB = (newPriceB - oldPriceB) / oldPriceB;
 
           return changeA - changeB
