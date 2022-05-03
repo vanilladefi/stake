@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 import Box from "../components/Box";
 import Footer from "../components/Footer";
 import Navigation from "../components/Navigation";
-import useOrigin from "../lib/hooks/useOrigin";
 import { state, useSnapshot } from "../state";
 import {
   connectWallet,
@@ -37,7 +36,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     ssrCache.restoreData(pageProps.urqlState);
   }
   const router = useRouter();
-  const origin = useOrigin();
+  const origin = "https://www.vanilladefi.com"; // was useOrigin(), but doesn't work with Twitterbot which doesn't understand JS.
   const shareImg = "/images/share-image.png";
 
   // One time initializations
