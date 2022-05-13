@@ -69,7 +69,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const stakeUnchanged =
     staked &&
     staked.sentiment === stakePosition &&
-    staked.rawJuiceValue.eq(parseJuice(stakeAmount))
+    staked.rawJuiceValue.eq(parseJuice(stakeAmount));
 
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {
@@ -226,7 +226,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               Stake
             </Text>{" "}
             <Input
-              disabled={stakePending}
+              disabled={stakePending || !findToken(row.original.id)?.enabled}
               autoFocus
               size="lg"
               type="number"
@@ -285,7 +285,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
             <Button
               onClick={() => setStakePosition("long")}
               outline
-              disabled={stakePending}
+              disabled={stakePending || !findToken(row.original.id)?.enabled}
               uppercase
               size="md"
               active={stakePosition === "long"}
@@ -305,7 +305,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               onClick={() => setStakePosition("short")}
               outline
               uppercase
-              disabled={stakePending}
+              disabled={stakePending || !findToken(row.original.id)?.enabled}
               size="md"
               active={stakePosition === "short"}
               css={{
