@@ -471,7 +471,7 @@ const tokens = [
     name: "Litecoin",
   },
   {
-    enabled: true,
+    enabled: false,
     id: "LUNA",
     decimals: 8,
     priceFeed: "0x1248573D9B62AC86a3ca02aBC6Abe6d403Cd1034",
