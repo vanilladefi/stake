@@ -22,12 +22,11 @@ import Text from "../Text";
 
 export const MyStakes = () => {
   const { stakes, rawBalances, balances } = useSnapshot(state);
-
   // leaving `executeQuery` to AvailableStakes component
   const [{ fetching: _, data: _data }] = useGetAssetPairsQuery();
 
   const priceData = useMemo(() => {
-    return _data?.assetPairs.filter((t) => findToken(t.id)?.enabled) || [];
+    return _data?.assetPairs.filter((t) => findToken(t.id)) || [];
   }, [_data?.assetPairs]);
 
   const columns: Column<ColumnType>[] = useMemo(
@@ -150,9 +149,7 @@ export const MyStakes = () => {
         align: "right",
         Cell: ({ value, row }) => {
           return (
-            <Box>
-              {valueUSD(formatUnits(value, row.original.decimals))}
-            </Box>
+            <Box>{valueUSD(formatUnits(value, row.original.decimals))}</Box>
           );
         },
       },
@@ -163,14 +160,16 @@ export const MyStakes = () => {
         align: "right",
         sortType: (rowA, rowB, _columnId) => {
           const oldPriceA = rowA.values.history[0].closingPrice;
-          const newPriceA = rowA.values.history[rowA.values.history.length - 1].closingPrice;
+          const newPriceA =
+            rowA.values.history[rowA.values.history.length - 1].closingPrice;
           const changeA = (newPriceA - oldPriceA) / oldPriceA;
 
           const oldPriceB = rowB.values.history[0].closingPrice;
-          const newPriceB = rowB.values.history[rowB.values.history.length - 1].closingPrice;
+          const newPriceB =
+            rowB.values.history[rowB.values.history.length - 1].closingPrice;
           const changeB = (newPriceB - oldPriceB) / oldPriceB;
 
-          return changeA - changeB
+          return changeA - changeB;
         },
         Cell: ({ value }) => {
           const oldPrice = value[0].closingPrice;
