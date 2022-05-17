@@ -38,7 +38,7 @@ const isServerSide = typeof window === "undefined";
 export const ssrCache = ssrExchange({ isClient: !isServerSide });
 
 const client = createClient({
-  url: "https://api.thegraph.com/subgraphs/name/vanilladefi/vanilla-chainlink-polygon-price-feed-dev-v1",
+  url: "https://api.thegraph.com/subgraphs/name/vanilladefi/vanilla-chainlink-polygon-price-feed-v1",
   exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
 });
 
