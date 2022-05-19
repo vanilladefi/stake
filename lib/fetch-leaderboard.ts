@@ -150,13 +150,10 @@ export const getUserJuiceDelta = async (
 
   let delta = BigNumber.from(0)
 
-//   S    U S   U  US
-//  -2   .8 -1  1  05
-
   unStakes.forEach((event) => {
     const { args } = event
     if (!args) return
-    
+
     const { unstakedDiff, user } = args
     if (user === '0xE0F5466AF66AbA62f5e2027Cbb294f54e60276bC') {
       console.log(formatJuice(unstakedDiff))
@@ -176,7 +173,18 @@ export const getUserJuiceDelta = async (
     delta = delta.add(unstakedDiff)
   })
 
-  return delta
+  const lastStake = stakes[stakes.length - 1]
+  const lastUnstake = unStakes[unStakes.length - 1]
+  
+  if (lastStake?.args && lastStake.blockNumber > (lastUnstake?.blockNumber || 0)) {
+    const value = (lastStake.args as any).unstakedDiff?.abs() || 0
+    if ((lastStake.args as any)?.user === '0xE0F5466AF66AbA62f5e2027Cbb294f54e60276bC') {
+      console.log(formatJuice(value))
+    }
+    delta.add(value)
+  }
+
+    return delta
 }
 
 
