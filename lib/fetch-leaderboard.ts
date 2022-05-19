@@ -188,7 +188,7 @@ export const getUserJuiceDelta = async (
     if (stake.blockNumber > (lastUnstakeByToken.get(token)?.blockNumber || 0)) {
       const currentValue = (stake.args as any)?.unstakedDiff?.abs()
       if (currentValue) {
-        delta = delta.add(currentValue)
+        delta = delta.add(currentValue.mul(2))
       }
     }
   })
