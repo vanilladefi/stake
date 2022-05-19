@@ -48,7 +48,7 @@ const Leaderboard: FC<ILeaderboard> = ({
         id: "juicer",
         width: "10%",
         minWidth: "140px",
-        whiteSpace: 'nowrap',
+        whiteSpace: "nowrap",
         align: "left",
         Cell: ({ value }: { value: JuicerColumn["juicer"] }) => {
           return <Text>{value}</Text>;
@@ -58,19 +58,28 @@ const Leaderboard: FC<ILeaderboard> = ({
         Header: "Juice Pressed",
         accessor: "juiceAmount",
         sortType: (rowA, rowB, _columnId, desc) => {
-          const diff: BigNumber = BigNumber.from(rowA.values.juiceAmount).sub(BigNumber.from(rowB.values.juiceAmount))
+          const diff: BigNumber = BigNumber.from(rowA.values.juiceAmount).sub(
+            BigNumber.from(rowB.values.juiceAmount)
+          );
           if (diff.isZero()) {
-            return 0
+            return 0;
           } else if (desc && diff.gt(0)) {
-            return 1
+            return 1;
           } else {
-            return -1
+            return -1;
           }
         },
         id: "juiceAmount",
         align: "right",
         Cell: ({ value }: { value: JuicerColumn["juiceAmount"] }) => {
-          return <Box>{formatJuice(BigNumber.from(value)) || "xxxx"}</Box>;
+          return (
+            <Box>
+              {formatJuice(BigNumber.from(value), {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3,
+              }) || "xxxx"}
+            </Box>
+          );
         },
       },
     ],
@@ -93,12 +102,16 @@ const Leaderboard: FC<ILeaderboard> = ({
 
   useEffect(() => {
     const _data = getData();
-    setData(_data && _data.map(value => {
-      if (isAddress(value.juicer)) {
-        value.juicer = getTruncatedAddress(value.juicer)
-      }
-      return value
-    }) || []);
+    setData(
+      (_data &&
+        _data.map((value) => {
+          if (isAddress(value.juicer)) {
+            value.juicer = getTruncatedAddress(value.juicer);
+          }
+          return value;
+        })) ||
+        []
+    );
   }, [getData]);
 
   const segmentData: { label: string; key: LeaderboardRange }[] = [];
