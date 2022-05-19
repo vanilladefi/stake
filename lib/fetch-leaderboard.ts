@@ -149,42 +149,51 @@ export const getUserJuiceDelta = async (
   ).flat()
 
   let delta = BigNumber.from(0)
+  const lastStakeByToken = new Map<string, ethers.Event>()
+  const lastUnstakeByToken = new Map<string, ethers.Event>()
 
   unStakes.forEach((event) => {
-    const { args } = event
+    const { args, blockNumber } = event
     if (!args) return
 
-    const { unstakedDiff, user } = args
+    const { unstakedDiff, user, token } = args
     if (user === '0xE0F5466AF66AbA62f5e2027Cbb294f54e60276bC') {
-      console.log(formatJuice(unstakedDiff))
+      console.log('unstake: ', formatJuice(unstakedDiff))
+    }
+
+    if (blockNumber > (lastUnstakeByToken.get(token)?.blockNumber || 0)) {
+      lastUnstakeByToken.set(token, event)
     }
 
     delta = delta.add(unstakedDiff)
   })
   stakes.forEach(event => {
-    const { args } = event
+    const { args, blockNumber } = event
     if (!args) return
 
-    const { unstakedDiff, user } = args
+    const { unstakedDiff, user, token } = args
     if (user === '0xE0F5466AF66AbA62f5e2027Cbb294f54e60276bC') {
-      console.log(formatJuice(unstakedDiff))
+      console.log('stake: ', formatJuice(unstakedDiff))
+    }
+
+    if (blockNumber > (lastStakeByToken.get(token)?.blockNumber || 0)) {
+      lastStakeByToken.set(token, event)
     }
 
     delta = delta.add(unstakedDiff)
   })
 
-  const lastStake = stakes[stakes.length - 1]
-  const lastUnstake = unStakes[unStakes.length - 1]
-  
-  if (lastStake?.args && lastStake.blockNumber > (lastUnstake?.blockNumber || 0)) {
-    const value = (lastStake.args as any).unstakedDiff?.abs() || 0
-    if ((lastStake.args as any)?.user === '0xE0F5466AF66AbA62f5e2027Cbb294f54e60276bC') {
-      console.log(formatJuice(value))
+  // Add last stake absolute amount per token  back to delta
+  lastStakeByToken.forEach((stake, token) => {
+    if (stake.blockNumber > (lastUnstakeByToken.get(token)?.blockNumber || 0)) {
+      const currentValue = (stake.args as any)?.unstakedDiff?.abs()
+      if (currentValue) {
+        delta = delta.add(currentValue)
+      }
     }
-    delta.add(value)
-  }
+  })
 
-    return delta
+  return delta
 }
 
 
