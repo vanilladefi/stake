@@ -9,9 +9,10 @@ import type {
   LeaderboardRange,
 } from "../components/Leaderboard";
 import { state } from "../state";
-import { formatJuice, getBlockByTimestamp } from "../utils/helpers";
+import tokens from '../tokens';
+import client from '../urql';
+import { getBlockByTimestamp } from "../utils/helpers";
 import { juiceEpoch } from "./config";
-
 
 export const getLeaderboardData = async (
   range: LeaderboardRange
@@ -37,7 +38,7 @@ export const getLeaderboardData = async (
     const from =
       range === "weekly" ? before7D : range === "daily" ? before1D : juiceEpoch;
 
-    console.log(range)
+
     const leaderboard = await getLeaderboard(from, "latest", 10, false, {
       signerOrProvider: provider,
       optionalAddress: optionalAddress || undefined,
@@ -103,14 +104,14 @@ export const getUserJuiceDelta = async (
   options?: Options,
 ): Promise<BigNumber> => {
   const parsedFrom = await parseBlockTagToBlockNumber(from || epoch, options)
-  const parsedTo = await parseBlockTagToBlockNumber(to || 'latest', options)
+  const parsedTo = await parseBlockTagToBlockNumber(to || 'latest', options) - 50
   const blockThreshold = options?.blockThreshold || 1000
 
   const contract = getJuiceStakingContract(options)
 
   const stakeFilter: ethers.EventFilter =
     contract.filters.StakeAdded(userAddress)
-  const unStakeFilter: ethers.EventFilter =
+  const unstakeFilter: ethers.EventFilter =
     contract.filters.StakeRemoved(userAddress)
 
   // Split requests to ranges because of RPCs having block depth limits
@@ -132,10 +133,10 @@ export const getUserJuiceDelta = async (
   }
   ranges.push({ startBlock, endBlock })
 
-  const unStakes: ethers.Event[] | TypedEvent<any[]>[] = (
+  const unstakes: ethers.Event[] | TypedEvent<any[]>[] = (
     await Promise.all(
       ranges.map((range) =>
-        contract.queryFilter(unStakeFilter, range.startBlock, range.endBlock),
+        contract.queryFilter(unstakeFilter, range.startBlock, range.endBlock),
       ),
     )
   ).flat()
@@ -148,54 +149,124 @@ export const getUserJuiceDelta = async (
     )
   ).flat()
 
-  let delta = BigNumber.from(0)
-  const lastStakeByToken = new Map<string, ethers.Event>()
-  const lastUnstakeByToken = new Map<string, ethers.Event>()
+  const unstakesByToken: Record<string, [ethers.Event] | undefined> = {}
+  const stakesByToken: Record<string, [ethers.Event] | undefined> = {}
 
-  unStakes.forEach((event) => {
+  const lastStakeByToken: Record<string, ethers.Event | undefined> = {}
+  const lastUnstakeByToken: Record<string, ethers.Event | undefined> = {}
+
+  unstakes.forEach(event => {
     const { args, blockNumber } = event
     if (!args) return
 
-    const { unstakedDiff, user, token } = args
-    if (user === '0xE0F5466AF66AbA62f5e2027Cbb294f54e60276bC') {
-      console.log('unstake: ', formatJuice(unstakedDiff))
+    const { token } = args
+    if (unstakesByToken[token]) {
+      unstakesByToken[token]?.push(event)
+    }
+    else {
+      unstakesByToken[token] = [event]
     }
 
-    if (blockNumber > (lastUnstakeByToken.get(token)?.blockNumber || 0)) {
-      lastUnstakeByToken.set(token, event)
+    if (blockNumber > (lastUnstakeByToken[token]?.blockNumber || 0)) {
+      lastUnstakeByToken[token] = event
     }
-
-    delta = delta.add(unstakedDiff)
   })
+
   stakes.forEach(event => {
     const { args, blockNumber } = event
     if (!args) return
 
-    const { unstakedDiff, user, token } = args
-    if (user === '0xE0F5466AF66AbA62f5e2027Cbb294f54e60276bC') {
-      console.log('stake: ', formatJuice(unstakedDiff))
+    const { token } = args
+    if (stakesByToken[token]) {
+      stakesByToken[token]?.push(event)
+    }
+    else {
+      stakesByToken[token] = [event]
     }
 
-    if (blockNumber > (lastStakeByToken.get(token)?.blockNumber || 0)) {
-      lastStakeByToken.set(token, event)
-    }
-
-    delta = delta.add(unstakedDiff)
-  })
-
-  // Add last stake absolute amount per token  back to delta
-  lastStakeByToken.forEach((stake, token) => {
-    if (stake.blockNumber > (lastUnstakeByToken.get(token)?.blockNumber || 0)) {
-      const currentValue = (stake.args as any)?.unstakedDiff?.abs()
-      if (currentValue) {
-        delta = delta.add(currentValue.mul(2))
-      }
+    if (blockNumber > (lastStakeByToken[token]?.blockNumber || 0)) {
+      lastStakeByToken[token] = event
     }
   })
 
-  return delta
+  let delta = 0
+  // For each unstake look for the previuos stake block or inital block
+  // then compare prices and calculate delta
+  await Promise.all(Object.values(unstakesByToken).map(async events => {
+    if (!events) return
+
+    await Promise.all(events.map(async event => {
+      const { args, blockNumber } = event
+      if (!args) return
+
+      const { unstakedDiff, token } = args
+
+      const _token = tokens.find(t => t.address?.toLocaleLowerCase() === token.toLocaleLowerCase())
+      const tokenId = _token?.alias || _token?.id || ''
+
+      const prevStake: ethers.Event | undefined = findPrevStake(blockNumber, stakesByToken[token])
+      const initBlockNumber = prevStake?.blockNumber || parsedFrom
+
+      const initPrice = await getTokenPrice(tokenId, initBlockNumber)
+      const finalPrice = await getTokenPrice(tokenId, blockNumber)
+
+      const priceDiff = finalPrice - initPrice
+      const val = -priceDiff * (unstakedDiff / finalPrice)
+
+      delta += val
+    }))
+  }))
+  // For last stake (if any), compare price with current price and calculate delta
+  await Promise.all(Object.entries(lastStakeByToken).map(async ([token, lastStake]) => {
+    const lastUnstake = lastUnstakeByToken[token]
+    if (lastStake && lastStake.blockNumber > (lastUnstake?.blockNumber || 0)) {
+      const { args, blockNumber } = lastStake
+      if (!args) return
+
+      const stakeValue = args.unstakedDiff.abs()
+
+      const _token = tokens.find(t => t.address?.toLocaleLowerCase() === token.toLocaleLowerCase())
+      const tokenId = _token?.alias || _token?.id || ''
+
+      const initPrice = await getTokenPrice(tokenId, blockNumber)
+      const finalPrice = await getTokenPrice(tokenId, parsedTo)
+
+      const priceDiff = finalPrice - initPrice
+      const val = -priceDiff * (stakeValue / finalPrice)
+      delta += val
+    }
+  }))
+
+  return BigNumber.from(delta.toFixed(0))
 }
 
+function findPrevStake(blockNumber: number, stakes?: ethers.Event[]) {
+  if (!stakes || !stakes.length) return
+
+  for (let i = stakes.length - 1; i >= 0; i--) {
+    const stake = stakes[i]
+    if (stake.blockNumber < blockNumber) return stake
+  }
+}
+
+const PRICE_QUERY = `
+  query MyQuery($id: String, $block: Int = 12134736) {
+    assetPair(id: $id, block: {number: $block}) {
+      currentPrice
+      blockNumber
+      id
+    }
+}
+`;
+async function getTokenPrice(token: string, blockNumber: number) {
+  const id = token.endsWith("USD") ? token : `${token}/USD`
+  const block = blockNumber < 28547321 ? 28547321 : blockNumber
+  const result = await client
+    .query(PRICE_QUERY, { id, block })
+    .toPromise()
+  const price = result.data?.assetPair?.currentPrice
+  return Number(price)
+}
 
 export const getLeaderboard = async (
   from?: string | number,
