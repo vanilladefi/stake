@@ -189,7 +189,7 @@ export const getUserJuiceDelta = async (
     }
   })
 
-  let delta = 0
+  let delta = BigNumber.from(0)
   // For each unstake look for the previuos stake block or inital block
   // then compare prices and calculate delta
   await Promise.all(Object.values(unstakesByToken).map(async events => {
@@ -211,9 +211,10 @@ export const getUserJuiceDelta = async (
       const finalPrice = await getTokenPrice(tokenId, blockNumber)
 
       const priceDiff = finalPrice - initPrice
-      const val = -priceDiff * (unstakedDiff / finalPrice)
+      const val = unstakedDiff.mul(priceDiff).div(finalPrice)
 
-      delta += val
+
+      delta = delta.add(val)
     }))
   }))
   // For last stake (if any), compare price with current price and calculate delta
@@ -232,12 +233,13 @@ export const getUserJuiceDelta = async (
       const finalPrice = await getTokenPrice(tokenId, parsedTo)
 
       const priceDiff = finalPrice - initPrice
-      const val = -priceDiff * (stakeValue / finalPrice)
-      delta += val
+      const val = stakeValue.mul(priceDiff).div(finalPrice)
+  
+      delta = delta.add(val)
     }
   }))
 
-  return BigNumber.from(delta.toFixed(0))
+  return delta
 }
 
 function findPrevStake(blockNumber: number, stakes?: ethers.Event[]) {
