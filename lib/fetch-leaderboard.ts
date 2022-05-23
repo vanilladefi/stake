@@ -1,5 +1,5 @@
-import { epoch, isAddress } from "@vanilladefi/core-sdk";
-import { getJuiceStakingContract, LeaderBoard, networks, Options } from '@vanilladefi/stake-sdk';
+import { epoch, isAddress, Token } from "@vanilladefi/core-sdk";
+import { getAllStakes, getJuiceStakingContract, LeaderBoard, networks, Options, } from '@vanilladefi/stake-sdk';
 import { TypedEvent } from '@vanilladefi/stake-sdk/lib/types/juicenet/common';
 import { BigNumber, ethers, providers } from "ethers";
 import { isHexString } from 'ethers/lib/utils';
@@ -13,6 +13,7 @@ import tokens from '../tokens';
 import client from '../urql';
 import { getBlockByTimestamp } from "../utils/helpers";
 import { juiceEpoch } from "./config";
+import { snapshot } from "valtio"
 
 export const getLeaderboardData = async (
   range: LeaderboardRange
@@ -104,7 +105,7 @@ export const getUserJuiceDelta = async (
   options?: Options,
 ): Promise<BigNumber> => {
   const parsedFrom = await parseBlockTagToBlockNumber(from || epoch, options)
-  const parsedTo = await parseBlockTagToBlockNumber(to || 'latest', options) - 50
+  const parsedTo = await parseBlockTagToBlockNumber(to || 'latest', options)
   const blockThreshold = options?.blockThreshold || 1000
 
   const contract = getJuiceStakingContract(options)
@@ -152,11 +153,8 @@ export const getUserJuiceDelta = async (
   const unstakesByToken: Record<string, [ethers.Event] | undefined> = {}
   const stakesByToken: Record<string, [ethers.Event] | undefined> = {}
 
-  const lastStakeByToken: Record<string, ethers.Event | undefined> = {}
-  const lastUnstakeByToken: Record<string, ethers.Event | undefined> = {}
-
   unstakes.forEach(event => {
-    const { args, blockNumber } = event
+    const { args } = event
     if (!args) return
 
     const { token } = args
@@ -166,14 +164,10 @@ export const getUserJuiceDelta = async (
     else {
       unstakesByToken[token] = [event]
     }
-
-    if (blockNumber > (lastUnstakeByToken[token]?.blockNumber || 0)) {
-      lastUnstakeByToken[token] = event
-    }
   })
 
   stakes.forEach(event => {
-    const { args, blockNumber } = event
+    const { args } = event
     if (!args) return
 
     const { token } = args
@@ -182,10 +176,6 @@ export const getUserJuiceDelta = async (
     }
     else {
       stakesByToken[token] = [event]
-    }
-
-    if (blockNumber > (lastStakeByToken[token]?.blockNumber || 0)) {
-      lastStakeByToken[token] = event
     }
   })
 
@@ -211,33 +201,51 @@ export const getUserJuiceDelta = async (
       const finalPrice = await getTokenPrice(tokenId, blockNumber)
 
       const priceDiff = finalPrice - initPrice
-      const val = unstakedDiff.mul(priceDiff).div(finalPrice)
+      if (!priceDiff) return
 
+      const val = unstakedDiff.mul(priceDiff).div(finalPrice)
 
       delta = delta.add(val)
     }))
   }))
-  // For last stake (if any), compare price with current price and calculate delta
-  await Promise.all(Object.entries(lastStakeByToken).map(async ([token, lastStake]) => {
-    const lastUnstake = lastUnstakeByToken[token]
-    if (lastStake && lastStake.blockNumber > (lastUnstake?.blockNumber || 0)) {
-      const { args, blockNumber } = lastStake
-      if (!args) return
 
-      const stakeValue = args.unstakedDiff.abs()
+  const _tokens: Token[] = tokens
+    .filter((t) => t.enabled && t.address)
+    .map((t) => ({
+      address: t.address as string,
+      pairId: t.id,
+      symbol: t.id,
+      decimals: t.decimals + "",
+      chainId: "",
+      logoColor: "",
+    }));
 
-      const _token = tokens.find(t => t.address?.toLocaleLowerCase() === token.toLocaleLowerCase())
-      const tokenId = _token?.alias || _token?.id || ''
+  const contractAddress = isAddress(
+    process.env.NEXT_PUBLIC_VANILLA_ROUTER_ADDRESS || ""
+  );
 
-      const initPrice = await getTokenPrice(tokenId, blockNumber)
-      const finalPrice = await getTokenPrice(tokenId, parsedTo)
 
-      const priceDiff = finalPrice - initPrice
-      const val = stakeValue.mul(priceDiff).div(finalPrice)
-  
-      delta = delta.add(val)
-    }
-  }))
+  const { polygonProvider } = snapshot(state);
+  const res = await getAllStakes(userAddress, _tokens, {
+    signerOrProvider: polygonProvider || undefined,
+    optionalAddress: contractAddress || undefined,
+  });
+  await Promise.all(_tokens.map(async (token, idx) => {
+    const st = res[idx];
+
+    const prevStake: ethers.Event | undefined = findPrevStake(parsedTo, stakesByToken[token.address])
+    const initBlockNumber = prevStake?.blockNumber || parsedFrom
+
+    const initPrice = await getTokenPrice(token.symbol, initBlockNumber)
+    const finalPrice = await getTokenPrice(token.symbol, parsedTo - 40)
+
+    const priceDiff = finalPrice - initPrice
+    if (!priceDiff) return
+
+    const val = st.juiceStake.mul(priceDiff).div(finalPrice)
+
+    delta = delta.add(val)
+  }));
 
   return delta
 }
