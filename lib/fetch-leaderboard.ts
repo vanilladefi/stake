@@ -274,9 +274,8 @@ const PRICE_QUERY = `
 `;
 async function getTokenPrice(token: string, blockNumber: number): Promise<BigNumber> {
   const id = token.endsWith("USD") ? token : `${token}/USD`
-  const block = blockNumber < 28547321 ? 28547321 : blockNumber
   const result = await client
-    .query(PRICE_QUERY, { id, block })
+    .query(PRICE_QUERY, { id, block: blockNumber })
     .toPromise()
   const price = result.data?.assetPair?.currentPrice
   return BigNumber.from(price || 1)
