@@ -201,7 +201,7 @@ export const getUserJuiceDelta = async (
       const initPrice = await getTokenPrice(tokenId, initBlockNumber)
       const finalPrice = await getTokenPrice(tokenId, blockNumber)
 
-      
+      if (!initPrice || !finalPrice) return
       // juice_diff =  price_diff * n
       // = price_diff * (final_juice / final_price)
 
@@ -241,9 +241,9 @@ export const getUserJuiceDelta = async (
 
     const initPrice = await getTokenPrice(token.symbol, initBlockNumber)
     const finalPrice = await getTokenPrice(token.symbol, parsedTo - 40)
+    if (!initPrice || !finalPrice) return
 
     const priceDiff = finalPrice.sub(initPrice)
-
 
     // juice_diff = price_diff * n
     // = price_diff * (init_juice / init_price)
@@ -272,13 +272,14 @@ const PRICE_QUERY = `
     }
 }
 `;
-async function getTokenPrice(token: string, blockNumber: number): Promise<BigNumber> {
+async function getTokenPrice(token: string, blockNumber: number): Promise<BigNumber | undefined> {
   const id = token.endsWith("USD") ? token : `${token}/USD`
   const result = await client
     .query(PRICE_QUERY, { id, block: blockNumber })
     .toPromise()
   const price = result.data?.assetPair?.currentPrice
-  return BigNumber.from(price || 1)
+  if (!price) return
+  return BigNumber.from(price)
 }
 
 export const getLeaderboard = async (
