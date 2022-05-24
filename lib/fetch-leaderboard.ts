@@ -180,8 +180,9 @@ export const getUserJuiceDelta = async (
   })
 
   let delta = BigNumber.from(0)
-  // For each unstake look for the previuos stake block or inital block
-  // then compare prices and calculate delta
+
+  // For each unstake for a token look for the previuos stake's block or inital block
+  // then compare prices at those and calculate delta
   await Promise.all(Object.values(unstakesByToken).map(async events => {
     if (!events) return
 
@@ -200,9 +201,11 @@ export const getUserJuiceDelta = async (
       const initPrice = await getTokenPrice(tokenId, initBlockNumber)
       const finalPrice = await getTokenPrice(tokenId, blockNumber)
 
-      const priceDiff = finalPrice - initPrice
-      if (!priceDiff) return
+      
+      // juice_diff =  price_diff * n
+      // = price_diff * (final_juice / final_price)
 
+      const priceDiff = finalPrice.sub(initPrice)
       const val = unstakedDiff.mul(priceDiff).div(finalPrice)
 
       delta = delta.add(val)
@@ -239,11 +242,12 @@ export const getUserJuiceDelta = async (
     const initPrice = await getTokenPrice(token.symbol, initBlockNumber)
     const finalPrice = await getTokenPrice(token.symbol, parsedTo - 40)
 
-    const priceDiff = finalPrice - initPrice
-    if (!priceDiff) return
+    const priceDiff = finalPrice.sub(initPrice)
 
-    const val = st.juiceStake.mul(priceDiff).div(finalPrice)
 
+    // juice_diff = price_diff * n
+    // = price_diff * (init_juice / init_price)
+    const val = st.juiceStake.mul(priceDiff).div(initPrice)
     delta = delta.add(val)
   }));
 
@@ -268,14 +272,14 @@ const PRICE_QUERY = `
     }
 }
 `;
-async function getTokenPrice(token: string, blockNumber: number) {
+async function getTokenPrice(token: string, blockNumber: number): Promise<BigNumber> {
   const id = token.endsWith("USD") ? token : `${token}/USD`
   const block = blockNumber < 28547321 ? 28547321 : blockNumber
   const result = await client
     .query(PRICE_QUERY, { id, block })
     .toPromise()
   const price = result.data?.assetPair?.currentPrice
-  return Number(price)
+  return BigNumber.from(price || 1)
 }
 
 export const getLeaderboard = async (
