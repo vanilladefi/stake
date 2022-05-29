@@ -39,7 +39,6 @@ export const getLeaderboardData = async (
     const from =
       range === "weekly" ? before7D : range === "daily" ? before1D : juiceEpoch;
 
-
     const leaderboard = await getLeaderboard(from, "latest", 10, false, {
       signerOrProvider: provider,
       optionalAddress: optionalAddress || undefined,
@@ -107,6 +106,7 @@ export const getUserJuiceDelta = async (
   const parsedFrom = await parseBlockTagToBlockNumber(from || epoch, options)
   const parsedTo = await parseBlockTagToBlockNumber(to || 'latest', options)
   const blockThreshold = options?.blockThreshold || 1000
+  // const isAllTime = parsedFrom <= juiceEpoch
 
   const contract = getJuiceStakingContract(options)
 
@@ -235,6 +235,7 @@ export const getUserJuiceDelta = async (
   });
   await Promise.all(_tokens.map(async (token, idx) => {
     const st = res[idx];
+    if (st.juiceStake.isZero()) return
 
     const prevStake: ethers.Event | undefined = findPrevStake(parsedTo, stakesByToken[token.address])
     const initBlockNumber = prevStake?.blockNumber || parsedFrom
@@ -292,7 +293,7 @@ export const getLeaderboard = async (
   trimPreviousStake = true,
   options?: Options,
 ): Promise<LeaderBoard> => {
-  const users = await getUsers(from, to, options)
+  const users = await getUsers(juiceEpoch, 'latest', options)
   let juiceDeltas: LeaderBoard = await Promise.all(
     Array.from(users).map(async (user) => ({
       user: user,
