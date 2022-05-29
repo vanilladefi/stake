@@ -206,7 +206,7 @@ export const getUserJuiceDelta = async (
       // = price_diff * (final_juice / final_price)
 
       const priceDiff = finalPrice.sub(initPrice)
-      const val = unstakedDiff.mul(priceDiff).div(finalPrice)
+      const val = unstakedDiff.mul(priceDiff.abs()).div(finalPrice)
 
       delta = delta.add(val)
     }))
@@ -247,7 +247,10 @@ export const getUserJuiceDelta = async (
 
     // juice_diff = price_diff * n
     // = price_diff * (init_juice / init_price)
-    const val = st.juiceStake.mul(priceDiff).div(initPrice)
+
+    const multiplier = st.sentiment === true ? 1 : -1
+    const val = st.juiceStake.mul(priceDiff).mul(multiplier).div(initPrice)
+
     delta = delta.add(val)
   }));
 
@@ -270,7 +273,7 @@ const PRICE_QUERY = `
       blockNumber
       id
     }
-}
+  }
 `;
 async function getTokenPrice(token: string, blockNumber: number): Promise<BigNumber | undefined> {
   const id = token.endsWith("USD") ? token : `${token}/USD`

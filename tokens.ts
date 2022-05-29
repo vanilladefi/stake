@@ -32,6 +32,7 @@ const tokens = [
     enabled: true,
     id: "WBTC",
     decimals: 8,
+    alias: "BTC",
     priceFeed: "0xDE31F8bFBD8c84b5360CFACCa3539B938dd78ae6",
     address: "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
     imageUrl: "WBTC.png",
