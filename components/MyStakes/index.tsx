@@ -162,23 +162,23 @@ export const MyStakes = () => {
         accessor: "hourlyHistory",
         Header: "~ 24H %",
         align: "right",
-        sortType: (rowA, rowB, _columnId, desc) => {
-          const oldPriceA = rowA.values.hourlyHistory?.find(
-            (hh: any) => Number(hh.timestamp) < Date.now() / 1000 - 60 * 60 * 25
-          ).closingPrice;
+        sortType: (rowA, rowB, _columnId) => {
+          const now = Date.now();
+          const oldPriceA =
+            rowA.values.history.find(
+              (hh: any) => Number(hh.timestamp) > now / 1000 - 60 * 60 * 25
+            )?.closingPrice || rowA.values.history?.[0].closingPrice;
           const newPriceA =
-            rowA.values.hourlyHistory[rowA.values.hourlyHistory.length - 1]
-              .closingPrice;
+            rowA.values.history?.[rowA.values.history.length - 1].closingPrice;
           const changeA = (newPriceA - oldPriceA) / oldPriceA;
 
-          const oldPriceB = rowB.values.hourlyHistory?.find(
-            (hh: any) => Number(hh.timestamp) < Date.now() / 1000 - 60 * 60 * 25
-          ).closingPrice;
+          const oldPriceB =
+            rowB.values.history.find(
+              (hh: any) => Number(hh.timestamp) > now / 1000 - 60 * 60 * 25
+            )?.closingPrice || rowB.values.history?.[0].closingPrice;
           const newPriceB =
-            rowB.values.hourlyHistory[rowB.values.hourlyHistory.length - 1]
-              .closingPrice;
+            rowB.values.history?.[rowB.values.history.length - 1].closingPrice;
           const changeB = (newPriceB - oldPriceB) / oldPriceB;
-
           return changeA - changeB;
         },
         Cell: ({
@@ -187,15 +187,15 @@ export const MyStakes = () => {
           value: GetAssetPairsQuery["assetPairs"][number]["hourlyHistory"];
         }) => {
           const now = Date.now();
-          const pricevalue = value?.find(
-            (hh: any) => Number(hh.timestamp) > now / 1000 - 60 * 60 * 25
-          );
+          const pricevalue =
+            value?.find(
+              (hh: any) => Number(hh.timestamp) > now / 1000 - 60 * 60 * 25
+            ) || value?.[0];
           const oldPrice = pricevalue?.closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
           const change = (newPrice - oldPrice) / oldPrice;
           const timeDiff =
             Date.now() / 1000 - Number(pricevalue?.timestamp || 0);
-          console.log(timeDiff);
           const not24h = timeDiff > 60 * 60 * 25 || timeDiff < 60 * 60 * 23;
           return (
             <Box
