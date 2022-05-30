@@ -1,11 +1,14 @@
 import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 import Image from "next/image";
-import { CaretDown } from "phosphor-react";
+import { CaretDown, WarningCircle } from "phosphor-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Column, Row } from "react-table";
 import { useSnapshot } from "valtio";
-import { useGetAssetPairsQuery } from "../../generated/graphql";
+import {
+  GetAssetPairsQuery,
+  useGetAssetPairsQuery,
+} from "../../generated/graphql";
 import { Stake, state } from "../../state";
 import { fetchStakes } from "../../state/actions/stakes";
 import { findToken } from "../../utils/helpers";
@@ -19,6 +22,7 @@ import Link from "../Link";
 import StakeSubRow, { ColumnType } from "../StakeSubRow";
 import Table from "../Table";
 import Text from "../Text";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
 export const MyStakes = () => {
   const { stakes, rawBalances, balances } = useSnapshot(state);
@@ -156,38 +160,84 @@ export const MyStakes = () => {
       {
         id: "history",
         accessor: "hourlyHistory",
-        Header: "24H %",
+        Header: "~ 24H %",
         align: "right",
-        sortType: (rowA, rowB, _columnId) => {
-          const oldPriceA = rowA.values.history[0].closingPrice;
+        sortType: (rowA, rowB, _columnId, desc) => {
+          const oldPriceA = rowA.values.hourlyHistory?.find(
+            (hh: any) => Number(hh.timestamp) < Date.now() / 1000 - 60 * 60 * 25
+          ).closingPrice;
           const newPriceA =
-            rowA.values.history[rowA.values.history.length - 1].closingPrice;
+            rowA.values.hourlyHistory[rowA.values.hourlyHistory.length - 1]
+              .closingPrice;
           const changeA = (newPriceA - oldPriceA) / oldPriceA;
 
-          const oldPriceB = rowB.values.history[0].closingPrice;
+          const oldPriceB = rowB.values.hourlyHistory?.find(
+            (hh: any) => Number(hh.timestamp) < Date.now() / 1000 - 60 * 60 * 25
+          ).closingPrice;
           const newPriceB =
-            rowB.values.history[rowB.values.history.length - 1].closingPrice;
+            rowB.values.hourlyHistory[rowB.values.hourlyHistory.length - 1]
+              .closingPrice;
           const changeB = (newPriceB - oldPriceB) / oldPriceB;
 
           return changeA - changeB;
         },
-        Cell: ({ value }) => {
-          const oldPrice = value[0].closingPrice;
+        Cell: ({
+          value,
+        }: {
+          value: GetAssetPairsQuery["assetPairs"][number]["hourlyHistory"];
+        }) => {
+          const now = Date.now();
+          const pricevalue = value?.find(
+            (hh: any) => Number(hh.timestamp) > now / 1000 - 60 * 60 * 25
+          );
+          const oldPrice = pricevalue?.closingPrice;
           const newPrice = value[value.length - 1].closingPrice;
           const change = (newPrice - oldPrice) / oldPrice;
-
+          const timeDiff =
+            Date.now() / 1000 - Number(pricevalue?.timestamp || 0);
+          console.log(timeDiff);
+          const not24h = timeDiff > 60 * 60 * 25 || timeDiff < 60 * 60 * 23;
           return (
             <Box
               css={{
                 display: "inline-flex",
                 alignItems: "center",
-                whiteSpace: "nowrap",
                 justifyContent: "center",
                 flexDirection: "row",
                 color: change < 0 ? "$red" : "$green",
               }}
             >
-              {Math.round(change * 10000) / 100} %
+              {not24h ? (
+                <Box
+                  as="span"
+                  css={{
+                    position: "relative",
+                    display: "flex",
+                    mr: "$1",
+                    color: "$muted",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    ".tooltip": {
+                      display: "block",
+                      position: "absolute",
+                      left: 0,
+                      background: "$background",
+                    },
+                    "&:hover": {},
+                  }}
+                >
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <WarningCircle size={24} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Calculated against price from{" "}
+                      {Math.round(timeDiff / 60 / 60)}h ago
+                    </TooltipContent>
+                  </Tooltip>
+                </Box>
+              ) : null}
+              {Math.round(change * 10000) / 100} %{" "}
             </Box>
           );
         },
