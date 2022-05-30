@@ -15,7 +15,7 @@ export const fetchStakes = async () => {
   }
 
   const _tokens: Token[] = tokens
-    .filter((t) => t.enabled && t.address)
+    .filter((t) => t.address)
     .map((t) => ({
       address: t.address as string,
       pairId: t.id,

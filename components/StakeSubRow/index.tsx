@@ -2,7 +2,7 @@ import { isAddress } from "@vanilladefi/core-sdk";
 import * as sdk from "@vanilladefi/stake-sdk";
 import { BigNumber } from "ethers";
 import Image from "next/image";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import { Row } from "react-table";
 import { toast } from "react-toastify";
 import { useSnapshot } from "valtio";
@@ -69,7 +69,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
   const stakeUnchanged =
     staked &&
     staked.sentiment === stakePosition &&
-    staked.rawJuiceValue.eq(parseJuice(stakeAmount))
+    staked.rawJuiceValue.eq(parseJuice(stakeAmount));
 
   const handleStake = useCallback(
     async (type: "close" | "modify" = "modify") => {
@@ -176,6 +176,11 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
     </Flex>
   );
 
+  const tokenDisabled = useMemo(
+    () => !findToken(row.original.id)?.enabled,
+    [row.original.id]
+  );
+
   return (
     <Flex
       css={{
@@ -226,7 +231,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               Stake
             </Text>{" "}
             <Input
-              disabled={stakePending}
+              disabled={stakePending || tokenDisabled}
               autoFocus
               size="lg"
               type="number"
@@ -285,7 +290,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
             <Button
               onClick={() => setStakePosition("long")}
               outline
-              disabled={stakePending}
+              disabled={stakePending || tokenDisabled}
               uppercase
               size="md"
               active={stakePosition === "long"}
@@ -305,7 +310,7 @@ const StakeSubRow: FC<SubRowProps> = ({ row, type = "make" }) => {
               onClick={() => setStakePosition("short")}
               outline
               uppercase
-              disabled={stakePending}
+              disabled={stakePending || tokenDisabled}
               size="md"
               active={stakePosition === "short"}
               css={{
