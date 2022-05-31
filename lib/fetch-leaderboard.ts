@@ -106,7 +106,7 @@ export const getUserJuiceDelta = async (
   const parsedFrom = await parseBlockTagToBlockNumber(from || epoch, options)
   const parsedTo = await parseBlockTagToBlockNumber(to || 'latest', options)
   const blockThreshold = options?.blockThreshold || 1000
-  // const isAllTime = parsedFrom <= juiceEpoch
+  const isAllTime = parsedFrom <= juiceEpoch
 
   const contract = getJuiceStakingContract(options)
 
@@ -153,16 +153,43 @@ export const getUserJuiceDelta = async (
   const unstakesByToken: Record<string, [ethers.Event] | undefined> = {}
   const stakesByToken: Record<string, [ethers.Event] | undefined> = {}
 
+  const latestUnstakeByToken: Record<string, number> = {}
+  const firstUnstakeByToken: Record<string, number> = {}
+  const deltaByToken: Record<string, BigNumber> = {}
+
   unstakes.forEach(event => {
-    const { args } = event
+    const { args, blockNumber } = event
     if (!args) return
 
-    const { token } = args
-    if (unstakesByToken[token]) {
-      unstakesByToken[token]?.push(event)
+    const { token, unstakedDiff } = args
+    if (!isAllTime) {
+      if (unstakesByToken[token]) {
+        unstakesByToken[token]?.push(event)
+      }
+      else {
+        unstakesByToken[token] = [event]
+      }
     }
     else {
-      unstakesByToken[token] = [event]
+      if (deltaByToken[token]) {
+        deltaByToken[token] = deltaByToken[token].add(unstakedDiff)
+      } else {
+        deltaByToken[token] = unstakedDiff
+      }
+
+      if (
+        !firstUnstakeByToken[token] ||
+        firstUnstakeByToken[token] > blockNumber
+      ) {
+        firstUnstakeByToken[token] = blockNumber
+      }
+
+      if (
+        !latestUnstakeByToken[token] ||
+        latestUnstakeByToken[token] < blockNumber
+      ) {
+        latestUnstakeByToken[token] = blockNumber
+      }
     }
   })
 
@@ -181,36 +208,65 @@ export const getUserJuiceDelta = async (
 
   let delta = BigNumber.from(0)
 
-  // For each unstake for a token look for the previuos stake's block or inital block
-  // then compare prices at those and calculate delta
-  await Promise.all(Object.values(unstakesByToken).map(async events => {
-    if (!events) return
+  if (!isAllTime) {
+    // For each unstake for a token look for the previuos stake's block or inital block
+    // then compare prices at those and calculate delta
+    await Promise.all(Object.values(unstakesByToken).map(async events => {
+      if (!events) return
 
-    await Promise.all(events.map(async event => {
-      const { args, blockNumber } = event
-      if (!args) return
+      await Promise.all(events.map(async event => {
+        const { args, blockNumber } = event
+        if (!args) return
 
-      const { unstakedDiff, token } = args
+        const { unstakedDiff, token } = args
 
-      const _token = tokens.find(t => t.address?.toLocaleLowerCase() === token.toLocaleLowerCase())
-      const tokenId = _token?.alias || _token?.id || ''
+        const _token = tokens.find(t => t.address?.toLocaleLowerCase() === token.toLocaleLowerCase())
+        const tokenId = _token?.alias || _token?.id || ''
 
-      const prevStake: ethers.Event | undefined = findPrevStake(blockNumber, stakesByToken[token])
-      const initBlockNumber = prevStake?.blockNumber || parsedFrom
+        const prevStake: ethers.Event | undefined = findPrevStake(blockNumber, stakesByToken[token])
+        const initBlockNumber = prevStake?.blockNumber || parsedFrom
 
-      const initPrice = await getTokenPrice(tokenId, initBlockNumber)
-      const finalPrice = await getTokenPrice(tokenId, blockNumber)
+        const initPrice = await getTokenPrice(tokenId, initBlockNumber)
+        const finalPrice = await getTokenPrice(tokenId, blockNumber)
 
-      if (!initPrice || !finalPrice) return
-      // juice_diff =  price_diff * n
-      // = price_diff * (final_juice / final_price)
+        if (!initPrice || !finalPrice) return
+        // juice_diff =  price_diff * n
+        // = price_diff * (final_juice / final_price)
 
-      const priceDiff = finalPrice.sub(initPrice)
-      const val = unstakedDiff.mul(priceDiff.abs()).div(finalPrice)
+        const priceDiff = finalPrice.sub(initPrice)
+        const val = unstakedDiff.mul(priceDiff.abs()).div(finalPrice)
 
-      delta = delta.add(val)
+        delta = delta.add(val)
+      }))
     }))
-  }))
+  }
+  else {
+    if (Object.keys(deltaByToken).length > 0) {
+      // Remove stakes from delta
+      stakes.forEach((event) => {
+        if (event?.args && event?.blockNumber) {
+          const { args, blockNumber } = event
+          const { unstakedDiff, token } = args
+          if (
+            Object.keys(deltaByToken).includes(token) &&
+            latestUnstakeByToken[token] > blockNumber
+          ) {
+            // Remove the stakes previous to first unstake from the delta if trimPreviousStake === true
+            if (
+              !(trimPreviousStake && firstUnstakeByToken[token] < blockNumber)
+            ) {
+              deltaByToken[token] = deltaByToken[token].add(unstakedDiff)
+            }
+          }
+        }
+      })
+
+      delta = Object.values(deltaByToken).reduce((_previous, _current) =>
+        _previous.add(_current),
+      )
+    }
+  }
+
 
   const _tokens: Token[] = tokens
     .filter((t) => t.enabled && t.address)
