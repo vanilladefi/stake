@@ -180,13 +180,6 @@ const tokens = [
     name: "Bitcoin SV",
   },
   {
-    id: "BTC",
-    decimals: 8,
-    priceFeed: "0xc907E116054Ad103354f2D350FD2514433D57F6f",
-    imageUrl: "BTC.png",
-    name: "Bitcoin",
-  },
-  {
     id: "BTG",
     decimals: 8,
     priceFeed: "0x2f2C605F28DE314bc579a7c0FDf85536529E9825",
@@ -326,13 +319,6 @@ const tokens = [
     priceFeed: "0xDf3f72Be10d194b58B1BB56f2c4183e661cB2114",
     imageUrl: "ETC.png",
     name: "Ethereum Classic",
-  },
-  {
-    id: "ETH",
-    decimals: 8,
-    priceFeed: "0xF9680D99D6C9589e2a93a78A04A279e509205945",
-    imageUrl: "ETH.png",
-    name: "Ethereum",
   },
   {
     id: "EUR",
@@ -488,13 +474,6 @@ const tokens = [
     address: "0xA1c57f48F0Deb89f569dFbE6E2B7f46D33606fD4",
     imageUrl: "MANA.png",
     name: "Decentraland",
-  },
-  {
-    id: "MATIC",
-    decimals: 8,
-    priceFeed: "0xAB594600376Ec9fD91F8e885dADF0CE036862dE0",
-    imageUrl: "MATIC.png",
-    name: "Polygon",
   },
   {
     id: "MFT",
