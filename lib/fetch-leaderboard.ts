@@ -72,8 +72,7 @@ export const getLeaderboardData = async (
 
     return data;
   } catch (error) {
-    console.warn(error);
-    return;
+    throw error
   }
 };
 
@@ -333,7 +332,12 @@ const PRICE_QUERY = `
   }
 `;
 async function getTokenPrice(token: string, blockNumber: number): Promise<BigNumber | undefined> {
-  const id = token.endsWith("USD") ? token : `${token}/USD`
+  let id = token.endsWith("USD") ? token : `${token}/USD`
+
+  if (id.startsWith("WETH")) id = 'ETH/USD'
+  else if (id.startsWith("WBTC")) id = 'BTC/USD'
+  else if (id.startsWith("WMATIC")) id = "MATIC/USD"
+
   const result = await client
     .query(PRICE_QUERY, { id, block: blockNumber })
     .toPromise()
