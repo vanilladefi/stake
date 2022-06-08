@@ -197,7 +197,7 @@ const Footer = () => {
             }}
           >
             <RegularLink
-              href="https://discord.gg/CnPuf2cGQ3"
+              href="https://discord.gg/bbjtNx3zFj"
               newWindow
               css={{ mr: "$3", flexShrink: 0 }}
             >
