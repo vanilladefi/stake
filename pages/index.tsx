@@ -8,18 +8,18 @@ import {
   JuicingIcon,
   One,
   Three,
-  Two,
+  Two
 } from "../assets";
+import { ArrowLink } from "../components/ArrowLink";
 import Box from "../components/Box";
 import Container from "../components/Container";
 import EmailForm from "../components/EmailForm";
 import Flex from "../components/Flex";
 import Heading from "../components/Heading";
-import Text from "../components/Text";
-import { styled } from "../stitches.config";
-import { ArrowLink } from "../components/ArrowLink";
-import { fetchLeaderboard } from "../lib/fetch-leaderboard";
 import Leaderboard from "../components/Leaderboard";
+import Text from "../components/Text";
+import { fetchLeaderboard } from "../lib/fetch-leaderboard";
+import { styled } from "../stitches.config";
 
 const ActiveWallet = dynamic(
   () => import("../components/Wallet/ActiveWallet"),
@@ -467,7 +467,7 @@ const Home = ({
             >
               <ArrowLink
                 newWindow
-                href="https://discord.gg/CnPuf2cGQ3"
+                href="https://discord.gg/bbjtNx3zFj"
                 text="Join the discussion"
               />
               <ArrowLink
